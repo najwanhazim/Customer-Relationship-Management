@@ -1,5 +1,5 @@
 import 'package:crm/dashboard/dashboard_individual.dart';
-import 'package:crm/dashboard/dsahboard_team_stats.dart';
+import 'package:crm/dashboard/dashboard_team_stats.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/' : (context) => DashboardIndividual(), 
+        '/' : (context) => DashboardStats(), 
       },
     );
   }
