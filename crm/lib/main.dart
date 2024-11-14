@@ -1,3 +1,4 @@
+import 'package:crm/dashboard/dashboard_activity.dart';
 import 'package:crm/dashboard/dashboard_individual.dart';
 import 'package:crm/dashboard/dashboard_team_stats.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/' : (context) => DashboardStats(), 
+        '/' : (context) => DashboardActivity(), 
       },
     );
   }
