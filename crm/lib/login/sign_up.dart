@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../utils/app_theme_constant.dart';
 import '../utils/app_widget_constant.dart';
 
 class SignUp extends StatefulWidget {
@@ -13,13 +14,13 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: AppTheme.grey,
       appBar: AppBar(
-        backgroundColor: Colors.red[900],
+        backgroundColor: AppTheme.redMaroon,
         elevation: 0.0,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10),
+        padding: AppTheme.padding10,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -27,7 +28,7 @@ class _SignUpState extends State<SignUp> {
               onPressed: () {},
               child: Text(
                 'Back',
-                style: TextStyle(color: Colors.red[900], fontSize: 20),
+                style: TextStyle(color: AppTheme.redMaroon, fontSize: 20),
               ),
             ),
             Center(
@@ -37,7 +38,7 @@ class _SignUpState extends State<SignUp> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Padding(
-                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    padding: AppTheme.paddingTepi,
                     child: Text(
                       'Let’s set you up',
                       style:
@@ -45,7 +46,7 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ),
                   const Padding(
-                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    padding: AppTheme.paddingTepi,
                     child: Text(
                       'Please fill in the following information',
                       style: TextStyle(fontSize: 20),
@@ -56,7 +57,7 @@ class _SignUpState extends State<SignUp> {
                   inputField('Nickname'),
                   inputField('Email Address'),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: AppTheme.padding10,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment
                           .end, 

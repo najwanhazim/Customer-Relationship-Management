@@ -1,6 +1,7 @@
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/app_theme_constant.dart';
 import '../utils/app_widget_constant.dart';
 
 class DashboardActivity extends StatefulWidget {
@@ -72,12 +73,12 @@ class _DashboardActivityState extends State<DashboardActivity> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: AppTheme.grey,
       appBar: appBarPage(),
       body: Column(
         children: [
           const Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: AppTheme.padding8,
             child: Text(
               'Hi Naiem,',
               style: TextStyle(
@@ -86,16 +87,12 @@ class _DashboardActivityState extends State<DashboardActivity> {
                   fontWeight: FontWeight.bold),
             ),
           ),
-          const SizedBox(
-            height: 10,
-          ),
+          AppTheme.box10,
           tab(),
-          const SizedBox(
-            height: 30,
-          ),
+          AppTheme.box30,
           Expanded(
             child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 500),
+              duration: AppTheme.duration500,
               transitionBuilder: (child, animation) {
                 return FadeTransition(
                   opacity: animation,
@@ -115,14 +112,14 @@ class _DashboardActivityState extends State<DashboardActivity> {
 
   Widget tab() {
     return Container(
-      margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+      margin: AppTheme.paddingTepi,
       child: CustomSlidingSegmentedControl(
         initialValue: selectedTab,
         children: const {1: Text('Today'), 2: Text('Tomorrow')},
         decoration: BoxDecoration(
             color: Colors.grey[300], borderRadius: BorderRadius.circular(20)),
         thumbDecoration: BoxDecoration(
-          color: Colors.white,
+          color: AppTheme.white,
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
@@ -146,12 +143,12 @@ class _DashboardActivityState extends State<DashboardActivity> {
       {required Key key, required List<Map<String, dynamic>> data}) {
     return ListView.separated(
       key: key,
-      padding: const EdgeInsets.all(8),
+      padding: AppTheme.padding8,
       itemCount: data.length,
       itemBuilder: (context, index) {
         return ListTile(
           leading: const CircleAvatar(
-            radius: 15,
+            radius: AppTheme.radius15,
             backgroundColor: Colors.blue,
           ),
           title: Text(data[index]['name']),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/app_theme_constant.dart';
+
 class SignUp2 extends StatefulWidget {
   const SignUp2({super.key});
 
@@ -11,9 +13,9 @@ class _SignUp2State extends State<SignUp2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: AppTheme.grey,
       appBar: AppBar(
-        backgroundColor: Colors.red[900],
+        backgroundColor: AppTheme.redMaroon,
         elevation: 0.0,
       ),
       body: Column(
@@ -21,7 +23,7 @@ class _SignUp2State extends State<SignUp2> {
           Center(
             heightFactor: 4,
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: AppTheme.padding20,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -31,7 +33,7 @@ class _SignUp2State extends State<SignUp2> {
                   ),
                   const Text('Please check your email to received your password', ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: AppTheme.padding8,
                     child: Row(
                       mainAxisAlignment:
                           MainAxisAlignment.end, 

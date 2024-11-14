@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/' : (context) => SignUp2(), 
+        '/' : (context) => DashboardActivity(), 
       },
     );
   }

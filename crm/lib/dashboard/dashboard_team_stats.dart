@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../utils/app_theme_constant.dart';
 import '../utils/app_widget_constant.dart';
 
 class DashboardStats extends StatefulWidget {
@@ -29,13 +30,13 @@ class _DashboardStatsState extends State<DashboardStats> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey[200],
+        backgroundColor: AppTheme.grey,
         appBar: appBarPage(),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: AppTheme.padding8,
               child: Text(
                 'Hi Naiem,',
                 style: TextStyle(

@@ -1,6 +1,8 @@
 import 'package:crm/utils/app_widget_constant.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/app_theme_constant.dart';
+
 class DashboardIndividual extends StatefulWidget {
   const DashboardIndividual({super.key});
 
@@ -14,13 +16,13 @@ class _DashboardIndividualState extends State<DashboardIndividual> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: AppTheme.grey,
       appBar: appBarPage(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: AppTheme.padding8,
             child: Text(
               'Hi Naiem,',
               style: TextStyle(
@@ -30,7 +32,7 @@ class _DashboardIndividualState extends State<DashboardIndividual> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: AppTheme.padding10,
             child: SizedBox(
               height: 40,
               child: TextField(
@@ -49,18 +51,16 @@ class _DashboardIndividualState extends State<DashboardIndividual> {
             ),
           ),
           dashboard(),
-          const SizedBox(
-            height: 20,
-          ),
+          AppTheme.box10,
           const Text(
             'Goals',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           Expanded(
             child: Container(
-              padding: EdgeInsets.all(10),
-              margin: EdgeInsets.fromLTRB(10, 10, 5, 10),
-              color: Colors.white,
+              padding: AppTheme.padding10,
+              margin: AppTheme.padding,
+              color: AppTheme.white,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
@@ -85,8 +85,8 @@ class _DashboardIndividualState extends State<DashboardIndividual> {
           ),
           Expanded(
             child: Container(
-              padding: EdgeInsets.all(10),
-              margin: EdgeInsets.fromLTRB(10, 10, 5, 10),
+              padding: AppTheme.padding10,
+              margin: AppTheme.padding,
               color: Colors.white,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -99,9 +99,7 @@ class _DashboardIndividualState extends State<DashboardIndividual> {
                     'Sales Won',
                     style: TextStyle(fontSize: 20),
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
+                  AppTheme.box20,
                   LinearProgressIndicator(
                     backgroundColor: Colors.grey,
                     color: Colors.green,
