@@ -57,7 +57,7 @@ class _SignUpState extends State<SignUp> {
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment
-                          .end, // Aligns the button to the right
+                          .end, 
                       children: [
                         FilledButton(
                           onPressed: () {},
