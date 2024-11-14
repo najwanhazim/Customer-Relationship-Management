@@ -1,6 +1,7 @@
-import 'package:crm/dashboard/dashboard_individual.dart';
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:flutter/material.dart';
+
+import '../utils/app_widget_constant.dart';
 
 class DashboardActivity extends StatefulWidget {
   const DashboardActivity({super.key});
@@ -180,42 +181,4 @@ class _DashboardActivityState extends State<DashboardActivity> {
       separatorBuilder: (context, index) => const Divider(),
     );
   }
-
-  // Widget tomorrowListMeeting({required Key key}) {
-  //   return ListView.separated(
-  //     padding: const EdgeInsets.all(8),
-  //     itemCount: data.length,
-  //     itemBuilder: (context, index) {
-  //       return ListTile(
-  //         leading: const CircleAvatar(
-  //           radius: 15,
-  //           backgroundColor: Colors.blue,
-  //         ),
-  //         title: Text(data[index]['name']),
-  //         subtitle: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             ...data[index]['meeting'].map<Widget>((meeting) {
-  //               return Padding(
-  //                 padding: const EdgeInsets.symmetric(vertical: 4.0),
-  //                 child: Column(
-  //                   crossAxisAlignment: CrossAxisAlignment.start,
-  //                   children: [
-  //                     Text(
-  //                       meeting['name'],
-  //                       style: const TextStyle(fontWeight: FontWeight.bold),
-  //                     ),
-  //                     Text(meeting['time']),
-  //                     Text(meeting['location']),
-  //                   ],
-  //                 ),
-  //               );
-  //             }).toList(),
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //     separatorBuilder: (context, index) => const Divider(),
-  //   );
-  // }
 }

@@ -1,6 +1,6 @@
-import 'package:crm/dashboard/dashboard_individual.dart';
 import 'package:flutter/material.dart';
-import 'package:pie_chart/pie_chart.dart';
+
+import '../utils/app_widget_constant.dart';
 
 class DashboardStats extends StatefulWidget {
   const DashboardStats({super.key});
@@ -50,54 +50,4 @@ class _DashboardStatsState extends State<DashboardStats> {
         ),
         floatingActionButton: speedDial());
   }
-}
-
-Widget pieChart(BuildContext context, Map<String, double> dataMap,
-    String centerTextTitle, List<Color> colorList) {
-  double totalNum = dataMap.values.fold(0.0, (sum, value) => sum + value);
-
-  return Expanded(
-    child: Container(
-      margin: const EdgeInsets.all(15),
-      padding: const EdgeInsets.fromLTRB(10, 20, 10, 8),
-      color: Colors.white,
-      child: PieChart(
-        dataMap: dataMap,
-        animationDuration: const Duration(milliseconds: 800),
-        chartLegendSpacing: 40,
-        chartRadius: MediaQuery.of(context).size.width,
-        chartType: ChartType.ring,
-        colorList: colorList,
-        ringStrokeWidth: 30,
-        centerWidget: Text.rich(
-          TextSpan(
-            children: [
-              TextSpan(
-                text: '$totalNum\n',
-                style: const TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              TextSpan(
-                text: centerTextTitle,
-                style: const TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ],
-          ),
-          textAlign: TextAlign.center,
-        ),
-        chartValuesOptions: const ChartValuesOptions(
-            showChartValueBackground: false, showChartValues: false),
-        legendOptions: const LegendOptions(
-            showLegendsInRow: true,
-            legendPosition: LegendPosition.bottom,
-            legendShape: BoxShape.rectangle,
-            legendTextStyle: TextStyle(fontSize: 15)),
-      ),
-    ),
-  );
 }

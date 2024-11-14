@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/app_widget_constant.dart';
+
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
 
@@ -90,17 +92,4 @@ class _SignUpState extends State<SignUp> {
       ),
     );
   }
-}
-
-Widget inputField(String title) {
-  return Padding(
-    padding: const EdgeInsets.all(10),
-    child: TextField(
-      decoration: InputDecoration(
-          labelText: title,
-          filled: true,
-          fillColor: Colors.white,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
-    ),
-  );
 }
