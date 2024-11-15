@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 
 import '../utils/app_theme_constant.dart';
 import '../utils/app_widget_constant.dart';
@@ -11,6 +12,16 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+
+  final _form = FormGroup({
+    'firstName' : FormControl<String>(),
+    'lastName' : FormControl<String>(),
+    'username' : FormControl<String>(),
+    'email' : FormControl<String>(),
+  });
+
+  final List<String> label = ['First Name', 'Last Name', 'Username', 'Email Address'];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,10 +57,11 @@ class _SignUpState extends State<SignUp> {
                       style: TextStyle(fontSize: 20),
                     ),
                   ),
-                  inputField('First Name'),
-                  inputField('Last Name'),
-                  inputField('Nickname'),
-                  inputField('Email Address'),
+                  // inputField('First Name'),
+                  // inputField('Last Name'),
+                  // inputField('Nickname'),
+                  // inputField('Email Address'),
+                  reactiveForm(_form, label),
                   Padding(
                     padding: AppTheme.padding10,
                     child: Row(

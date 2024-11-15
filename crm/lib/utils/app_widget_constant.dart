@@ -3,6 +3,7 @@ import 'package:crm/utils/app_string_constant.dart';
 import 'package:crm/utils/app_theme_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 import 'package:simple_speed_dial/simple_speed_dial.dart';
 
 AppBar appBarPage(BuildContext context) {
@@ -167,6 +168,38 @@ Widget inputField(String title) {
           filled: true,
           fillColor: AppTheme.white,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
+    ),
+  );
+}
+
+Widget reactiveForm(FormGroup _form, List<String> label) {
+  return ReactiveForm(
+    formGroup: _form,
+    child: Padding(
+      padding: AppTheme.padding10,
+      child: Column(
+        children: [
+          reactiveTextField('firstName', label[0]),
+          reactiveTextField('lastName', label[1]),
+          reactiveTextField('username', label[2]),
+          reactiveTextField('email', label[3])
+        ],
+      ),
+    ),
+  );
+}
+
+Widget reactiveTextField(String data, String label) {
+  return Padding(
+    padding: AppTheme.padding3,
+    child: ReactiveTextField<dynamic>(
+      key: Key(data),
+      formControlName: data,
+      decoration: InputDecoration(
+            labelText: label,
+            filled: true,
+            fillColor: AppTheme.white,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
     ),
   );
 }

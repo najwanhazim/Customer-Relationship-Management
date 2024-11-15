@@ -33,6 +33,7 @@ dependencies:
   simple_speed_dial: ^0.1.7
   pie_chart: ^5.4.0
   custom_sliding_segmented_control: ^1.8.4
+  reactive_forms: 15.0.0
 
 
   # The following adds the Cupertino Icons font to your application.

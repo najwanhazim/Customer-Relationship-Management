@@ -1,9 +1,15 @@
+import 'package:crm/utils/app_widget_constant.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/app_theme_constant.dart';
 
 class SignUp2 extends StatefulWidget {
-  const SignUp2({super.key});
+  const SignUp2({Key? key, required this.title, required this.subtitle, required this.iconText, this.isShow = false}) : super(key: key);
+  
+  final String title;
+  final String subtitle;
+  final String iconText;
+  final bool isShow;
 
   @override
   State<SignUp2> createState() => _SignUp2State();
@@ -19,19 +25,28 @@ class _SignUp2State extends State<SignUp2> {
         elevation: 0.0,
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Padding(
+            padding: const EdgeInsets.all(0),
+            child: widget.isShow ? backButton(context) : null,
+          ),
           Center(
-            heightFactor: 4,
+            heightFactor: 2,
             child: Padding(
               padding: AppTheme.padding20,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Your account is set',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+                  Text(
+                    widget.title,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
                   ),
-                  const Text('Please check your email to received your password', ),
+                  Text(widget.subtitle),
+                  Padding(
+                    padding: AppTheme.padding10,
+                    child: widget.isShow ? inputField('Email Address') : null,
+                  ),
                   Padding(
                     padding: AppTheme.padding8,
                     child: Row(
@@ -50,10 +65,10 @@ class _SignUp2State extends State<SignUp2> {
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              Text('Login'),
-                              SizedBox(width: 8),
-                              Icon(Icons.arrow_forward),
+                            children: [
+                              Text(widget.iconText),
+                              const SizedBox(width: 8),
+                              const Icon(Icons.arrow_forward),
                             ],
                           ),
                         ),
