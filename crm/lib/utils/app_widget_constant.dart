@@ -1,16 +1,22 @@
+import 'package:crm/dashboard/notification.dart';
 import 'package:crm/utils/app_string_constant.dart';
 import 'package:crm/utils/app_theme_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:simple_speed_dial/simple_speed_dial.dart';
 
-AppBar appBarPage() {
+AppBar appBarPage(BuildContext context) {
   return AppBar(
     elevation: 0.0,
     backgroundColor: AppTheme.redMaroon,
     actions: [
       IconButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const NotificationPage()),
+          );
+        },
         icon: const Icon(
           Icons.notifications,
         ),
@@ -39,10 +45,10 @@ Widget dashboard() {
         ),
         Row(
           children: [
-            dashboardContent(AppTheme.amber, '15', AppString.dashboard3,
-                Icons.schedule),
-            dashboardContent(AppTheme.green, '10', AppString.dashboard4,
-                Icons.fast_forward),
+            dashboardContent(
+                AppTheme.amber, '15', AppString.dashboard3, Icons.schedule),
+            dashboardContent(
+                AppTheme.green, '10', AppString.dashboard4, Icons.fast_forward),
           ],
         ),
       ],
@@ -161,6 +167,18 @@ Widget inputField(String title) {
           filled: true,
           fillColor: AppTheme.white,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
+    ),
+  );
+}
+
+Widget backButton(BuildContext context) {
+  return TextButton(
+    onPressed: () {
+      Navigator.pop(context);
+    },
+    child: Text(
+      'Back',
+      style: TextStyle(color: AppTheme.redMaroon, fontSize: 18),
     ),
   );
 }

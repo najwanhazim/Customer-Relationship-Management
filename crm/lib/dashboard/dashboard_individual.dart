@@ -17,7 +17,7 @@ class _DashboardIndividualState extends State<DashboardIndividual> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.grey,
-      appBar: appBarPage(),
+      appBar: appBarPage(context),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [

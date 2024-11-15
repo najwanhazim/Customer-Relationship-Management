@@ -24,13 +24,7 @@ class _SignUpState extends State<SignUp> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextButton(
-              onPressed: () {},
-              child: Text(
-                'Back',
-                style: TextStyle(color: AppTheme.redMaroon, fontSize: 20),
-              ),
-            ),
+            backButton(context),
             Center(
               heightFactor: 1.5,
               child: Column(

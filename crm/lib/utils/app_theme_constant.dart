@@ -26,11 +26,25 @@ class AppTheme {
   static const EdgeInsets padding = EdgeInsets.fromLTRB(15, 10, 15, 10);
 
   //sizedBox
-  static const SizedBox box10 = SizedBox(height: 10,);
-  static const SizedBox box30 = SizedBox(height: 30,);
-  static const SizedBox box20 = SizedBox(height: 20,);
+  static const SizedBox box10 = SizedBox(
+    height: 10,
+  );
+  static const SizedBox box30 = SizedBox(
+    height: 30,
+  );
+  static const SizedBox box20 = SizedBox(
+    height: 20,
+  );
 
   //duration
   static const Duration duration800 = Duration(milliseconds: 800);
   static const Duration duration500 = Duration(milliseconds: 500);
+
+  //divider
+  static const Divider divider = Divider(
+    thickness: 3,
+    height: 20,
+    indent: AppTheme.radius15,
+    endIndent: AppTheme.radius15,
+  );
 }

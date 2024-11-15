@@ -31,7 +31,7 @@ class _DashboardStatsState extends State<DashboardStats> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: AppTheme.grey,
-        appBar: appBarPage(),
+        appBar: appBarPage(context),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [

@@ -74,7 +74,7 @@ class _DashboardActivityState extends State<DashboardActivity> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.grey,
-      appBar: appBarPage(),
+      appBar: appBarPage(context),
       body: Column(
         children: [
           const Padding(
