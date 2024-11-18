@@ -1,10 +1,11 @@
-import 'package:crm/dashboard/notification.dart';
 import 'package:crm/utils/app_string_constant.dart';
 import 'package:crm/utils/app_theme_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:simple_speed_dial/simple_speed_dial.dart';
+
+import '../view/dashboard/notification.dart';
 
 AppBar appBarPage(BuildContext context) {
   return AppBar(
@@ -179,10 +180,10 @@ Widget reactiveForm(FormGroup _form, List<String> label) {
       padding: AppTheme.padding10,
       child: Column(
         children: [
-          reactiveTextField('firstName', label[0]),
-          reactiveTextField('lastName', label[1]),
-          reactiveTextField('username', label[2]),
-          reactiveTextField('email', label[3])
+          ..._form.controls.keys.map((controlName) {
+            int index = _form.controls.keys.toList().indexOf(controlName);
+            return reactiveTextField(controlName, label[index]);
+          }).toList(),
         ],
       ),
     ),

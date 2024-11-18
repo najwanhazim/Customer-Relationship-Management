@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../utils/app_theme_constant.dart';
-import '../utils/app_widget_constant.dart';
+import '../../utils/app_theme_constant.dart';
+import '../../utils/app_widget_constant.dart';
 
 class DashboardStats extends StatefulWidget {
   const DashboardStats({super.key});

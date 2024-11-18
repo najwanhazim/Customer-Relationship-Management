@@ -1,7 +1,7 @@
 import 'package:crm/utils/app_widget_constant.dart';
 import 'package:flutter/material.dart';
 
-import '../utils/app_theme_constant.dart';
+import '../../utils/app_theme_constant.dart';
 
 class SignUp2 extends StatefulWidget {
   const SignUp2({Key? key, required this.title, required this.subtitle, required this.iconText, this.isShow = false}) : super(key: key);

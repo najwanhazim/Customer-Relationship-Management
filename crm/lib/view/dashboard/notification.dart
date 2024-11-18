@@ -1,7 +1,7 @@
 import 'package:crm/utils/app_widget_constant.dart';
 import 'package:flutter/material.dart';
 
-import '../utils/app_theme_constant.dart';
+import '../../utils/app_theme_constant.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});

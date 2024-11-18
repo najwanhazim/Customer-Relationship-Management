@@ -1,8 +1,8 @@
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:flutter/material.dart';
 
-import '../utils/app_theme_constant.dart';
-import '../utils/app_widget_constant.dart';
+import '../../utils/app_theme_constant.dart';
+import '../../utils/app_widget_constant.dart';
 
 class DashboardActivity extends StatefulWidget {
   const DashboardActivity({super.key});

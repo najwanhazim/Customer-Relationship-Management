@@ -12,9 +12,12 @@ class AppTheme {
   static Color red = Colors.red.shade200;
   static Color white = Colors.white;
   static Color grey = Colors.grey.shade200;
+  static Color greyPekat = Colors.grey.shade700;
 
   //icon
   static const double radius15 = 15;
+  static const double radius30 = 30;
+  static const double radius50 = 50;
 
   //padding
   static const EdgeInsets padding8 = EdgeInsets.all(8.0);
@@ -47,4 +50,16 @@ class AppTheme {
     indent: AppTheme.radius15,
     endIndent: AppTheme.radius15,
   );
+
+  static double screenHeight(BuildContext context) {
+    return MediaQuery.of(context).size.height;
+  }
+
+  static double screenWidth(BuildContext context) {
+    return MediaQuery.of(context).size.width;
+  }
+
+  static double usableHeight(BuildContext context) {
+    return MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top ;
+  }
 }

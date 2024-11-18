@@ -1,7 +1,7 @@
 import 'package:crm/utils/app_widget_constant.dart';
 import 'package:flutter/material.dart';
 
-import '../utils/app_theme_constant.dart';
+import '../../utils/app_theme_constant.dart';
 
 class DashboardIndividual extends StatefulWidget {
   const DashboardIndividual({super.key});
@@ -31,25 +31,7 @@ class _DashboardIndividualState extends State<DashboardIndividual> {
                   fontWeight: FontWeight.bold),
             ),
           ),
-          Padding(
-            padding: AppTheme.padding10,
-            child: SizedBox(
-              height: 40,
-              child: TextField(
-                onChanged: (value) {
-                  setState(() {
-                    search = value;
-                  });
-                },
-                decoration: InputDecoration(
-                    labelText: 'Search',
-                    prefixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    )),
-              ),
-            ),
-          ),
+          searchBar(search),
           dashboard(),
           AppTheme.box10,
           const Text(
@@ -111,6 +93,28 @@ class _DashboardIndividualState extends State<DashboardIndividual> {
         ],
       ),
       floatingActionButton: speedDial(),
+    );
+  }
+
+  Widget searchBar(String search) {
+    return Padding(
+      padding: AppTheme.padding10,
+      child: SizedBox(
+        height: 40,
+        child: TextField(
+          onChanged: (value) {
+            setState(() {
+              search = value;
+            });
+          },
+          decoration: InputDecoration(
+              labelText: 'Search',
+              prefixIcon: const Icon(Icons.search),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+              )),
+        ),
+      ),
     );
   }
 }
