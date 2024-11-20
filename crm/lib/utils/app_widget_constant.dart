@@ -198,13 +198,27 @@ Widget reactiveTextField(String data, String label) {
       key: Key(data),
       formControlName: data,
       decoration: InputDecoration(
-          labelText: label,
-          filled: true,
-          fillColor: AppTheme.white,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
+        labelText: label,
+        filled: true,
+        fillColor: AppTheme.white,
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
+            bottom: Radius.circular(20),
+          ),
+        ),
+        enabledBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
+            bottom: Radius.circular(20),
+          ),
+          borderSide: BorderSide.none,
+        ),
+      ),
     ),
   );
 }
+
 
 Widget backButton(BuildContext context) {
   return TextButton(
@@ -224,7 +238,7 @@ Widget displayInField(BuildContext context, String? label) {
     child: Container(
       // padding: EdgeInsets.symmetric(vertical: 10),
       width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           color: Colors.white,
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.vertical(
@@ -294,5 +308,3 @@ Widget followUpAction(BuildContext context) {
         }),
   );
 }
-
-

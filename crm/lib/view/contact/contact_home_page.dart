@@ -2,6 +2,7 @@ import 'package:azlistview/azlistview.dart';
 import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:crm/utils/app_theme_constant.dart';
 import 'package:crm/utils/app_widget_constant.dart';
+import 'package:crm/view/contact/add_contact.dart';
 import 'package:crm/view/contact/view_contact.dart';
 import 'package:crm/view/dashboard/dashboard_individual.dart';
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
@@ -144,21 +145,6 @@ class _ContactHomePageState extends State<ContactHomePage> {
       'source': FormControl<String>(),
       'remarks': FormControl<String>(),
     }),
-  ];
-
-  //---------------------label------------------------
-  final List<String> label1 = [
-    'First Name',
-    'Last Name',
-    'Company',
-    'Position'
-  ];
-  final List<String> label2 = ['Phone Number', 'Email'];
-  final List<String> label3 = [
-    'Salutation',
-    'Contact Type',
-    'Source',
-    'Remarks'
   ];
 
   String search = '';
@@ -374,7 +360,9 @@ class _ContactHomePageState extends State<ContactHomePage> {
                 radius: AppTheme.radius30,
                 backgroundColor: Colors.blue,
                 child: Text(
-                  contact.firstName.isNotEmpty ? contact.firstName[0].toUpperCase() : '',
+                  contact.firstName.isNotEmpty
+                      ? contact.firstName[0].toUpperCase()
+                      : '',
                   style: const TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold),
                 ),
@@ -399,80 +387,7 @@ class _ContactHomePageState extends State<ContactHomePage> {
       backgroundColor: AppTheme.grey,
       isScrollControlled: true,
       builder: (context) {
-        return SafeArea(
-          child: SizedBox(
-            height: AppTheme.usableHeight(context),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  decoration: AppTheme.bottomSheet,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  height: 60,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          'Cancel',
-                          style: TextStyle(
-                            color: AppTheme.redMaroon,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
-                      const Text(
-                        'New Contact',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Colors.black,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          'Save',
-                          style: TextStyle(
-                            color: AppTheme.redMaroon,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Scaffold(
-                    resizeToAvoidBottomInset: true,
-                    body: SingleChildScrollView(
-                      child: Container(
-                        margin: AppTheme.padding8,
-                        child: SafeArea(
-                          child: Column(
-                            children: [
-                              CircleAvatar(
-                                radius: AppTheme.radius50,
-                                backgroundColor: Colors.blue,
-                              ),
-                              // Form sections
-                              reactiveForm(forms[0], label1),
-                              reactiveForm(forms[1], label2),
-                              reactiveForm(forms[2], label3),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
+        return AddContact(forms: forms);
       },
     );
   }
