@@ -52,12 +52,27 @@ class AppTheme {
     endIndent: AppTheme.radius15,
   );
 
-  //radius
+  //border
   static const Decoration bottomSheet = BoxDecoration(
     color: Colors.white,
     borderRadius: BorderRadius.vertical(
       top: Radius.circular(30),
     ),
+  );
+
+  static const InputBorder border = OutlineInputBorder(
+    borderRadius: BorderRadius.vertical(
+      top: Radius.circular(20),
+      bottom: Radius.circular(20),
+    ),
+  );
+
+  static const InputBorder enabledBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.vertical(
+      top: Radius.circular(20),
+      bottom: Radius.circular(20),
+    ),
+    borderSide: BorderSide.none,
   );
 
   static double screenHeight(BuildContext context) {

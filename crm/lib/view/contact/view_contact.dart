@@ -1,3 +1,4 @@
+import 'package:crm/utils/app_string_constant.dart';
 import 'package:crm/view/contact/edit_contact.dart';
 import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -39,32 +40,14 @@ class _ViewContactState extends State<ViewContact> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'Back',
-                        style: TextStyle(
-                          color: AppTheme.redMaroon,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      '${widget.contact.salutation} ${widget.contact.firstName} ${widget.contact.lastName}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Colors.black,
-                      ),
-                    ),
+                    backButton(context),
+                    pageTitle('${widget.contact.salutation} ${widget.contact.firstName} ${widget.contact.lastName}'),
                     TextButton(
                       onPressed: () {
                         editContact(context);
                       },
                       child: Text(
-                        'Edit',
+                        AppString.editText,
                         style: TextStyle(
                           color: AppTheme.redMaroon,
                           fontSize: 18,
@@ -106,10 +89,10 @@ class _ViewContactState extends State<ViewContact> {
                           backgroundColor: Colors.blue,
                         ),
                         AppTheme.box20,
-                        displayInField(context, widget.contact.position),
-                        displayInField(context, widget.contact.phone),
-                        displayInField(context, widget.contact.email),
-                        displayInField(context, widget.contact.notes),
+                        displayInField(context, widget.contact.position, null),
+                        displayInField(context, widget.contact.phone, null),
+                        displayInField(context, widget.contact.email, null),
+                        displayInField(context, widget.contact.notes, null),
                         AppTheme.box30,
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -130,25 +113,7 @@ class _ViewContactState extends State<ViewContact> {
                         Container(
                             decoration: BoxDecoration(color: Colors.white),
                             child: meetingHistory(context)),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'Follow-up Action',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
-                              ),
-                              TextButton(
-                                  onPressed: () {},
-                                  child: Text(
-                                    'Add',
-                                    style: TextStyle(color: AppTheme.redMaroon),
-                                  )),
-                            ],
-                          ),
-                        ),
+                        followUpHeader(),
                         followUpAction(context),
                       ],
                     ),

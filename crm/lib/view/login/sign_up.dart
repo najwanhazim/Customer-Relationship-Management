@@ -57,7 +57,7 @@ class _SignUpState extends State<SignUp> {
                       style: TextStyle(fontSize: 20),
                     ),
                   ),
-                  reactiveForm(_form, label),
+                  reactiveForm(context, _form, label),
                   Padding(
                     padding: AppTheme.padding10,
                     child: Row(

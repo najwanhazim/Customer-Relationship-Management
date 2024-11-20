@@ -5,6 +5,7 @@ import 'package:crm/utils/app_widget_constant.dart';
 import 'package:crm/view/contact/add_contact.dart';
 import 'package:crm/view/contact/view_contact.dart';
 import 'package:crm/view/dashboard/dashboard_individual.dart';
+import 'package:crm/view/meeting_notes/add_meeting_notes.dart';
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -354,7 +355,8 @@ class _ContactHomePageState extends State<ContactHomePage> {
           children: [
             ListTile(
               onTap: () {
-                viewContact(context, contact);
+                // viewContact(context, contact);
+                addMeeting(context);
               },
               leading: CircleAvatar(
                 radius: AppTheme.radius30,
@@ -402,6 +404,19 @@ class _ContactHomePageState extends State<ContactHomePage> {
         isScrollControlled: true,
         builder: (context) {
           return ViewContact(contact: contact, forms: forms);
+        });
+  }
+
+  Future addMeeting(BuildContext context) {
+    return showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+        ),
+        backgroundColor: AppTheme.grey,
+        isScrollControlled: true,
+        builder: (context) {
+          return AddMeetingNotes();
         });
   }
 }

@@ -8,6 +8,69 @@ import 'package:simple_speed_dial/simple_speed_dial.dart';
 import '../db/contact.dart';
 import '../view/dashboard/notification.dart';
 
+//----------------------------------------button----------------------------------------
+Widget cancelButton(BuildContext context) {
+  return TextButton(
+    onPressed: () {
+      Navigator.pop(context);
+    },
+    child: Text(
+      AppString.cancelText,
+      style: TextStyle(
+        color: AppTheme.redMaroon,
+        fontSize: 18,
+      ),
+    ),
+  );
+}
+
+Widget saveButton() {
+  return TextButton(
+    onPressed: () {},
+    child: Text(
+      AppString.saveText,
+      style: TextStyle(
+        color: AppTheme.redMaroon,
+        fontSize: 18,
+      ),
+    ),
+  );
+}
+
+Widget addButton() {
+  return TextButton(
+      onPressed: () {},
+      child: Text(
+        'Add',
+        style: TextStyle(color: AppTheme.redMaroon),
+      ));
+}
+
+Widget backButton(BuildContext context) {
+  return TextButton(
+    onPressed: () {
+      Navigator.pop(context);
+    },
+    child: Text(
+      'Back',
+      style: TextStyle(color: AppTheme.redMaroon, fontSize: 18),
+    ),
+  );
+}
+
+//----------------------------------------page title----------------------------------------
+Widget pageTitle(String title) {
+  return Text(
+    title,
+    style: const TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 18,
+      color: Colors.black,
+    ),
+  );
+}
+
+//----------------------------------------functions----------------------------------------
 AppBar appBarPage(BuildContext context) {
   return AppBar(
     elevation: 0.0,
@@ -33,6 +96,7 @@ AppBar appBarPage(BuildContext context) {
   );
 }
 
+//----------------------------------------dashboard----------------------------------------
 Widget dashboard() {
   return Padding(
     padding: AppTheme.padding8,
@@ -85,32 +149,6 @@ Widget dashboardContent(Color? color, String num, String title, IconData icon) {
   );
 }
 
-SpeedDial speedDial() {
-  return SpeedDial(
-    closedBackgroundColor: AppTheme.redMaroon,
-    openBackgroundColor: AppTheme.red,
-    closedForegroundColor: AppTheme.white,
-    openForegroundColor: Colors.white24,
-    speedDialChildren: [
-      speedDialChild(Icons.directions_walk, AppString.action),
-      speedDialChild(Icons.event, AppString.meeting),
-      speedDialChild(Icons.folder, AppString.lead),
-      speedDialChild(Icons.account_circle, AppString.contact),
-    ],
-    child: const Icon(Icons.add),
-  );
-}
-
-SpeedDialChild speedDialChild(IconData icon, String label) {
-  return SpeedDialChild(
-      child: Icon(icon),
-      backgroundColor: AppTheme.redMaroon,
-      foregroundColor: AppTheme.white,
-      label: label,
-      onPressed: () {},
-      closeSpeedDialOnPressed: false);
-}
-
 Widget pieChart(BuildContext context, Map<String, double> dataMap,
     String centerTextTitle, List<Color> colorList) {
   double totalNum = dataMap.values.fold(0.0, (sum, value) => sum + value);
@@ -161,6 +199,34 @@ Widget pieChart(BuildContext context, Map<String, double> dataMap,
   );
 }
 
+//----------------------------------------speed dial----------------------------------------
+SpeedDial speedDial() {
+  return SpeedDial(
+    closedBackgroundColor: AppTheme.redMaroon,
+    openBackgroundColor: AppTheme.red,
+    closedForegroundColor: AppTheme.white,
+    openForegroundColor: Colors.white24,
+    speedDialChildren: [
+      speedDialChild(Icons.directions_walk, AppString.action),
+      speedDialChild(Icons.event, AppString.meeting),
+      speedDialChild(Icons.folder, AppString.lead),
+      speedDialChild(Icons.account_circle, AppString.contact),
+    ],
+    child: const Icon(Icons.add),
+  );
+}
+
+SpeedDialChild speedDialChild(IconData icon, String label) {
+  return SpeedDialChild(
+      child: Icon(icon),
+      backgroundColor: AppTheme.redMaroon,
+      foregroundColor: AppTheme.white,
+      label: label,
+      onPressed: () {},
+      closeSpeedDialOnPressed: false);
+}
+
+//----------------------------------------Input----------------------------------------
 Widget inputField(String title) {
   return Padding(
     padding: AppTheme.padding10,
@@ -174,7 +240,8 @@ Widget inputField(String title) {
   );
 }
 
-Widget reactiveForm(FormGroup _form, List<dynamic> label) {
+Widget reactiveForm(
+    BuildContext context, FormGroup _form, List<dynamic> label) {
   return ReactiveForm(
     formGroup: _form,
     child: Padding(
@@ -183,7 +250,7 @@ Widget reactiveForm(FormGroup _form, List<dynamic> label) {
         children: [
           ..._form.controls.keys.map((controlName) {
             int index = _form.controls.keys.toList().indexOf(controlName);
-            return reactiveTextField(controlName, label[index]);
+            return reactiveTextField(context, controlName, label[index]);
           }).toList(),
         ],
       ),
@@ -191,9 +258,9 @@ Widget reactiveForm(FormGroup _form, List<dynamic> label) {
   );
 }
 
-Widget reactiveTextField(String data, String label) {
+Widget reactiveTextField(BuildContext context, String data, String label) {
   return Padding(
-    padding: AppTheme.padding3,
+    padding: AppTheme.paddingTop,
     child: ReactiveTextField<dynamic>(
       key: Key(data),
       formControlName: data,
@@ -201,16 +268,17 @@ Widget reactiveTextField(String data, String label) {
         labelText: label,
         filled: true,
         fillColor: AppTheme.white,
+        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.vertical(
-            top: Radius.circular(20),
-            bottom: Radius.circular(20),
+            top: Radius.circular(10),
+            bottom: Radius.circular(10),
           ),
         ),
         enabledBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.vertical(
-            top: Radius.circular(20),
-            bottom: Radius.circular(20),
+            top: Radius.circular(10),
+            bottom: Radius.circular(10),
           ),
           borderSide: BorderSide.none,
         ),
@@ -219,41 +287,42 @@ Widget reactiveTextField(String data, String label) {
   );
 }
 
-
-Widget backButton(BuildContext context) {
-  return TextButton(
-    onPressed: () {
-      Navigator.pop(context);
-    },
-    child: Text(
-      'Back',
-      style: TextStyle(color: AppTheme.redMaroon, fontSize: 18),
-    ),
-  );
-}
-
-Widget displayInField(BuildContext context, String? label) {
+Widget displayInField(
+    BuildContext context, String? label, VoidCallback? function,
+    {bool isShow = false}) {
   return Padding(
     padding: AppTheme.paddingTop,
-    child: Container(
-      // padding: EdgeInsets.symmetric(vertical: 10),
-      width: MediaQuery.of(context).size.width,
-      decoration: const BoxDecoration(
+    child: GestureDetector(
+      onTap: function != null ? () => function() : null,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        decoration: const BoxDecoration(
           color: Colors.white,
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.vertical(
-              top: Radius.circular(10), bottom: Radius.circular(10))),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(15, 15, 0, 15),
-        child: Text(
-          label ?? '',
-          style: TextStyle(color: Colors.black),
+            top: Radius.circular(10),
+            bottom: Radius.circular(10),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 15, 0, 15),
+              child: Text(
+                label ?? '',
+                style: const TextStyle(color: Colors.black),
+              ),
+            ),
+            isShow ? addButton() : const SizedBox.shrink(),
+          ],
         ),
       ),
     ),
   );
 }
 
+//----------------------------------------meeting----------------------------------------
 Widget meetingHistory(BuildContext context) {
   List<Map<String, String>> data = [
     {'date': '15th October 2024', 'detail': 'Some details about the meeting.'},
@@ -273,6 +342,7 @@ Widget meetingHistory(BuildContext context) {
   );
 }
 
+//----------------------------------------follow up action----------------------------------------
 Widget followUpAction(BuildContext context) {
   List<Map<String, String>> data = [
     {'detail': 'phone call by azri', 'status': 'Pending'},
@@ -306,5 +376,21 @@ Widget followUpAction(BuildContext context) {
             ),
           );
         }),
+  );
+}
+
+Widget followUpHeader() {
+  return Padding(
+    padding: const EdgeInsets.only(top: 8),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          'Follow-up Action',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        addButton()
+      ],
+    ),
   );
 }

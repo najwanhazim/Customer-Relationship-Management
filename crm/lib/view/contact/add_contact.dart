@@ -1,3 +1,4 @@
+import 'package:crm/utils/app_string_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
@@ -51,36 +52,9 @@ class _AddContactState extends State<AddContact> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'Cancel',
-                        style: TextStyle(
-                          color: AppTheme.redMaroon,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                    const Text(
-                      'New Contact',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Colors.black,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Save',
-                        style: TextStyle(
-                          color: AppTheme.redMaroon,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
+                    cancelButton(context),
+                    pageTitle(AppString.newContact),
+                    saveButton(),
                   ],
                 ),
               ),
@@ -91,7 +65,7 @@ class _AddContactState extends State<AddContact> {
                   resizeToAvoidBottomInset: true,
                   body: SingleChildScrollView(
                     child: Container(
-                      margin: AppTheme.padding8,
+                      margin: EdgeInsets.only(top: 10),
                       child: SafeArea(
                         child: Column(
                           children: [
@@ -100,9 +74,9 @@ class _AddContactState extends State<AddContact> {
                               backgroundColor: Colors.blue,
                             ),
                             // Form sections
-                            reactiveForm(widget.forms[0], label1),
-                            reactiveForm(widget.forms[1], label2),
-                            reactiveForm(widget.forms[2], label3),
+                            reactiveForm(context, widget.forms[0], label1),
+                            reactiveForm(context, widget.forms[1], label2),
+                            reactiveForm(context, widget.forms[2], label3),
                           ],
                         ),
                       ),
