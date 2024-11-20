@@ -2,7 +2,7 @@ import 'package:azlistview/azlistview.dart';
 import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:crm/utils/app_theme_constant.dart';
 import 'package:crm/utils/app_widget_constant.dart';
-import 'package:crm/view/contact/new_contact.dart';
+import 'package:crm/view/contact/view_contact.dart';
 import 'package:crm/view/dashboard/dashboard_individual.dart';
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:flutter/material.dart';
@@ -18,63 +18,133 @@ class ContactHomePage extends StatefulWidget {
 }
 
 class _ContactHomePageState extends State<ContactHomePage> {
-  List<Map<String, String>> existing = [
-    {'name': 'Muhammad Naiem Naqiudding', 'role': 'Product Manager'},
-    {'name': 'Nuhammad Naiem Naqiudding', 'role': 'Product Manager'},
-    {'name': 'Auhammad Naiem Naqiudding', 'role': 'Product Manager'},
-    {'name': 'Cuhammad Naiem Naqiudding', 'role': 'Product Manager'},
-    {'name': 'quhammad Naiem Naqiudding', 'role': 'Product Manager'},
-    {'name': 'wuhammad Naiem Naqiudding', 'role': 'Product Manager'},
-    {'name': 'euhammad Naiem Naqiudding', 'role': 'Product Manager'},
-    {'name': 'tuhammad Naiem Naqiudding', 'role': 'Product Manager'}
+  final List<Map<String, String>> existing = [
+    {
+      'firstName': 'Muhammad',
+      'lastName': 'Naqiudding',
+      'company': 'ExSynergy',
+      'position': 'Product Manager',
+      'phone': '+60192683653',
+      'email': 'naiem@exsynergy.com',
+      'salutation': 'Mr.',
+      'contactType': 'Existing Client',
+      'source': 'Email Campaign',
+      'notes': 'Active and regular contact.',
+    },
+    {
+      'firstName': 'Ahmad',
+      'lastName': 'Yusof',
+      'company': 'TechDesigns',
+      'position': 'UI/UX Designer',
+      'phone': '+60192345678',
+      'email': 'ahmad.yusof@techdesigns.com',
+      'salutation': 'Mr.',
+      'contactType': 'Existing Client',
+      'source': 'Referral',
+      'notes': 'Provides insightful feedback.',
+    },
   ];
 
-  List<Map<String, String>> potential = [
-    {'name': 'Muhammad Naqiudding', 'role': 'Product'},
-    {'name': 'Muhammad Naqiudding', 'role': 'Product'},
-    {'name': 'Muhammad Naqiudding', 'role': 'Product'},
-    {'name': 'Muhammad Naqiudding', 'role': 'Product'},
-    {'name': 'Muhammad Naqiudding', 'role': 'Product'},
-    {'name': 'Muhammad Naqiudding', 'role': 'Product'},
+  final List<Map<String, String>> potential = [
+    {
+      'firstName': 'Farah',
+      'lastName': 'Hassan',
+      'company': 'BrightCorp',
+      'position': 'Marketing Manager',
+      'phone': '+60124567890',
+      'email': 'farah.hassan@brightcorp.com',
+      'salutation': 'Ms.',
+      'contactType': 'Potential Client',
+      'source': 'Trade Show',
+      'notes': 'Interested in digital marketing.',
+    },
+    {
+      'firstName': 'Ali',
+      'lastName': 'Rahim',
+      'company': 'VisionTech',
+      'position': 'CTO',
+      'phone': '+60123456789',
+      'email': 'ali.rahim@visiontech.com',
+      'salutation': 'Mr.',
+      'contactType': 'Potential Client',
+      'source': 'Website Inquiry',
+      'notes': 'Discussing a potential partnership.',
+    },
   ];
 
-  List<Map<String, String>> partner = [
-    {'name': 'Azri', 'role': 'Product Manager'},
-    {'name': 'Azri', 'role': 'Product Manager'},
-    {'name': 'Azri', 'role': 'Product Manager'},
-    {'name': 'Azri', 'role': 'Product Manager'},
-    {'name': 'Azri', 'role': 'Product Manager'},
-    {'name': 'Azri', 'role': 'Product Manager'},
+  final List<Map<String, String>> partner = [
+    {
+      'firstName': 'Sarah',
+      'lastName': 'Othman',
+      'company': 'EcoPartners',
+      'position': 'CEO',
+      'phone': '+60133445566',
+      'email': 'sarah.othman@ecopartners.com',
+      'salutation': 'Ms.',
+      'contactType': 'Partner',
+      'source': 'Industry Event',
+      'notes': 'Collaborating on sustainability projects.',
+    },
+    {
+      'firstName': 'Amir',
+      'lastName': 'Hamzah',
+      'company': 'FinTech Solutions',
+      'position': 'COO',
+      'phone': '+60199887766',
+      'email': 'amir.hamzah@fintechsolutions.com',
+      'salutation': 'Mr.',
+      'contactType': 'Partner',
+      'source': 'Business Meeting',
+      'notes': 'Supports financial integrations.',
+    },
   ];
 
-  List<Map<String, String>> supplier = [
-    {'name': 'Ammar', 'role': 'Product Manager'},
-    {'name': 'Ammar', 'role': 'Product Manager'},
-    {'name': 'Ammar', 'role': 'Product Manager'},
-    {'name': 'Ammar', 'role': 'Product Manager'},
-    {'name': 'Ammar', 'role': 'Product Manager'},
-    {'name': 'Ammar', 'role': 'Product Manager'},
+  final List<Map<String, String>> supplier = [
+    {
+      'firstName': 'Nadia',
+      'lastName': 'Yunus',
+      'company': 'SupplyCo',
+      'position': 'Logistics Manager',
+      'phone': '+60188776655',
+      'email': 'nadia.yunus@supplyco.com',
+      'salutation': 'Ms.',
+      'contactType': 'Supplier',
+      'source': 'Vendor Directory',
+      'notes': 'Manages inventory supply chains.',
+    },
+    {
+      'firstName': 'Zain',
+      'lastName': 'Ahmad',
+      'company': 'BuildCore',
+      'position': 'Procurement Lead',
+      'phone': '+60177665544',
+      'email': 'zain.ahmad@buildcore.com',
+      'salutation': 'Mr.',
+      'contactType': 'Supplier',
+      'source': 'Industry Referral',
+      'notes': 'Provides raw materials.',
+    },
   ];
 
   //-----------------------fill in field--------------
-  final _form1 = FormGroup({
-    'firstName': FormControl<String>(),
-    'lastName': FormControl<String>(),
-    'company': FormControl<String>(),
-    'position': FormControl<String>(),
-  });
-
-  final _form2 = FormGroup({
-    'phoneNumber': FormControl<String>(),
-    'email': FormControl<String>(),
-  });
-
-  final _form3 = FormGroup({
-    'salutation': FormControl<String>(),
-    'contactType ': FormControl<String>(),
-    'source': FormControl<String>(),
-    'remarks': FormControl<String>(),
-  });
+  final List<FormGroup> forms = [
+    FormGroup({
+      'firstName': FormControl<String>(),
+      'lastName': FormControl<String>(),
+      'company': FormControl<String>(),
+      'position': FormControl<String>(),
+    }),
+    FormGroup({
+      'phoneNumber': FormControl<String>(),
+      'email': FormControl<String>(),
+    }),
+    FormGroup({
+      'salutation': FormControl<String>(),
+      'contactType': FormControl<String>(),
+      'source': FormControl<String>(),
+      'remarks': FormControl<String>(),
+    }),
+  ];
 
   //---------------------label------------------------
   final List<String> label1 = [
@@ -129,10 +199,18 @@ class _ContactHomePageState extends State<ContactHomePage> {
 
   List<Contact> _mapToContacts(List<Map<String, String>> data) {
     return data.map((item) {
-      String name = item['name'] ?? '';
+      String name = item['firstName']!;
       return Contact(
-        name: name,
-        role: item['role'] ?? '',
+        firstName: item['firstName']!,
+        lastName: item['lastName']!,
+        company: item['company']!,
+        position: item['position']!,
+        phone: item['phone']!,
+        email: item['email']!,
+        salutation: item['salutation']!,
+        contactType: item['contactType']!,
+        source: item['source'],
+        notes: item['notes'],
         tag: name.isNotEmpty ? name[0].toUpperCase() : '#',
       );
     }).toList();
@@ -165,7 +243,7 @@ class _ContactHomePageState extends State<ContactHomePage> {
                 ),
                 IconButton(
                   onPressed: () {
-                    displayBottomSheet(context);
+                    addContact(context);
                     // Navigator.push(context,
                     //     MaterialPageRoute(builder: (context) {
                     //   return NewContact();
@@ -186,7 +264,7 @@ class _ContactHomePageState extends State<ContactHomePage> {
             ),
             searchBar(search),
             tab(),
-            Expanded(child: alphabetScroll()),
+            Expanded(child: alphabetScroll(context)),
           ],
         ),
       ),
@@ -274,7 +352,7 @@ class _ContactHomePageState extends State<ContactHomePage> {
     );
   }
 
-  Widget alphabetScroll() {
+  Widget alphabetScroll(BuildContext context) {
     SuspensionUtil.sortListBySuspensionTag(allContacts);
 
     return AzListView(
@@ -284,21 +362,25 @@ class _ContactHomePageState extends State<ContactHomePage> {
       itemCount: allContacts.length,
       itemBuilder: (context, index) {
         final contact = allContacts[index];
+        String name = '${contact.firstName} ${contact.lastName}';
 
         return Column(
           children: [
             ListTile(
+              onTap: () {
+                viewContact(context, contact);
+              },
               leading: CircleAvatar(
                 radius: AppTheme.radius30,
                 backgroundColor: Colors.blue,
                 child: Text(
-                  contact.name.isNotEmpty ? contact.name[0].toUpperCase() : '',
+                  contact.firstName.isNotEmpty ? contact.firstName[0].toUpperCase() : '',
                   style: const TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold),
                 ),
               ),
-              title: Text(contact.name),
-              subtitle: Text(contact.role),
+              title: Text(name),
+              subtitle: Text(contact.position),
             ),
             if (index != allContacts.length - 1) const Divider(),
           ],
@@ -308,7 +390,7 @@ class _ContactHomePageState extends State<ContactHomePage> {
     );
   }
 
-  Future displayBottomSheet(BuildContext context) {
+  Future addContact(BuildContext context) {
     return showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -324,14 +406,9 @@ class _ContactHomePageState extends State<ContactHomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(30),
-                    ),
-                  ),
+                  decoration: AppTheme.bottomSheet,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  height: 60, 
+                  height: 60,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -382,9 +459,9 @@ class _ContactHomePageState extends State<ContactHomePage> {
                                 backgroundColor: Colors.blue,
                               ),
                               // Form sections
-                              reactiveForm(_form1, label1),
-                              reactiveForm(_form2, label2),
-                              reactiveForm(_form3, label3),
+                              reactiveForm(forms[0], label1),
+                              reactiveForm(forms[1], label2),
+                              reactiveForm(forms[2], label3),
                             ],
                           ),
                         ),
@@ -399,32 +476,17 @@ class _ContactHomePageState extends State<ContactHomePage> {
       },
     );
   }
+
+  Future viewContact(BuildContext context, Contact contact) {
+    return showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+        ),
+        backgroundColor: AppTheme.grey,
+        isScrollControlled: true,
+        builder: (context) {
+          return ViewContact(contact: contact, forms: forms);
+        });
+  }
 }
-
- // Widget listContact(List<Map<String, String>> data) {
-  //   return ListView.separated(
-  //     itemCount: data.length,
-  //     itemBuilder: (context, index) {
-
-  //       String name = data[index]['name']!;
-  //       String firstLetter = name.isNotEmpty ? name[0] : '';
-
-  //       return ListTile(
-  //         leading: CircleAvatar(
-  //           radius: AppTheme.radius30,
-  //           backgroundColor: AppTheme.greyPekat,
-  //           child: Text(
-  //             firstLetter.toUpperCase(),
-  //             style: const TextStyle(
-  //               color: Colors.white,
-  //               fontWeight: FontWeight.bold,
-  //             ),
-  //           ),
-  //         ),
-  //         title: Text(data[index]['name']!),
-  //         subtitle: Text(data[index]['role']!),
-  //       );
-  //     },
-  //     separatorBuilder: (context, index) => const Divider(),
-  //   );
-  // }

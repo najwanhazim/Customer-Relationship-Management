@@ -27,6 +27,7 @@ class AppTheme {
   static const EdgeInsets padding10 = EdgeInsets.all(10.0);
   static const EdgeInsets paddingTepi = EdgeInsets.fromLTRB(15, 0, 15, 0);
   static const EdgeInsets padding = EdgeInsets.fromLTRB(15, 10, 15, 10);
+  static const EdgeInsets paddingTop = EdgeInsets.fromLTRB(0, 5, 0, 5);
 
   //sizedBox
   static const SizedBox box10 = SizedBox(
@@ -51,6 +52,14 @@ class AppTheme {
     endIndent: AppTheme.radius15,
   );
 
+  //radius
+  static const Decoration bottomSheet = BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.vertical(
+      top: Radius.circular(30),
+    ),
+  );
+
   static double screenHeight(BuildContext context) {
     return MediaQuery.of(context).size.height;
   }
@@ -60,6 +69,7 @@ class AppTheme {
   }
 
   static double usableHeight(BuildContext context) {
-    return MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top ;
+    return MediaQuery.of(context).size.height -
+        MediaQuery.of(context).padding.top;
   }
 }

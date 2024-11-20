@@ -5,6 +5,7 @@ import 'package:pie_chart/pie_chart.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:simple_speed_dial/simple_speed_dial.dart';
 
+import '../db/contact.dart';
 import '../view/dashboard/notification.dart';
 
 AppBar appBarPage(BuildContext context) {
@@ -173,7 +174,7 @@ Widget inputField(String title) {
   );
 }
 
-Widget reactiveForm(FormGroup _form, List<String> label) {
+Widget reactiveForm(FormGroup _form, List<dynamic> label) {
   return ReactiveForm(
     formGroup: _form,
     child: Padding(
@@ -197,10 +198,10 @@ Widget reactiveTextField(String data, String label) {
       key: Key(data),
       formControlName: data,
       decoration: InputDecoration(
-            labelText: label,
-            filled: true,
-            fillColor: AppTheme.white,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
+          labelText: label,
+          filled: true,
+          fillColor: AppTheme.white,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
     ),
   );
 }
@@ -216,3 +217,82 @@ Widget backButton(BuildContext context) {
     ),
   );
 }
+
+Widget displayInField(BuildContext context, String? label) {
+  return Padding(
+    padding: AppTheme.paddingTop,
+    child: Container(
+      // padding: EdgeInsets.symmetric(vertical: 10),
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.vertical(
+              top: Radius.circular(10), bottom: Radius.circular(10))),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(15, 15, 0, 15),
+        child: Text(
+          label ?? '',
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget meetingHistory(BuildContext context) {
+  List<Map<String, String>> data = [
+    {'date': '15th October 2024', 'detail': 'Some details about the meeting.'},
+    {'date': '16th October 2024', 'detail': 'Another meeting detail.'},
+  ];
+
+  return SizedBox(
+    height: 70,
+    child: ListView.builder(
+        itemCount: data.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(data[index]['date']!),
+            subtitle: Text(data[index]['detail']!),
+          );
+        }),
+  );
+}
+
+Widget followUpAction(BuildContext context) {
+  List<Map<String, String>> data = [
+    {'detail': 'phone call by azri', 'status': 'Pending'},
+    {'detail': 'phone call by azri', 'status': 'Pending'},
+    {'detail': 'phone call by azri', 'status': 'Pending'},
+    {'detail': 'phone call by azri', 'status': 'Done'},
+    {'detail': 'phone call by azri', 'status': 'Pending'},
+    {'detail': 'phone call by azri', 'status': 'pending'},
+  ];
+
+  return Expanded(
+    child: ListView.builder(
+        itemCount: data.length,
+        itemBuilder: (context, index) {
+          return Container(
+            margin: AppTheme.padding3,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+            ),
+            child: ListTile(
+              title: Text(data[index]['detail']!),
+              trailing: Text(data[index]['status']!,
+                  style: TextStyle(
+                      color: data[index]['status']! == 'pending' ||
+                              data[index]['status']! == 'Pending'
+                          ? Colors.red
+                          : Colors.green)),
+            ),
+          );
+        }),
+  );
+}
+
+
