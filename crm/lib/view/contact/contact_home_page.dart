@@ -230,7 +230,7 @@ class _ContactHomePageState extends State<ContactHomePage> {
                 ),
                 IconButton(
                   onPressed: () {
-                    addContact(context);
+                    addContact(context, forms);
                     // Navigator.push(context,
                     //     MaterialPageRoute(builder: (context) {
                     //   return NewContact();
@@ -355,8 +355,8 @@ class _ContactHomePageState extends State<ContactHomePage> {
           children: [
             ListTile(
               onTap: () {
-                // viewContact(context, contact);
-                addMeeting(context);
+                // viewContact(context, contact, forms);
+                addMeeting(context, allContacts, forms);
               },
               leading: CircleAvatar(
                 radius: AppTheme.radius30,
@@ -380,43 +380,21 @@ class _ContactHomePageState extends State<ContactHomePage> {
     );
   }
 
-  Future addContact(BuildContext context) {
-    return showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-      ),
-      backgroundColor: AppTheme.grey,
-      isScrollControlled: true,
-      builder: (context) {
-        return AddContact(forms: forms);
-      },
-    );
-  }
+  // Future addContact(BuildContext context, ) {
+  //   return showModalBottomSheet(
+  //     context: context,
+  //     shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+  //     ),
+  //     backgroundColor: AppTheme.grey,
+  //     isScrollControlled: true,
+  //     builder: (context) {
+  //       return AddContact(forms: forms);
+  //     },
+  //   );
+  // }
 
-  Future viewContact(BuildContext context, Contact contact) {
-    return showModalBottomSheet(
-        context: context,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-        ),
-        backgroundColor: AppTheme.grey,
-        isScrollControlled: true,
-        builder: (context) {
-          return ViewContact(contact: contact, forms: forms);
-        });
-  }
+  
 
-  Future addMeeting(BuildContext context) {
-    return showModalBottomSheet(
-        context: context,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-        ),
-        backgroundColor: AppTheme.grey,
-        isScrollControlled: true,
-        builder: (context) {
-          return AddMeetingNotes();
-        });
-  }
+  
 }

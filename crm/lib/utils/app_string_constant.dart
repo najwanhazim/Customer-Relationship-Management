@@ -26,4 +26,12 @@ class AppString {
   static const String cancelText = 'Cancel';
   static const String backText = 'Back';
   static const String editText = 'Edit';
+
+  //calendar
+  static const String startText = 'Start';
+  static const String endText = 'End';
+  static const String locationText = 'Location';
+
+  //leads
+  static const String leadsText = 'New Leads';
 }

@@ -1,12 +1,22 @@
+import 'package:bs_flutter_selectbox/bs_flutter_selectbox.dart';
 import 'package:crm/utils/app_string_constant.dart';
 import 'package:crm/utils/app_widget_constant.dart';
+import 'package:crm/view/contact/add_contact.dart';
+import 'package:crm/view/meeting_notes/pick_date.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
+import 'package:reactive_forms/reactive_forms.dart';
+// import 'package:multi_dropdown/multi_dropdown.dart';
 
+import '../../db/contact.dart';
 import '../../utils/app_theme_constant.dart';
 
 class AddMeetingNotes extends StatefulWidget {
-  const AddMeetingNotes({super.key});
+  const AddMeetingNotes({Key? key, required this.allContacts, required this.forms})
+      : super(key: key);
+
+  final List<Contact> allContacts;
+  final List<FormGroup> forms;
 
   @override
   State<AddMeetingNotes> createState() => _AddMeetingNotesState();
@@ -23,6 +33,25 @@ class _AddMeetingNotesState extends State<AddMeetingNotes> {
     'Notes',
   ];
 
+  // final controller = MultiSelectController<Contact>();
+
+  // List<DropdownItem<Contact>> items = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // items = contactItem();
+  }
+
+  // List<DropdownItem<Contact>> contactItem() {
+  //   return widget.allContacts.map((contact) {
+  //     return DropdownItem<Contact>(
+  //       label: '${contact.firstName} ${contact.lastName}',
+  //       value: contact,
+  //     );
+  //   }).toList();
+  // }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -34,7 +63,7 @@ class _AddMeetingNotesState extends State<AddMeetingNotes> {
           ),
         ),
         child: SizedBox(
-          height: AppTheme.usableHeight(context),
+          height: 750,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -53,57 +82,32 @@ class _AddMeetingNotesState extends State<AddMeetingNotes> {
               ),
               Expanded(
                 child: Scaffold(
-                  backgroundColor:
-                      Colors.transparent, // Fix for background issue
+                  backgroundColor: Colors.transparent,
                   resizeToAvoidBottomInset: true,
                   body: Container(
                     margin: AppTheme.padding8,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: TextField(
-                              decoration: InputDecoration(
-                                labelText: label1[0],
-                                filled: true,
-                                fillColor: AppTheme.white,
-                                contentPadding: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 15),
-                                border: const OutlineInputBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(10),
-                                    bottom: Radius.circular(10),
-                                  ),
-                                ),
-                                enabledBorder: const OutlineInputBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(10),
-                                    bottom: Radius.circular(10),
-                                  ),
-                                  borderSide: BorderSide.none,
-                                ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          inputField(label1[0]),
+                          displayInField(
+                              context, label1[1], function: () => pickDateSheet(context)),
+                          displayInField(context, label2[0], isShow: true, buttonFunction: () => addContact(context, widget.forms)
                               ),
-                              onChanged: (value) {
-                                // print('Name entered: $value');
-                              }),
-                        ),
-                        displayInField(context, label1[1], () => pickDateSheet(context)),
-                        displayInField(context, label2[0], () => pickDate(),
-                            isShow: true),
-                        displayInField(context, label2[1], () => pickDate(),
-                            isShow: true),
-                        displayInField(context, label3[0], () => pickDate()),
-                        displayInField(context, label3[1], () => pickDate()),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        followUpHeader(),
-                        // followUpAction(context)
-                      ],
+                          // dropDown(),
+                          displayInField(context, label2[1], 
+                              isShow: true, buttonFunction: () => addLeads(context)),
+                          inputField(label3[0]),
+                          inputField(label3[1], longInput: true),
+                          SizedBox(height: 10),
+                          followUpHeader(),
+                          // followUpAction(context)
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -120,71 +124,66 @@ class _AddMeetingNotesState extends State<AddMeetingNotes> {
         backgroundColor: AppTheme.grey,
         isScrollControlled: true,
         builder: (context) {
-          return pickDate();
+          return PickDate();
         });
   }
 
-  Widget pickDate() {
-
-    CalendarFormat calendarFormat = CalendarFormat.month;
-    DateTime focusedDay = DateTime.now();
-    DateTime? selectedDate;
-
-    return SafeArea(
-      child: Container(
-        decoration: AppTheme.bottomSheet,
-        child: SizedBox(
-          height: AppTheme.usableHeight(context),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                decoration: AppTheme.bottomSheet,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                height: 60,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    pageTitle(AppString.date),
-                    saveButton(),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Scaffold(
-                  backgroundColor: Colors.transparent,
-                  body: Column(
-                    children: [
-                      TableCalendar(
-                        firstDay: DateTime.utc(2024, 11, 1),
-                        lastDay: DateTime.utc(2030, 11, 24),
-                        focusedDay: focusedDay,
-                        selectedDayPredicate: (day) => isSameDay(selectedDate, day),
-                        calendarFormat: calendarFormat,
-                        startingDayOfWeek: StartingDayOfWeek.monday,
-                        calendarStyle: CalendarStyle(
-                          outsideDaysVisible: false
-                        ),
-                        onFormatChanged: (format) {
-                          if(calendarFormat != format){
-                            setState(() {
-                              calendarFormat = format;
-                            });
-                          }
-                        },
-                        onPageChanged: (focusedDay) {
-                          focusedDay = focusedDay;
-                        },
-                      ),
-                      SizedBox(height: 8)
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget dropDown() {
+  //   return MultiDropdown(
+  //     items: items,
+  //     controller: controller,
+  //     enabled: true,
+  //     searchEnabled: true,
+  //     chipDecoration: const ChipDecoration(
+  //       backgroundColor: Colors.yellow,
+  //       wrap: true,
+  //       runSpacing: 2,
+  //       spacing: 10,
+  //     ),
+  //     fieldDecoration: FieldDecoration(
+  //       hintText: 'attendees',
+  //       hintStyle: const TextStyle(color: Colors.black87),
+  //       prefixIcon: const Icon(CupertinoIcons.flag),
+  //       showClearIcon: false,
+  //       border: OutlineInputBorder(
+  //         borderRadius: BorderRadius.circular(10),
+  //         borderSide: const BorderSide(color: Colors.grey),
+  //       ),
+  //       focusedBorder: OutlineInputBorder(
+  //         borderRadius: BorderRadius.circular(12),
+  //         borderSide: const BorderSide(
+  //           color: Colors.black87,
+  //         ),
+  //       ),
+  //     ),
+  //     dropdownDecoration: const DropdownDecoration(
+  //       marginTop: 2,
+  //       maxHeight: 500,
+  //       header: Padding(
+  //         padding: EdgeInsets.all(8),
+  //         child: Text(
+  //           'Select attendees from the list',
+  //           textAlign: TextAlign.start,
+  //           style: TextStyle(
+  //             fontSize: 16,
+  //             fontWeight: FontWeight.bold,
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //     dropdownItemDecoration: DropdownItemDecoration(
+  //       selectedIcon: const Icon(Icons.check_box, color: Colors.green),
+  //       disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
+  //     ),
+  //     validator: (value) {
+  //       if (value == null || value.isEmpty) {
+  //         return 'Please select a attendee';
+  //       }
+  //       return null;
+  //     },
+  //     onSelectionChange: (selectedItems) {
+  //       debugPrint("OnSelectionChange: $selectedItems");
+  //     },
+  //   );
+  // }
 }

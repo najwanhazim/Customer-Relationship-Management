@@ -1,12 +1,16 @@
 import 'package:crm/utils/app_string_constant.dart';
 import 'package:crm/utils/app_theme_constant.dart';
+import 'package:crm/view/leads/add_leads.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:simple_speed_dial/simple_speed_dial.dart';
 
 import '../db/contact.dart';
+import '../view/contact/add_contact.dart';
+import '../view/contact/view_contact.dart';
 import '../view/dashboard/notification.dart';
+import '../view/meeting_notes/add_meeting_notes.dart';
 
 //----------------------------------------button----------------------------------------
 Widget cancelButton(BuildContext context) {
@@ -37,9 +41,9 @@ Widget saveButton() {
   );
 }
 
-Widget addButton() {
+Widget addButton(VoidCallback? function) {
   return TextButton(
-      onPressed: () {},
+      onPressed: function,
       child: Text(
         'Add',
         style: TextStyle(color: AppTheme.redMaroon),
@@ -227,16 +231,36 @@ SpeedDialChild speedDialChild(IconData icon, String label) {
 }
 
 //----------------------------------------Input----------------------------------------
-Widget inputField(String title) {
+Widget inputField(String title, {bool longInput = false}) {
   return Padding(
-    padding: AppTheme.padding10,
+    padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
     child: TextField(
-      decoration: InputDecoration(
+      maxLines: longInput ? null : 1,
+      keyboardType: longInput ? TextInputType.multiline : null,
+      textAlignVertical: longInput ? TextAlignVertical.top : null,
+        decoration: InputDecoration(
           labelText: title,
           filled: true,
           fillColor: AppTheme.white,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
-    ),
+          alignLabelWithHint: true,
+          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(10),
+              bottom: Radius.circular(10),
+            ),
+          ),
+          enabledBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(10),
+              bottom: Radius.circular(10),
+            ),
+            borderSide: BorderSide.none,
+          ),
+        ),
+        onChanged: (value) {
+          // print('Name entered: $value');
+        }),
   );
 }
 
@@ -288,8 +312,8 @@ Widget reactiveTextField(BuildContext context, String data, String label) {
 }
 
 Widget displayInField(
-    BuildContext context, String? label, VoidCallback? function,
-    {bool isShow = false}) {
+    BuildContext context, String? label, 
+    {bool isShow = false, VoidCallback? function, VoidCallback? buttonFunction,}) {
   return Padding(
     padding: AppTheme.paddingTop,
     child: GestureDetector(
@@ -314,7 +338,7 @@ Widget displayInField(
                 style: const TextStyle(color: Colors.black),
               ),
             ),
-            isShow ? addButton() : const SizedBox.shrink(),
+            isShow ? addButton(buttonFunction) : const SizedBox.shrink(),
           ],
         ),
       ),
@@ -389,8 +413,66 @@ Widget followUpHeader() {
           'Follow-up Action',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
-        addButton()
+        addButton(null)
       ],
     ),
   );
+}
+
+//contact
+Future addContact(BuildContext context, List<FormGroup> forms) {
+  return showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+    ),
+    backgroundColor: AppTheme.grey,
+    isScrollControlled: true,
+    builder: (context) {
+      return AddContact(forms: forms);
+    },
+  );
+}
+
+Future viewContact(
+    BuildContext context, Contact contact, List<FormGroup> forms) {
+  return showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+      backgroundColor: AppTheme.grey,
+      isScrollControlled: true,
+      builder: (context) {
+        return ViewContact(contact: contact, forms: forms);
+      });
+}
+
+Future addMeeting(
+    BuildContext context, List<Contact> contacts, List<FormGroup> forms) {
+  return showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+      backgroundColor: AppTheme.grey,
+      isScrollControlled: true,
+      builder: (context) {
+        return AddMeetingNotes(allContacts: contacts, forms: forms);
+      });
+}
+
+//leads
+Future addLeads(
+    BuildContext context) {
+  return showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+      backgroundColor: AppTheme.grey,
+      isScrollControlled: true,
+      builder: (context) {
+        return AddLeads();
+      });
 }
