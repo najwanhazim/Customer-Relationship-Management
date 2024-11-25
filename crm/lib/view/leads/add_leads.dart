@@ -6,7 +6,12 @@ import '../../utils/app_theme_constant.dart';
 import '../../utils/app_widget_constant.dart';
 
 class AddLeads extends StatefulWidget {
-  const AddLeads({super.key});
+  const AddLeads(
+      {Key? key, required this.contactForms, required this.allContacts})
+      : super(key: key);
+
+  final List<FormGroup> contactForms;
+  final List<String> allContacts;
 
   @override
   State<AddLeads> createState() => AddLeadsState();
@@ -39,6 +44,8 @@ class AddLeadsState extends State<AddLeads> {
 
   @override
   Widget build(BuildContext context) {
+    GlobalKey<FormState> _formState = GlobalKey<FormState>();
+
     return SafeArea(
       child: Container(
         decoration: BoxDecoration(
@@ -53,23 +60,23 @@ class AddLeadsState extends State<AddLeads> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                  decoration: AppTheme.bottomSheet,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  height: 60,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Align(
-                        alignment: Alignment.center,
-                        child: pageTitle(AppString.leadsText),
-                      ),
-                      Align(
-                        alignment: Alignment
-                            .centerRight, 
-                        child: saveButton(),
-                      ),
-                    ],
-                  )),
+                decoration: AppTheme.bottomSheet,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                height: 60,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Align(
+                      alignment: Alignment.center,
+                      child: pageTitle(AppString.leadsText),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: saveButton(),
+                    ),
+                  ],
+                ),
+              ),
               Expanded(
                 child: Scaffold(
                   backgroundColor: Colors.transparent,
@@ -77,8 +84,30 @@ class AddLeadsState extends State<AddLeads> {
                   body: Container(
                     margin: AppTheme.padding8,
                     child: SingleChildScrollView(
-                      child: Column(
-                        children: [reactiveForm(context, forms, label)],
+                      child: Form(
+                        key: _formState,
+                        child: Column(
+                          mainAxisSize: MainAxisSize
+                              .min, // Ensure Column takes only required space
+                          children: [
+                            singleDropdown(context, label[0]),
+                            inputField(label[1]),
+                            inputField(label[2]),
+                            inputField(label[3]),
+                            inputField(label[4]),
+                            inputField(label[5]),
+                            inputField(label[6]),
+                            multipleDropdown(
+                              context,
+                              label[7],
+                              isShow: true,
+                              buttonFunction: () =>
+                                  addContact(context, widget.contactForms),
+                              items: widget.allContacts,
+                            ),
+                            singleDropdown(context, label[8]),
+                          ],
+                        ),
                       ),
                     ),
                   ),

@@ -129,7 +129,7 @@ class _ContactHomePageState extends State<ContactHomePage> {
   ];
 
   //-----------------------fill in field--------------
-  final List<FormGroup> forms = [
+  final List<FormGroup> contactForms = [
     FormGroup({
       'firstName': FormControl<String>(),
       'lastName': FormControl<String>(),
@@ -230,7 +230,7 @@ class _ContactHomePageState extends State<ContactHomePage> {
                 ),
                 IconButton(
                   onPressed: () {
-                    addContact(context, forms);
+                    addContact(context, contactForms);
                     // Navigator.push(context,
                     //     MaterialPageRoute(builder: (context) {
                     //   return NewContact();
@@ -355,8 +355,7 @@ class _ContactHomePageState extends State<ContactHomePage> {
           children: [
             ListTile(
               onTap: () {
-                // viewContact(context, contact, forms);
-                addMeeting(context, allContacts, forms);
+                viewContact(context, contact, contactForms);
               },
               leading: CircleAvatar(
                 radius: AppTheme.radius30,

@@ -1,5 +1,6 @@
 import 'package:crm/view/contact/contact_home_page.dart';
 import 'package:crm/view/login/sign_up.dart';
+import 'package:crm/view/login/sign_up_page_2.dart';
 import 'package:flutter/material.dart';
 
 void main() {

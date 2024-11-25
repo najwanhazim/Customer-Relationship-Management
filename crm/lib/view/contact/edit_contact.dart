@@ -18,6 +18,7 @@ class EditContact extends StatefulWidget {
 }
 
 class _EditContactState extends State<EditContact> {
+  GlobalKey<FormState> _formState = GlobalKey<FormState>();
   late List<String> label1;
   late List<String> label2;
   late List<String> label3;
@@ -80,17 +81,20 @@ class _EditContactState extends State<EditContact> {
                     child: Container(
                       margin: AppTheme.padding8,
                       child: SafeArea(
-                        child: Column(
-                          children: [
-                            CircleAvatar(
-                              radius: AppTheme.radius50,
-                              backgroundColor: Colors.blue,
-                            ),
-                            // Form sections
-                            reactiveForm(context, widget.forms[0], label1),
-                            reactiveForm(context, widget.forms[1], label2),
-                            reactiveForm(context, widget.forms[2], label3),
-                          ],
+                        child: Form(
+                          key: _formState,
+                          child: Column(
+                            children: [
+                              CircleAvatar(
+                                radius: AppTheme.radius50,
+                                backgroundColor: Colors.blue,
+                              ),
+                              // Form sections
+                              reactiveForm(context, widget.forms[0], label1, hintText: true),
+                              reactiveForm(context, widget.forms[1], label2, hintText: true),
+                              reactiveForm(context, widget.forms[2], label3, hintText: true),
+                            ],
+                          ),
                         ),
                       ),
                     ),

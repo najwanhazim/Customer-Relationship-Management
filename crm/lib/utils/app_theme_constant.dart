@@ -14,7 +14,7 @@ class AppTheme {
   static Color grey = Colors.grey.shade200;
   static Color greyPekat = Colors.grey.shade700;
 
-  //icon
+  //radius
   static const double radius15 = 15;
   static const double radius30 = 30;
   static const double radius50 = 50;
@@ -57,6 +57,14 @@ class AppTheme {
     color: Colors.white,
     borderRadius: BorderRadius.vertical(
       top: Radius.circular(30),
+    ),
+  );
+
+  static const Decoration container = BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.vertical(
+      top: Radius.circular(10),
+      bottom: Radius.circular(10),
     ),
   );
 

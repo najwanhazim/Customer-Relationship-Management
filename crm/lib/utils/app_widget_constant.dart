@@ -1,6 +1,8 @@
 import 'package:crm/utils/app_string_constant.dart';
 import 'package:crm/utils/app_theme_constant.dart';
 import 'package:crm/view/leads/add_leads.dart';
+import 'package:crm/view/meeting_notes/view_meeting_notes.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -214,7 +216,7 @@ SpeedDial speedDial() {
       speedDialChild(Icons.directions_walk, AppString.action),
       speedDialChild(Icons.event, AppString.meeting),
       speedDialChild(Icons.folder, AppString.lead),
-      speedDialChild(Icons.account_circle, AppString.contact),
+      speedDialChild(Icons.account_circle, AppString.newContact),
     ],
     child: const Icon(Icons.add),
   );
@@ -231,15 +233,16 @@ SpeedDialChild speedDialChild(IconData icon, String label) {
 }
 
 //----------------------------------------Input----------------------------------------
-Widget inputField(String title, {bool longInput = false}) {
+Widget inputField(String title, {bool longInput = false, bool hintText = false}) {
   return Padding(
     padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
     child: TextField(
-      maxLines: longInput ? null : 1,
-      keyboardType: longInput ? TextInputType.multiline : null,
-      textAlignVertical: longInput ? TextAlignVertical.top : null,
+        maxLines: longInput ? null : 1,
+        keyboardType: longInput ? TextInputType.multiline : null,
+        textAlignVertical: longInput ? TextAlignVertical.top : null,
         decoration: InputDecoration(
-          labelText: title,
+          labelText: hintText? null : title,
+          hintText: hintText ? title : null,
           filled: true,
           fillColor: AppTheme.white,
           alignLabelWithHint: true,
@@ -265,7 +268,7 @@ Widget inputField(String title, {bool longInput = false}) {
 }
 
 Widget reactiveForm(
-    BuildContext context, FormGroup _form, List<dynamic> label) {
+    BuildContext context, FormGroup _form, List<dynamic> label, {bool hintText = false}) {
   return ReactiveForm(
     formGroup: _form,
     child: Padding(
@@ -274,7 +277,7 @@ Widget reactiveForm(
         children: [
           ..._form.controls.keys.map((controlName) {
             int index = _form.controls.keys.toList().indexOf(controlName);
-            return reactiveTextField(context, controlName, label[index]);
+            return reactiveTextField(context, controlName, label[index], hintText);
           }).toList(),
         ],
       ),
@@ -282,14 +285,15 @@ Widget reactiveForm(
   );
 }
 
-Widget reactiveTextField(BuildContext context, String data, String label) {
+Widget reactiveTextField(BuildContext context, String data, String label, bool hintText) {
   return Padding(
     padding: AppTheme.paddingTop,
     child: ReactiveTextField<dynamic>(
       key: Key(data),
       formControlName: data,
       decoration: InputDecoration(
-        labelText: label,
+        labelText: hintText ? null : label,
+        hintText: hintText ? label : null,
         filled: true,
         fillColor: AppTheme.white,
         contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
@@ -312,8 +316,12 @@ Widget reactiveTextField(BuildContext context, String data, String label) {
 }
 
 Widget displayInField(
-    BuildContext context, String? label, 
-    {bool isShow = false, VoidCallback? function, VoidCallback? buttonFunction,}) {
+  BuildContext context,
+  String? label, {
+  bool isShow = false,
+  VoidCallback? function,
+  VoidCallback? buttonFunction,
+}) {
   return Padding(
     padding: AppTheme.paddingTop,
     child: GestureDetector(
@@ -346,8 +354,98 @@ Widget displayInField(
   );
 }
 
+Widget multipleDropdown(BuildContext context, String labelText,
+    {bool isShow = false,
+    VoidCallback? buttonFunction,
+    required List<String> items}) {
+  return Padding(
+    padding: AppTheme.paddingTop,
+    child: Container(
+      width: MediaQuery.of(context).size.width,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(10),
+          bottom: Radius.circular(10),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: DropdownSearch<String>.multiSelection(
+              mode: Mode.MENU,
+              showSelectedItems: true,
+              showSearchBox: true,
+              dropdownButtonProps:
+                  const IconButtonProps(icon: SizedBox.shrink()),
+              items: items,
+              dropdownSearchDecoration: InputDecoration(
+                labelText: labelText,
+                labelStyle: const TextStyle(color: Colors.black, fontSize: 15),
+                border: InputBorder.none,
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+              ),
+            ),
+          ),
+          isShow ? addButton(buttonFunction) : const SizedBox.shrink(),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget singleDropdown(BuildContext context, String labelText,
+    {bool isShow = false, VoidCallback? buttonFunction}) {
+  return Padding(
+    padding: AppTheme.paddingTop,
+    child: Container(
+      width: MediaQuery.of(context).size.width,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(10),
+          bottom: Radius.circular(10),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: DropdownSearch<String>(
+              mode: Mode.MENU,
+              showSelectedItems: true,
+              showSearchBox: true,
+              dropdownButtonProps:
+                  const IconButtonProps(icon: SizedBox.shrink()),
+              items: const [
+                'Ammar',
+                'Azri',
+                'Naiem',
+                'Din',
+                'Najwan',
+              ],
+              dropdownSearchDecoration: InputDecoration(
+                labelText: labelText,
+                labelStyle: const TextStyle(color: Colors.black, fontSize: 15),
+                border: InputBorder.none,
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+              ),
+            ),
+          ),
+          isShow ? addButton(buttonFunction) : const SizedBox.shrink(),
+        ],
+      ),
+    ),
+  );
+}
+
 //----------------------------------------meeting----------------------------------------
-Widget meetingHistory(BuildContext context) {
+Widget meetingHistory(BuildContext context, List<String> allContacts, List<String> allTeam, List<FormGroup> contactForms){
   List<Map<String, String>> data = [
     {'date': '15th October 2024', 'detail': 'Some details about the meeting.'},
     {'date': '16th October 2024', 'detail': 'Another meeting detail.'},
@@ -361,13 +459,32 @@ Widget meetingHistory(BuildContext context) {
           return ListTile(
             title: Text(data[index]['date']!),
             subtitle: Text(data[index]['detail']!),
+            onTap: () {
+              bottomSheet(context, ViewMeetingNotes(meetingData: data[index], allContacts: allContacts, allTeam: allTeam, contactForms: contactForms,));
+            },
           );
         }),
   );
 }
 
+Widget meetingHeader(VoidCallback function) {
+  return Padding(
+    padding: const EdgeInsets.only(top: 8),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          AppString.meetingHistory,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        addButton(function)
+      ],
+    ),
+  );
+}
+
 //----------------------------------------follow up action----------------------------------------
-Widget followUpAction(BuildContext context) {
+Widget followUpAction(BuildContext context, {bool shrinkWrap = false}) {
   List<Map<String, String>> data = [
     {'detail': 'phone call by azri', 'status': 'Pending'},
     {'detail': 'phone call by azri', 'status': 'Pending'},
@@ -377,49 +494,50 @@ Widget followUpAction(BuildContext context) {
     {'detail': 'phone call by azri', 'status': 'pending'},
   ];
 
-  return Expanded(
-    child: ListView.builder(
-        itemCount: data.length,
-        itemBuilder: (context, index) {
-          return Container(
-            margin: AppTheme.padding3,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
-              ),
+  return ListView.builder(
+      // physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: shrinkWrap,
+      // primary: false,
+      itemCount: data.length,
+      itemBuilder: (context, index) {
+        return Container(
+          margin: AppTheme.padding3,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
             ),
-            child: ListTile(
-              title: Text(data[index]['detail']!),
-              trailing: Text(data[index]['status']!,
-                  style: TextStyle(
-                      color: data[index]['status']! == 'pending' ||
-                              data[index]['status']! == 'Pending'
-                          ? Colors.red
-                          : Colors.green)),
-            ),
-          );
-        }),
-  );
+          ),
+          child: ListTile(
+            title: Text(data[index]['detail']!),
+            trailing: Text(data[index]['status']!,
+                style: TextStyle(
+                    color: data[index]['status']! == 'pending' ||
+                            data[index]['status']! == 'Pending'
+                        ? Colors.red
+                        : Colors.green)),
+          ),
+        );
+      });
 }
 
-Widget followUpHeader() {
+Widget followUpHeader(VoidCallback function) {
   return Padding(
     padding: const EdgeInsets.only(top: 8),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const Text(
-          'Follow-up Action',
+          AppString.followUpText,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
-        addButton(null)
+        addButton(function)
       ],
     ),
   );
 }
 
-//contact
+//----------------------------------------contact----------------------------------------
 Future addContact(BuildContext context, List<FormGroup> forms) {
   return showModalBottomSheet(
     context: context,
@@ -444,27 +562,13 @@ Future viewContact(
       backgroundColor: AppTheme.grey,
       isScrollControlled: true,
       builder: (context) {
-        return ViewContact(contact: contact, forms: forms);
+        return ViewContact(contact: contact, contactForms: forms);
       });
 }
 
-Future addMeeting(
-    BuildContext context, List<Contact> contacts, List<FormGroup> forms) {
-  return showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-      ),
-      backgroundColor: AppTheme.grey,
-      isScrollControlled: true,
-      builder: (context) {
-        return AddMeetingNotes(allContacts: contacts, forms: forms);
-      });
-}
-
-//leads
+//----------------------------------------leads----------------------------------------
 Future addLeads(
-    BuildContext context) {
+    BuildContext context, List<FormGroup> forms, List<String> contacts) {
   return showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -473,6 +577,23 @@ Future addLeads(
       backgroundColor: AppTheme.grey,
       isScrollControlled: true,
       builder: (context) {
-        return AddLeads();
+        return AddLeads(
+          contactForms: forms,
+          allContacts: contacts,
+        );
+      });
+}
+
+//----------------------------------------bottom sheet----------------------------------------
+Future bottomSheet(BuildContext context, Widget widget) {
+  return showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+      backgroundColor: AppTheme.grey,
+      isScrollControlled: true,
+      builder: (context) {
+        return widget;
       });
 }

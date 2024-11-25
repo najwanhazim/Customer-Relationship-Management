@@ -15,6 +15,7 @@ class PickDate extends StatefulWidget {
 }
 
 class _PickDateState extends State<PickDate> {
+  GlobalKey<FormState> _formState = GlobalKey<FormState>();
   CalendarFormat calendarFormat = CalendarFormat.month;
   DateTime focusedDay = DateTime.now();
   DateTime? selectedDate;
@@ -70,64 +71,65 @@ class _PickDateState extends State<PickDate> {
               Expanded(
                 child: Scaffold(
                   backgroundColor: Colors.transparent,
-                  body: Column(
-                    children: [
-                      TableCalendar(
-                        firstDay: DateTime.utc(2024, 11, 1),
-                        lastDay: DateTime.utc(2030, 11, 24),
-                        focusedDay: focusedDay,
-                        selectedDayPredicate: (day) =>
-                            isSameDay(selectedDate, day),
-                        calendarFormat: calendarFormat,
-                        startingDayOfWeek: StartingDayOfWeek.monday,
-                        onDaySelected: onDaySelected,
-                        calendarStyle:
-                            const CalendarStyle(outsideDaysVisible: false),
-                        onFormatChanged: (format) {
-                          if (calendarFormat != format) {
-                            setState(() {
-                              calendarFormat = format;
-                            });
-                          }
-                        },
-                        onPageChanged: (focusedDay) {
-                          focusedDay = focusedDay;
-                        },
+                  resizeToAvoidBottomInset: true,
+                  body: SingleChildScrollView(
+                    child: Form(
+                      key: _formState,
+                      child: Column(
+                        children: [
+                          TableCalendar(
+                            firstDay: DateTime.utc(2024, 11, 1),
+                            lastDay: DateTime.utc(2030, 11, 24),
+                            focusedDay: focusedDay,
+                            selectedDayPredicate: (day) =>
+                                isSameDay(selectedDate, day),
+                            calendarFormat: calendarFormat,
+                            startingDayOfWeek: StartingDayOfWeek.monday,
+                            onDaySelected: onDaySelected,
+                            calendarStyle:
+                                const CalendarStyle(outsideDaysVisible: false),
+                            onFormatChanged: (format) {
+                              if (calendarFormat != format) {
+                                setState(() {
+                                  calendarFormat = format;
+                                });
+                              }
+                            },
+                            onPageChanged: (focusedDay) {
+                              focusedDay = focusedDay;
+                            },
+                          ),
+                          SizedBox(height: 8),
+                          AppTheme.divider,
+                          Padding(
+                            padding: AppTheme.paddingTepi,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(AppString.startText),
+                                timePicker(),
+                              ],
+                            ),
+                          ),
+                          AppTheme.divider,
+                          Padding(
+                            padding: AppTheme.paddingTepi,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(AppString.endText),
+                                timePicker(),
+                              ],
+                            ),
+                          ),
+                          AppTheme.divider,
+                          Padding(
+                            padding: AppTheme.paddingTepi,
+                            child: inputField(AppString.locationText)
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 8),
-                      AppTheme.divider,
-                      Padding(
-                        padding: AppTheme.paddingTepi,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(AppString.startText),
-                            timePicker(),
-                          ],
-                        ),
-                      ),
-                      AppTheme.divider,
-                      Padding(
-                        padding: AppTheme.paddingTepi,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(AppString.endText),
-                            timePicker(),
-                          ],
-                        ),
-                      ),
-                      AppTheme.divider,
-                      Padding(
-                        padding: AppTheme.paddingTepi,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(AppString.locationText),
-                          ],
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),

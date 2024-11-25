@@ -11,15 +11,18 @@ class AppString {
   static const String action = 'New Action';
   static const String meeting = 'New Meeting';
   static const String lead = 'New Lead';
-  static const String contact = 'New Contact';
+  static const String newContact = 'New Contact';
 
   //meeting
   static const String newMeeting = 'New Meeting Notes';
   static const String date = 'Date, Time and Location';
+  static const String meetingHistory = 'Meeting History';
+  static const String meetingDetail = 'Meeting Details';
+  static const String editMeeting = 'Edit Meeting';
 
   //contact
-  static const String newContact = 'New Contact';
   static const String editContact = 'Edit Contact';
+  static const String contactText = 'Contact';
 
   //button
   static const String saveText = 'Save';
@@ -34,4 +37,7 @@ class AppString {
 
   //leads
   static const String leadsText = 'New Leads';
+
+  //follow-Up
+  static const String followUpText = 'Follow-up Action';
 }
