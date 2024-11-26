@@ -8,11 +8,20 @@ import '../../utils/app_widget_constant.dart';
 import '../action/add_following_action.dart';
 
 class EditMeetingNotes extends StatefulWidget {
-  const EditMeetingNotes({Key? key, required this.allContacts, required this.allTeam, required this.contactForms}) : super(key: key);
+  const EditMeetingNotes(
+      {Key? key,
+      required this.allContacts,
+      required this.allTeam,
+      required this.contactForms,
+      required this.leadForms,
+      required this.leadLabel})
+      : super(key: key);
 
   final List<String> allContacts;
   final List<String> allTeam;
   final List<FormGroup> contactForms;
+  final FormGroup leadForms;
+  final List<String> leadLabel;
 
   @override
   State<EditMeetingNotes> createState() => _EditMeetingNotesState();
@@ -76,12 +85,25 @@ class _EditMeetingNotesState extends State<EditMeetingNotes> {
                                 items: widget.allContacts),
                             singleDropdown(context, 'leads',
                                 isShow: true,
-                                buttonFunction: () =>
-                                    addLeads(context, widget.contactForms, widget.allContacts)),
+                                buttonFunction: () => addLeads(
+                                    context,
+                                    widget.contactForms,
+                                    widget.allContacts,
+                                    widget.leadLabel,
+                                    widget.leadForms)),
                             singleDropdown(context, 'meeting method'),
-                            inputField('Coffee Session', hintText: true, longInput: true),
+                            inputField('Coffee Session',
+                                hintText: true, longInput: true),
                             const SizedBox(height: 10),
-                            followUpHeader(() => bottomSheet(context, AddFollowingAction(allContact: widget.allContacts, allTeam: widget.allTeam, contactForms: widget.contactForms,))),
+                            followUpHeader(() => bottomSheet(
+                                context,
+                                AddFollowingAction(
+                                  allContact: widget.allContacts,
+                                  allTeam: widget.allTeam,
+                                  contactForms: widget.contactForms,
+                                  leadForms: widget.leadForms,
+                                  leadLabel: widget.leadLabel,
+                                ))),
                             Container(
                                 child:
                                     followUpAction(context, shrinkWrap: true)),

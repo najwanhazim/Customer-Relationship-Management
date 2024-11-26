@@ -8,13 +8,22 @@ import '../../utils/app_widget_constant.dart';
 import '../contact/edit_contact.dart';
 
 class ViewMeetingNotes extends StatefulWidget {
-  const ViewMeetingNotes({Key? key, required this.meetingData, required this.allContacts, required this.allTeam, required this.contactForms })
+  const ViewMeetingNotes(
+      {Key? key,
+      required this.meetingData,
+      required this.allContacts,
+      required this.allTeam,
+      required this.contactForms,
+      required this.leadForms,
+      required this.leadLabel})
       : super(key: key);
 
   final Map<String, String> meetingData;
   final List<String> allContacts;
   final List<String> allTeam;
   final List<FormGroup> contactForms;
+  final FormGroup leadForms;
+  final List<String> leadLabel;
 
   @override
   State<ViewMeetingNotes> createState() => _ViewMeetingNotesState();
@@ -32,7 +41,7 @@ class _ViewMeetingNotesState extends State<ViewMeetingNotes> {
           ),
         ),
         child: SizedBox(
-          height: AppTheme.usableHeight(context),
+          height: AppTheme.sheetHeight,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -47,7 +56,15 @@ class _ViewMeetingNotesState extends State<ViewMeetingNotes> {
                     pageTitle(AppString.meetingDetail),
                     TextButton(
                       onPressed: () {
-                        bottomSheet(context, EditMeetingNotes(allContacts: widget.allContacts, allTeam: widget.allTeam, contactForms: widget.contactForms,));
+                        bottomSheet(
+                            context,
+                            EditMeetingNotes(
+                              allContacts: widget.allContacts,
+                              allTeam: widget.allTeam,
+                              contactForms: widget.contactForms,
+                              leadForms: widget.leadForms,
+                              leadLabel: widget.leadLabel,
+                            ));
                       },
                       child: Text(
                         AppString.editText,
@@ -163,7 +180,6 @@ class _ViewMeetingNotesState extends State<ViewMeetingNotes> {
                                   Text('adfadf fjsdnfsjnfasdfnsjdfnjksfnjkdfd',
                                       style: TextStyle(
                                           color: Colors.grey, fontSize: 15)),
-                                  
                                 ],
                               ),
                             ),

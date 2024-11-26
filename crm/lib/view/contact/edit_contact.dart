@@ -55,7 +55,7 @@ class _EditContactState extends State<EditContact> {
           ),
         ),
         child: SizedBox(
-          height: AppTheme.usableHeight(context),
+          height: AppTheme.sheetHeight,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [

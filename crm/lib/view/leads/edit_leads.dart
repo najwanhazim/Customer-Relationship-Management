@@ -5,10 +5,8 @@ import '../../utils/app_string_constant.dart';
 import '../../utils/app_theme_constant.dart';
 import '../../utils/app_widget_constant.dart';
 
-class AddLeads extends StatefulWidget {
-  const AddLeads(
-      {Key? key, required this.contactForms, required this.allContacts, required this.leadForms, required this.leadLabel})
-      : super(key: key);
+class EditLeads extends StatefulWidget {
+  const EditLeads({Key? key, required this.contactForms, required this.allContacts, required this.leadForms, required this.leadLabel}) : super(key: key);
 
   final List<FormGroup> contactForms;
   final List<String> allContacts;
@@ -16,15 +14,14 @@ class AddLeads extends StatefulWidget {
   final List<String> leadLabel;
 
   @override
-  State<AddLeads> createState() => AddLeadsState();
+  State<EditLeads> createState() => _EditLeadsState();
 }
 
-class AddLeadsState extends State<AddLeads> {
+class _EditLeadsState extends State<EditLeads> {
+  GlobalKey<FormState> _formState = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    GlobalKey<FormState> _formState = GlobalKey<FormState>();
-
     return SafeArea(
       child: Container(
         decoration: BoxDecoration(
@@ -47,7 +44,7 @@ class AddLeadsState extends State<AddLeads> {
                   children: [
                     Align(
                       alignment: Alignment.center,
-                      child: pageTitle(AppString.leadsText),
+                      child: pageTitle(AppString.editLead),
                     ),
                     Align(
                       alignment: Alignment.centerRight,

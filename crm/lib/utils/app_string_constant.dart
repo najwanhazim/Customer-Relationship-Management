@@ -37,6 +37,8 @@ class AppString {
 
   //leads
   static const String leadsText = 'New Leads';
+  static const String leadDetail = 'Lead Details';
+  static const String editLead = 'Edit Lead';
 
   //follow-Up
   static const String followUpText = 'Follow-up Action';

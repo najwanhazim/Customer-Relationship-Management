@@ -10,13 +10,20 @@ import '../../utils/app_theme_constant.dart';
 import '../action/add_following_action.dart';
 
 class AddMeetingNotes extends StatefulWidget {
-  const AddMeetingNotes({Key? key, required this.contact, required this.forms, required this.allContacts, required this.allTeam})
+  const AddMeetingNotes(
+      {Key? key,
+      required this.forms,
+      required this.allContacts,
+      required this.allTeam,
+      required this.leadForms,
+      required this.leadLabel})
       : super(key: key);
 
-  final Contact contact;
   final List<String> allContacts;
   final List<String> allTeam;
   final List<FormGroup> forms;
+  final FormGroup leadForms;
+  final List<String> leadLabel;
 
   @override
   State<AddMeetingNotes> createState() => _AddMeetingNotesState();
@@ -71,7 +78,7 @@ class _AddMeetingNotesState extends State<AddMeetingNotes> {
           ),
         ),
         child: SizedBox(
-          height: 750,
+          height: AppTheme.sheetHeight,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -115,12 +122,24 @@ class _AddMeetingNotesState extends State<AddMeetingNotes> {
                                 items: widget.allContacts),
                             singleDropdown(context, label2[1],
                                 isShow: true,
-                                buttonFunction: () =>
-                                    addLeads(context, widget.forms, widget.allContacts)),
+                                buttonFunction: () => addLeads(
+                                    context,
+                                    widget.forms,
+                                    widget.allContacts,
+                                    widget.leadLabel,
+                                    widget.leadForms)),
                             singleDropdown(context, label3[0]),
                             inputField(label3[1], longInput: true),
                             const SizedBox(height: 10),
-                            followUpHeader(() => bottomSheet(context, AddFollowingAction(allContact: widget.allContacts, allTeam: widget.allTeam, contactForms: widget.forms,))),
+                            followUpHeader(() => bottomSheet(
+                                context,
+                                AddFollowingAction(
+                                  allContact: widget.allContacts,
+                                  allTeam: widget.allTeam,
+                                  contactForms: widget.forms,
+                                  leadForms: widget.leadForms,
+                                  leadLabel: widget.leadLabel,
+                                ))),
                             Container(
                                 child:
                                     followUpAction(context, shrinkWrap: true)),

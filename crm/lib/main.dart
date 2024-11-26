@@ -1,6 +1,5 @@
 import 'package:crm/view/contact/contact_home_page.dart';
-import 'package:crm/view/login/sign_up.dart';
-import 'package:crm/view/login/sign_up_page_2.dart';
+import 'package:crm/view/leads/leads_home_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -20,7 +19,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/' : (context) => ContactHomePage(),
+        '/' : (context) => LeadsHomePage(),
       },
       
     );

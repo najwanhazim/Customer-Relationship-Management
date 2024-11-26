@@ -39,6 +39,9 @@ class AppTheme {
   static const SizedBox box20 = SizedBox(
     height: 20,
   );
+  static const SizedBox box70 = SizedBox(
+    height: 70,
+  );
 
   //duration
   static const Duration duration800 = Duration(milliseconds: 800);
@@ -83,6 +86,7 @@ class AppTheme {
     borderSide: BorderSide.none,
   );
 
+//height
   static double screenHeight(BuildContext context) {
     return MediaQuery.of(context).size.height;
   }
@@ -95,4 +99,6 @@ class AppTheme {
     return MediaQuery.of(context).size.height -
         MediaQuery.of(context).padding.top;
   }
+
+  static const double sheetHeight = 750;
 }

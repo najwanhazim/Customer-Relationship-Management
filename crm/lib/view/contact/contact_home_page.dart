@@ -148,6 +148,31 @@ class _ContactHomePageState extends State<ContactHomePage> {
     }),
   ];
 
+  //--------------input lead---------------------
+  final List<String> leadLabel = [
+    'Portfolio',
+    'Leads Title',
+    'Value(RM)',
+    'Scope',
+    'Client',
+    'End User',
+    'Location(Region)',
+    'Contact',
+    'Lead Status'
+  ];
+
+  final FormGroup leadForms = FormGroup({
+    'portfolio': FormControl<String>(),
+    'leadsTitle': FormControl<String>(),
+    'value': FormControl<String>(),
+    'scope': FormControl<String>(),
+    'client': FormControl<String>(),
+    'endUser': FormControl<String>(),
+    'location': FormControl<String>(),
+    'contact': FormControl<String>(),
+    'leadStatus': FormControl<String>(),
+  });
+
   String search = '';
   int selectedTab = 1;
 
@@ -355,7 +380,7 @@ class _ContactHomePageState extends State<ContactHomePage> {
           children: [
             ListTile(
               onTap: () {
-                viewContact(context, contact, contactForms);
+                viewContact(context, contact, contactForms, leadForms, leadLabel);
               },
               leading: CircleAvatar(
                 radius: AppTheme.radius30,

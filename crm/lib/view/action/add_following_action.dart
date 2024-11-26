@@ -6,11 +6,13 @@ import '../../utils/app_theme_constant.dart';
 import '../../utils/app_widget_constant.dart';
 
 class AddFollowingAction extends StatefulWidget {
-  const AddFollowingAction({Key? key, required this.allTeam, required this.allContact, required this.contactForms});
+  const AddFollowingAction({Key? key, required this.allTeam, required this.allContact, required this.contactForms, required this.leadForms, required this.leadLabel});
 
   final List<String> allTeam;
   final List<String> allContact;
   final List<FormGroup> contactForms;
+  final FormGroup leadForms;
+  final List<String> leadLabel;
 
   @override
   State<AddFollowingAction> createState() => _AddFollowingActionState();
@@ -69,7 +71,7 @@ class _AddFollowingActionState extends State<AddFollowingAction> {
                             inputField(label[0]),
                             multipleDropdown(context, label[1], items: widget.allTeam),
                             multipleDropdown(context, label[2], items: widget.allContact, isShow: true, buttonFunction: () => addContact(context, widget.contactForms),),
-                            singleDropdown(context, label[3], isShow: true, buttonFunction: () => addLeads(context, widget.contactForms, widget.allContact)),
+                            singleDropdown(context, label[3], isShow: true, buttonFunction: () => addLeads(context, widget.contactForms, widget.allContact, widget.leadLabel, widget.leadForms)),
                             inputField(label[4], longInput: true)
                           ],
                         ),

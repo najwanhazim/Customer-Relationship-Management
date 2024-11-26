@@ -41,7 +41,7 @@ class _AddContactState extends State<AddContact> {
           ),
         ),
         child: SizedBox(
-          height: AppTheme.usableHeight(context),
+          height: AppTheme.sheetHeight,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [

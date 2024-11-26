@@ -12,6 +12,7 @@ import '../db/contact.dart';
 import '../view/contact/add_contact.dart';
 import '../view/contact/view_contact.dart';
 import '../view/dashboard/notification.dart';
+import '../view/leads/edit_leads.dart';
 import '../view/meeting_notes/add_meeting_notes.dart';
 
 //----------------------------------------button----------------------------------------
@@ -445,14 +446,14 @@ Widget singleDropdown(BuildContext context, String labelText,
 }
 
 //----------------------------------------meeting----------------------------------------
-Widget meetingHistory(BuildContext context, List<String> allContacts, List<String> allTeam, List<FormGroup> contactForms){
+Widget meetingHistory(BuildContext context, List<String> allContacts, List<String> allTeam, List<FormGroup> contactForms, FormGroup leadForms, List<String> leadLabel){
   List<Map<String, String>> data = [
     {'date': '15th October 2024', 'detail': 'Some details about the meeting.'},
     {'date': '16th October 2024', 'detail': 'Another meeting detail.'},
   ];
 
   return SizedBox(
-    height: 70,
+    height: 150,
     child: ListView.builder(
         itemCount: data.length,
         itemBuilder: (context, index) {
@@ -460,7 +461,7 @@ Widget meetingHistory(BuildContext context, List<String> allContacts, List<Strin
             title: Text(data[index]['date']!),
             subtitle: Text(data[index]['detail']!),
             onTap: () {
-              bottomSheet(context, ViewMeetingNotes(meetingData: data[index], allContacts: allContacts, allTeam: allTeam, contactForms: contactForms,));
+              bottomSheet(context, ViewMeetingNotes(meetingData: data[index], allContacts: allContacts, allTeam: allTeam, contactForms: contactForms, leadForms: leadForms, leadLabel: leadLabel,));
             },
           );
         }),
@@ -553,7 +554,7 @@ Future addContact(BuildContext context, List<FormGroup> forms) {
 }
 
 Future viewContact(
-    BuildContext context, Contact contact, List<FormGroup> forms) {
+    BuildContext context, Contact contact, List<FormGroup> forms, FormGroup leadForms, List<String> leadLabel) {
   return showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -562,13 +563,13 @@ Future viewContact(
       backgroundColor: AppTheme.grey,
       isScrollControlled: true,
       builder: (context) {
-        return ViewContact(contact: contact, contactForms: forms);
+        return ViewContact(contact: contact, contactForms: forms, leadForms: leadForms, leadLabel: leadLabel,);
       });
 }
 
 //----------------------------------------leads----------------------------------------
 Future addLeads(
-    BuildContext context, List<FormGroup> forms, List<String> contacts) {
+    BuildContext context, List<FormGroup> forms, List<String> contacts, List<String> leadLabel, FormGroup leadForms) {
   return showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -580,6 +581,27 @@ Future addLeads(
         return AddLeads(
           contactForms: forms,
           allContacts: contacts,
+          leadForms: leadForms,
+          leadLabel: leadLabel,
+        );
+      });
+}
+
+Future editLeads(
+    BuildContext context, List<FormGroup> forms, List<String> contacts, List<String> leadLabel, FormGroup leadForms) {
+  return showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+      backgroundColor: AppTheme.grey,
+      isScrollControlled: true,
+      builder: (context) {
+        return EditLeads(
+          contactForms: forms,
+          allContacts: contacts,
+          leadForms: leadForms,
+          leadLabel: leadLabel,
         );
       });
 }
