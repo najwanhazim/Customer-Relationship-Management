@@ -42,4 +42,10 @@ class AppString {
 
   //follow-Up
   static const String followUpText = 'Follow-up Action';
+
+  //Login
+  static const String login = 'Login';
+  static const String newPassTitle = 'New Password sent';
+  static const String newPassSubtitle = 'Please check your emial to received your new password';
+  static const String newSignUpTitle = 'Your account is set';
 }

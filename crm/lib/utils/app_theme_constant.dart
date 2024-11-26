@@ -101,4 +101,8 @@ class AppTheme {
   }
 
   static const double sheetHeight = 750;
+
+  //font
+  static const TextStyle titleFont = TextStyle(fontSize: 40, fontWeight: FontWeight.bold);
+  static const TextStyle subtitleFont = TextStyle(fontSize: 20);
 }
