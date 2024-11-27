@@ -1,9 +1,12 @@
+import 'package:crm/view/login/login.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils/app_theme_constant.dart';
 
 class LoginNotification extends StatefulWidget {
-  const LoginNotification({Key? key, required this.title, required this.subtitle}) : super(key: key);
+  const LoginNotification(
+      {Key? key, required this.title, required this.subtitle})
+      : super(key: key);
 
   final String title;
   final String subtitle;
@@ -14,7 +17,7 @@ class LoginNotification extends StatefulWidget {
 
 class _LoginNotificationState extends State<LoginNotification> {
   final GlobalKey<FormState> _formState = GlobalKey<FormState>();
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +42,7 @@ class _LoginNotificationState extends State<LoginNotification> {
                     Padding(
                       padding: AppTheme.paddingTepi,
                       child: Text(
-                        widget.title ,
+                        widget.title,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 40),
                       ),
@@ -57,7 +60,14 @@ class _LoginNotificationState extends State<LoginNotification> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           FilledButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                '/',
+                                (Route<dynamic> route) =>
+                                    false, // Remove all previous routes
+                              );
+                            },
                             style: ButtonStyle(
                               backgroundColor:
                                   MaterialStateProperty.all(Colors.black),

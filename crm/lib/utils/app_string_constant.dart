@@ -48,4 +48,19 @@ class AppString {
   static const String newPassTitle = 'New Password sent';
   static const String newPassSubtitle = 'Please check your emial to received your new password';
   static const String newSignUpTitle = 'Your account is set';
+
+  //drawer
+  static const String homePageTitle = 'Home';
+  static const String teamManagementPageTitle = 'Team Management';
+  static const String contactPageTitle = 'Contacts';
+  static const String leadPageTitle = 'Leads';
+  static const String diaryPageTitle = 'Diary';
+
+  //icon
+  static const homeIcon = 'assets/icon/home_icon.svg';
+  static const groupIcon = 'assets/icon/group_icon.svg';
+  static const contactIcon = 'assets/icon/contact_icon.svg';
+  static const flagIcon = 'assets/icon/flag_icon.svg';
+  static const diaryIcon = 'assets/icon/history_icon.svg';
+  static const iconWarning = 'assets/icon/warning-regular.svg';
 }

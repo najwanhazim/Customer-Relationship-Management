@@ -1,11 +1,15 @@
+import 'package:animations/animations.dart';
 import 'package:crm/utils/app_string_constant.dart';
 import 'package:crm/utils/app_theme_constant.dart';
 import 'package:crm/view/leads/add_leads.dart';
 import 'package:crm/view/meeting_notes/view_meeting_notes.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:simple_speed_dial/simple_speed_dial.dart';
 
 import '../db/contact.dart';
@@ -14,6 +18,7 @@ import '../view/contact/view_contact.dart';
 import '../view/dashboard/notification.dart';
 import '../view/leads/edit_leads.dart';
 import '../view/meeting_notes/add_meeting_notes.dart';
+import 'custom_icon.dart';
 
 //----------------------------------------button----------------------------------------
 Widget cancelButton(BuildContext context) {
@@ -94,10 +99,19 @@ AppBar appBarPage(BuildContext context) {
           Icons.notifications,
         ),
       ),
-      const CircleAvatar(
+      CircleAvatar(
         radius: AppTheme.radius15,
         backgroundImage: NetworkImage(
             'https://www.google.com/imgres?q=profile&imgurl=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F003%2F715%2F527%2Fnon_2x%2Fpicture-profile-icon-male-icon-human-or-people-sign-and-symbol-vector.jpg&imgrefurl=https%3A%2F%2Fwww.vecteezy.com%2Fvector-art%2F3715527-picture-profile-icon-male-icon-human-or-people-sign-and-symbol-vector&docid=jV8noe8xdKAwbM&tbnid=3nPRi6_QfknfYM&vet=12ahUKEwiLuJX539WJAxXUSmwGHcRzBiIQM3oECFoQAA..i&w=980&h=980&hcb=2&ved=2ahUKEwiLuJX539WJAxXUSmwGHcRzBiIQM3oECFoQAA'),
+        // child: GestureDetector(
+        //   onTap: () {
+        //     Navigator.pushNamedAndRemoveUntil(
+        //       context,
+        //       '/navigation',
+        //       (Route<dynamic> route) => false, // Remove all previous routes
+        //     );
+        //   },
+        // ),
       ),
     ],
   );
@@ -234,7 +248,8 @@ SpeedDialChild speedDialChild(IconData icon, String label) {
 }
 
 //----------------------------------------Input----------------------------------------
-Widget inputField(String title, {bool longInput = false, bool hintText = false}) {
+Widget inputField(String title,
+    {bool longInput = false, bool hintText = false}) {
   return Padding(
     padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
     child: TextField(
@@ -242,7 +257,7 @@ Widget inputField(String title, {bool longInput = false, bool hintText = false})
         keyboardType: longInput ? TextInputType.multiline : null,
         textAlignVertical: longInput ? TextAlignVertical.top : null,
         decoration: InputDecoration(
-          labelText: hintText? null : title,
+          labelText: hintText ? null : title,
           hintText: hintText ? title : null,
           filled: true,
           fillColor: AppTheme.white,
@@ -268,8 +283,8 @@ Widget inputField(String title, {bool longInput = false, bool hintText = false})
   );
 }
 
-Widget reactiveForm(
-    BuildContext context, FormGroup _form, List<dynamic> label, {bool hintText = false}) {
+Widget reactiveForm(BuildContext context, FormGroup _form, List<dynamic> label,
+    {bool hintText = false}) {
   return ReactiveForm(
     formGroup: _form,
     child: Padding(
@@ -278,7 +293,8 @@ Widget reactiveForm(
         children: [
           ..._form.controls.keys.map((controlName) {
             int index = _form.controls.keys.toList().indexOf(controlName);
-            return reactiveTextField(context, controlName, label[index], hintText);
+            return reactiveTextField(
+                context, controlName, label[index], hintText);
           }).toList(),
         ],
       ),
@@ -286,7 +302,8 @@ Widget reactiveForm(
   );
 }
 
-Widget reactiveTextField(BuildContext context, String data, String label, bool hintText) {
+Widget reactiveTextField(
+    BuildContext context, String data, String label, bool hintText) {
   return Padding(
     padding: AppTheme.paddingTop,
     child: ReactiveTextField<dynamic>(
@@ -446,7 +463,13 @@ Widget singleDropdown(BuildContext context, String labelText,
 }
 
 //----------------------------------------meeting----------------------------------------
-Widget meetingHistory(BuildContext context, List<String> allContacts, List<String> allTeam, List<FormGroup> contactForms, FormGroup leadForms, List<String> leadLabel){
+Widget meetingHistory(
+    BuildContext context,
+    List<String> allContacts,
+    List<String> allTeam,
+    List<FormGroup> contactForms,
+    FormGroup leadForms,
+    List<String> leadLabel) {
   List<Map<String, String>> data = [
     {'date': '15th October 2024', 'detail': 'Some details about the meeting.'},
     {'date': '16th October 2024', 'detail': 'Another meeting detail.'},
@@ -461,7 +484,16 @@ Widget meetingHistory(BuildContext context, List<String> allContacts, List<Strin
             title: Text(data[index]['date']!),
             subtitle: Text(data[index]['detail']!),
             onTap: () {
-              bottomSheet(context, ViewMeetingNotes(meetingData: data[index], allContacts: allContacts, allTeam: allTeam, contactForms: contactForms, leadForms: leadForms, leadLabel: leadLabel,));
+              bottomSheet(
+                  context,
+                  ViewMeetingNotes(
+                    meetingData: data[index],
+                    allContacts: allContacts,
+                    allTeam: allTeam,
+                    contactForms: contactForms,
+                    leadForms: leadForms,
+                    leadLabel: leadLabel,
+                  ));
             },
           );
         }),
@@ -553,8 +585,8 @@ Future addContact(BuildContext context, List<FormGroup> forms) {
   );
 }
 
-Future viewContact(
-    BuildContext context, Contact contact, List<FormGroup> forms, FormGroup leadForms, List<String> leadLabel) {
+Future viewContact(BuildContext context, Contact contact, List<FormGroup> forms,
+    FormGroup leadForms, List<String> leadLabel) {
   return showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -563,13 +595,18 @@ Future viewContact(
       backgroundColor: AppTheme.grey,
       isScrollControlled: true,
       builder: (context) {
-        return ViewContact(contact: contact, contactForms: forms, leadForms: leadForms, leadLabel: leadLabel,);
+        return ViewContact(
+          contact: contact,
+          contactForms: forms,
+          leadForms: leadForms,
+          leadLabel: leadLabel,
+        );
       });
 }
 
 //----------------------------------------leads----------------------------------------
-Future addLeads(
-    BuildContext context, List<FormGroup> forms, List<String> contacts, List<String> leadLabel, FormGroup leadForms) {
+Future addLeads(BuildContext context, List<FormGroup> forms,
+    List<String> contacts, List<String> leadLabel, FormGroup leadForms) {
   return showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -587,8 +624,8 @@ Future addLeads(
       });
 }
 
-Future editLeads(
-    BuildContext context, List<FormGroup> forms, List<String> contacts, List<String> leadLabel, FormGroup leadForms) {
+Future editLeads(BuildContext context, List<FormGroup> forms,
+    List<String> contacts, List<String> leadLabel, FormGroup leadForms) {
   return showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -618,4 +655,123 @@ Future bottomSheet(BuildContext context, Widget widget) {
       builder: (context) {
         return widget;
       });
+}
+
+//----------------------------------------loading----------------------------------------
+Widget placeholderText({double width = double.infinity}) {
+  return Shimmer.fromColors(
+    baseColor: AppTheme.shimmerBase,
+    highlightColor: AppTheme.shimmerHighlight,
+    child: Container(
+      decoration: BoxDecoration(
+          color: Colors.black, borderRadius: BorderRadius.circular(4)),
+      height: AppTheme.shimmerTitle,
+      width: width,
+    ),
+  );
+}
+
+//----------------------------------------dialog----------------------------------------
+Future showAppDialog(BuildContext context, Widget targetDialog,
+    {bool barrierDismissible = false}) {
+  return showGeneralDialog(
+      context: context,
+      pageBuilder: (context, primaryAnimation, secondaryAnimation) =>
+          targetDialog,
+      transitionBuilder:
+          (context, primaryAnimation, secondaryAnimation, child) =>
+              FadeScaleTransition(animation: primaryAnimation, child: child),
+      barrierDismissible: barrierDismissible,
+      barrierLabel: "Dialog");
+}
+
+Widget alertDialog(
+    BuildContext context, VoidCallback action, String title, String subText,
+    {String warningMessage = '', Future<void> Function()? futureAction}) {
+  return AlertDialog(
+      title: (() {
+        if (warningMessage.isNotEmpty) {
+          return alertDialogTitleIcon(title);
+        } else {
+          return Text(title, style: AppTheme.titlePrimary);
+        }
+      }()),
+      content: warningMessage.isEmpty
+          ? Text(subText, style: AppTheme.dialogText)
+          : alertDialogSubTextWarning(subText, warningMessage),
+      elevation: AppTheme.dialogElevation,
+      shape: AppTheme.roundedRectangleBorder,
+      actions: [
+        TextButton(
+          child: Text("Cancel",
+              style: AppTheme.buttonAcceptCustom(color: Colors.blue)),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        TextButton(
+            onPressed: () async {
+              if (futureAction != null) {
+                await futureAction();
+              }
+              action();
+            },
+            child: Text("Confirm",
+                style: AppTheme.buttonAcceptCustom(color: Colors.red))),
+      ]);
+}
+
+Widget dialogTitleIcon(String title, String iconString, Color iconColor) {
+  return Row(
+    children: [
+      Padding(
+        padding: const EdgeInsets.only(right: AppTheme.paddingGridDouble),
+        child: SvgPicture.asset(iconString, width: AppTheme.sizeIconInline, color: iconColor),
+      ),
+      Expanded(child: Text(title, style: AppTheme.titlePrimary)),
+    ],
+  );
+}
+
+Widget alertDialogSubTextWarning(String subText, String warningMessage) {
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(subText, textAlign: TextAlign.start, style: AppTheme.dialogText),
+      const SizedBox(height: AppTheme.dialogTextGap),
+      Padding(
+        padding: const EdgeInsets.only(top: 12, bottom: 12),
+        child: dividerRounded(),
+      ),
+      Text(warningMessage,
+          textAlign: TextAlign.start, style: AppTheme.dialogSubTitleTextWarning)
+    ],
+  );
+}
+
+Widget alertDialogTitleIcon(String title) {
+  return dialogTitleIcon(title, AppString.iconWarning, Colors.red);
+}
+
+void showToastError(BuildContext context, String text) {
+  // showToast(context, text, Colors.redAccent, AppTheme.toastTextError);
+  context.showErrorBar(
+    icon: const Icon(FlashBarIcons.failed),
+    content: Text(text,
+        overflow: TextOverflow.visible,
+        textAlign: TextAlign.center,
+        style: AppTheme.toastTextMisc),
+  );
+}
+
+//-------------------------------------------divider----------------------------------------
+Widget dividerRounded() {
+  return Container(
+    height: 2,
+    decoration: const BoxDecoration(
+      color: AppTheme.notWhite,
+      borderRadius: BorderRadius.all(Radius.circular(4.0)),
+    ),
+  );
 }

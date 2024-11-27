@@ -14,6 +14,12 @@ class AppTheme {
   static Color grey = Colors.grey.shade200;
   static Color greyPekat = Colors.grey.shade700;
 
+  static const Color notWhite = Color(0xFFEDF0F2);
+  static const Color shimmerBase = Color(0xFFE4E4E4);
+  static const Color shimmerHighlight = Color(0xFFF3F3F2);
+  static const Color nearlyBlack = Color(0xFF213333);
+  static const Color darkText = Color(0xFF253840);
+
   //radius
   static const double radius15 = 15;
   static const double radius30 = 30;
@@ -28,6 +34,9 @@ class AppTheme {
   static const EdgeInsets paddingTepi = EdgeInsets.fromLTRB(15, 0, 15, 0);
   static const EdgeInsets padding = EdgeInsets.fromLTRB(15, 10, 15, 10);
   static const EdgeInsets paddingTop = EdgeInsets.fromLTRB(0, 5, 0, 5);
+  static const double paddingGridDouble = 12;
+  static const int paddingInt = 8;
+  static const double paddingDouble = 8;
 
   //sizedBox
   static const SizedBox box10 = SizedBox(
@@ -86,6 +95,12 @@ class AppTheme {
     borderSide: BorderSide.none,
   );
 
+  static const double borderRadius = 24;
+  static const BorderRadius roundedBorderRadius =
+      BorderRadius.all(Radius.circular(borderRadius));
+  static const RoundedRectangleBorder roundedRectangleBorder =
+      RoundedRectangleBorder(borderRadius: roundedBorderRadius);
+
 //height
   static double screenHeight(BuildContext context) {
     return MediaQuery.of(context).size.height;
@@ -103,6 +118,71 @@ class AppTheme {
   static const double sheetHeight = 750;
 
   //font
-  static const TextStyle titleFont = TextStyle(fontSize: 40, fontWeight: FontWeight.bold);
+  static const TextStyle titleFont =
+      TextStyle(fontSize: 40, fontWeight: FontWeight.bold);
   static const TextStyle subtitleFont = TextStyle(fontSize: 20);
+  static TextStyle title(String fontName,
+      {Color color = darkText, FontWeight fontWeight = FontWeight.bold}) {
+    return TextStyle(
+      overflow: TextOverflow.visible,
+      fontFamily: fontName,
+      fontWeight: fontWeight,
+      fontSize: fontTitle,
+      letterSpacing: 0.18,
+      color: color,
+    );
+  }
+
+  static const String fontNameSecondary = 'OpenSans';
+  static const String fontName = 'Raleway';
+  static const double fontSubtitle = 14;
+
+  static const double shimmerTitle = fontTitle + 3;
+  static const double fontTitle = 18;
+  static const double fontBody = 16;
+  static TextStyle titlePrimary = title(fontName);
+
+  //size
+  static const double sizeIconNav = 24;
+  static const double sizeIconInline = 28;
+
+  //dialog
+  static TextStyle dialogText =
+      body(fontBody, 0.1, color: darkText, fontFamily: fontNameSecondary);
+
+  //toast
+  static TextStyle toastTextMisc =
+      body(fontBody, 0.2, fontFamily: fontNameSecondary, color: white);
+
+  //body
+  static TextStyle body(double fontSize, double letterSpacing,
+      {FontWeight fontWeight = FontWeight.w400,
+      String fontFamily = fontName,
+      Color color = darkText}) {
+    return TextStyle(
+      overflow: TextOverflow.visible,
+      fontFamily: fontFamily,
+      fontWeight: fontWeight,
+      fontSize: fontSize,
+      letterSpacing: letterSpacing,
+      color: color,
+    );
+  }
+
+  //pop-up constant
+  static const double dialogElevation = 10;
+  static const double dialogTextGap = 42;
+  static TextStyle dialogSubTitleTextWarning =
+      body(fontSubtitle, 0.1, color: Colors.red, fontFamily: fontNameSecondary);
+
+  //button
+  static TextStyle buttonAcceptCustom({color = darkText}) {
+    return TextStyle(
+      fontFamily: fontName,
+      fontWeight: FontWeight.bold,
+      fontSize: fontBody,
+      letterSpacing: -0.05,
+      color: color,
+    );
+  }
 }

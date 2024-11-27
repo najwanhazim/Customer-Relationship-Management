@@ -1,4 +1,6 @@
 import 'package:crm/view/contact/contact_home_page.dart';
+import 'package:crm/view/dashboard/dashboard_individual.dart';
+import 'package:crm/view/drawer/navigation_home_screen.dart';
 import 'package:crm/view/leads/leads_home_page.dart';
 import 'package:crm/view/login/login.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +23,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/' : (context) => Login(),
+        '/home' : (context) => DashboardIndividual(),
+        '/navigation' : (context) => NavigationHomeScreen()
       },
       
     );

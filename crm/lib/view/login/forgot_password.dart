@@ -71,7 +71,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         children: [
                           FilledButton(
                             onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => LoginNotification(title: AppString.newPassTitle, subtitle: AppString.newPassSubtitle,)));
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginNotification(title: AppString.newPassTitle, subtitle: AppString.newPassSubtitle,)));
                             },
                             style: ButtonStyle(
                               backgroundColor:

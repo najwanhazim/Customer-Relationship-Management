@@ -1,6 +1,7 @@
 import 'package:crm/utils/app_string_constant.dart';
 import 'package:crm/utils/app_theme_constant.dart';
 import 'package:crm/utils/app_widget_constant.dart';
+import 'package:crm/view/dashboard/dashboard_individual.dart';
 import 'package:crm/view/login/forgot_password.dart';
 import 'package:crm/view/login/sign_up.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +74,12 @@ class _LoginState extends State<Login> {
                             ),
                             FilledButton(
                               onPressed: () {
-                                // Add your logic
+                                Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                '/navigation',
+                                (Route<dynamic> route) =>
+                                    false, // Remove all previous routes
+                              );
                               },
                               style: ButtonStyle(
                                 backgroundColor:
