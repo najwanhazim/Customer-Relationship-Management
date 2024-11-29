@@ -172,7 +172,8 @@ class _DrawerUserControllerState extends State<DrawerUserController>
                                 child: //Icon(widget.icon),
                                     AnimatedIcon(
                                         icon: widget.animatedIconData,
-                                        progress: iconAnimationController),
+                                        progress: iconAnimationController,
+                                        color: Colors.white,),
                               ),
                               onTap: () {
                                 FocusScope.of(context)

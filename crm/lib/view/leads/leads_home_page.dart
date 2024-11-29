@@ -243,36 +243,10 @@ class _LeadsHomePageState extends State<LeadsHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return DashboardIndividual();
-                    }));
-                  },
-                  child: Text(
-                    'Home',
-                    style: TextStyle(color: AppTheme.redMaroon, fontSize: 18),
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    addLeads(context, contactForms, allContact, leadLabel,
-                        leadForms);
-                    // Navigator.push(context,
-                    //     MaterialPageRoute(builder: (context) {
-                    //   return NewContact();
-                    // }));
-                  },
-                  icon: Icon(Icons.add),
-                  color: AppTheme.redMaroon,
-                  iconSize: 35,
-                ),
-              ],
-            ),
+            secondAppBar(
+                context,
+                () => addLeads(
+                    context, contactForms, allContact, leadLabel, leadForms)),
             const Padding(
               padding: AppTheme.padding3,
               child: Text(
@@ -417,12 +391,13 @@ class _LeadsHomePageState extends State<LeadsHomePage> {
                 bottomSheet(
                     context,
                     ViewLeads(
-                        lead: lead,
-                        allContact: allContact,
-                        allTeam: allTeam,
-                        contactForms: contactForms,
-                        leadForms: leadForms,
-                        leadLabel: leadLabel,));
+                      lead: lead,
+                      allContact: allContact,
+                      allTeam: allTeam,
+                      contactForms: contactForms,
+                      leadForms: leadForms,
+                      leadLabel: leadLabel,
+                    ));
               },
               title: Text(
                 lead.title,

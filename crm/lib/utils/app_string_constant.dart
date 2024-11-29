@@ -46,7 +46,7 @@ class AppString {
   //Login
   static const String login = 'Login';
   static const String newPassTitle = 'New Password sent';
-  static const String newPassSubtitle = 'Please check your emial to received your new password';
+  static const String newPassSubtitle = 'Please check your email to received your new password';
   static const String newSignUpTitle = 'Your account is set';
 
   //drawer
@@ -63,4 +63,12 @@ class AppString {
   static const flagIcon = 'assets/icon/flag_icon.svg';
   static const diaryIcon = 'assets/icon/history_icon.svg';
   static const iconWarning = 'assets/icon/warning-regular.svg';
+
+  //team management
+  static const removetext = 'Remove User frome the Team';
+  static const removeDesc = 'the user will no longer able to access your contact and leads';
+  static const newMember = 'New Member';
+
+  //diary
+  static const appointmentTitle = 'Appointment/Task';
 }

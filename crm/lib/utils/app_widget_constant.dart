@@ -15,9 +15,11 @@ import 'package:simple_speed_dial/simple_speed_dial.dart';
 import '../db/contact.dart';
 import '../view/contact/add_contact.dart';
 import '../view/contact/view_contact.dart';
+import '../view/dashboard/dashboard_individual.dart';
 import '../view/dashboard/notification.dart';
 import '../view/leads/edit_leads.dart';
 import '../view/meeting_notes/add_meeting_notes.dart';
+import '../view/team_management.dart/add_team.dart';
 import 'custom_icon.dart';
 
 //----------------------------------------button----------------------------------------
@@ -82,7 +84,7 @@ Widget pageTitle(String title) {
   );
 }
 
-//----------------------------------------functions----------------------------------------
+//----------------------------------------app bar----------------------------------------
 AppBar appBarPage(BuildContext context) {
   return AppBar(
     elevation: 0.0,
@@ -102,16 +104,40 @@ AppBar appBarPage(BuildContext context) {
       CircleAvatar(
         radius: AppTheme.radius15,
         backgroundImage: NetworkImage(
-            'https://www.google.com/imgres?q=profile&imgurl=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F003%2F715%2F527%2Fnon_2x%2Fpicture-profile-icon-male-icon-human-or-people-sign-and-symbol-vector.jpg&imgrefurl=https%3A%2F%2Fwww.vecteezy.com%2Fvector-art%2F3715527-picture-profile-icon-male-icon-human-or-people-sign-and-symbol-vector&docid=jV8noe8xdKAwbM&tbnid=3nPRi6_QfknfYM&vet=12ahUKEwiLuJX539WJAxXUSmwGHcRzBiIQM3oECFoQAA..i&w=980&h=980&hcb=2&ved=2ahUKEwiLuJX539WJAxXUSmwGHcRzBiIQM3oECFoQAA'),
-        // child: GestureDetector(
-        //   onTap: () {
-        //     Navigator.pushNamedAndRemoveUntil(
-        //       context,
-        //       '/navigation',
-        //       (Route<dynamic> route) => false, // Remove all previous routes
-        //     );
-        //   },
-        // ),
+            'https://static.vecteezy.com/system/resources/previews/003/715/527/non_2x/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-vector.jpg'),
+      ),
+    ],
+  );
+}
+
+Widget secondAppBar(BuildContext context, VoidCallback function) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      TextButton(
+        onPressed: () {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/navigation',
+            (Route<dynamic> route) => false, // Remove all previous routes
+          );
+        },
+        child: Text(
+          'Home',
+          style: TextStyle(color: AppTheme.redMaroon, fontSize: 18),
+        ),
+      ),
+      IconButton(
+        onPressed: () {
+          function();
+          // Navigator.push(context,
+          //     MaterialPageRoute(builder: (context) {
+          //   return NewContact();
+          // }));
+        },
+        icon: Icon(Icons.add),
+        color: AppTheme.redMaroon,
+        iconSize: 35,
       ),
     ],
   );
@@ -227,6 +253,7 @@ SpeedDial speedDial() {
     openBackgroundColor: AppTheme.red,
     closedForegroundColor: AppTheme.white,
     openForegroundColor: Colors.white24,
+    labelsBackgroundColor: AppTheme.red,
     speedDialChildren: [
       speedDialChild(Icons.directions_walk, AppString.action),
       speedDialChild(Icons.event, AppString.meeting),
@@ -643,6 +670,25 @@ Future editLeads(BuildContext context, List<FormGroup> forms,
       });
 }
 
+//----------------------------------------team management----------------------------------------
+Future addTeam(BuildContext context) async {
+  print('opening add team');
+  try {
+    return showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+        ),
+        backgroundColor: AppTheme.grey,
+        isScrollControlled: true,
+        builder: (context) {
+          return AddTeam();
+        });
+  } catch (e) {
+    print("Error showing modal: $e");
+  }
+}
+
 //----------------------------------------bottom sheet----------------------------------------
 Future bottomSheet(BuildContext context, Widget widget) {
   return showModalBottomSheet(
@@ -726,7 +772,8 @@ Widget dialogTitleIcon(String title, String iconString, Color iconColor) {
     children: [
       Padding(
         padding: const EdgeInsets.only(right: AppTheme.paddingGridDouble),
-        child: SvgPicture.asset(iconString, width: AppTheme.sizeIconInline, color: iconColor),
+        child: SvgPicture.asset(iconString,
+            width: AppTheme.sizeIconInline, color: iconColor),
       ),
       Expanded(child: Text(title, style: AppTheme.titlePrimary)),
     ],

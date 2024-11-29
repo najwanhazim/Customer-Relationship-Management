@@ -238,35 +238,7 @@ class _ContactHomePageState extends State<ContactHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return DashboardIndividual();
-                    }));
-                  },
-                  child: Text(
-                    'Home',
-                    style: TextStyle(color: AppTheme.redMaroon, fontSize: 18),
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    addContact(context, contactForms);
-                    // Navigator.push(context,
-                    //     MaterialPageRoute(builder: (context) {
-                    //   return NewContact();
-                    // }));
-                  },
-                  icon: Icon(Icons.add),
-                  color: AppTheme.redMaroon,
-                  iconSize: 35,
-                ),
-              ],
-            ),
+            secondAppBar(context, () => addContact(context, contactForms)),
             const Padding(
               padding: AppTheme.padding3,
               child: Text(

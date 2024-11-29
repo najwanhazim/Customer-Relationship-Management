@@ -75,7 +75,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                   Padding(
                     padding: const EdgeInsets.only(top: 8, left: 4, right: 4),
                     child: Row(
-                      children: const [
+                      children:  [
                         // FutureBuilder(
                         //   future: db.getCurrentUser(),
                         //   builder: (BuildContext context,
@@ -100,6 +100,14 @@ class _HomeDrawerState extends State<HomeDrawer> {
                           backgroundImage: NetworkImage(
                               'https://www.google.com/imgres?q=profile&imgurl=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F003%2F715%2F527%2Fnon_2x%2Fpicture-profile-icon-male-icon-human-or-people-sign-and-symbol-vector.jpg&imgrefurl=https%3A%2F%2Fwww.vecteezy.com%2Fvector-art%2F3715527-picture-profile-icon-male-icon-human-or-people-sign-and-symbol-vector&docid=jV8noe8xdKAwbM&tbnid=3nPRi6_QfknfYM&vet=12ahUKEwiLuJX539WJAxXUSmwGHcRzBiIQM3oECFoQAA..i&w=980&h=980&hcb=2&ved=2ahUKEwiLuJX539WJAxXUSmwGHcRzBiIQM3oECFoQAA'),
                         ),
+                        SizedBox(width: 20,),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            pageTitle('Naiem'),
+                            Text('Product Manager')
+                          ],
+                        )
                       ],
                     ),
                   ),
@@ -110,10 +118,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
           const SizedBox(
             height: 4,
           ),
-          Divider(
-            height: 1,
-            color: AppTheme.grey.withOpacity(0.6),
-          ),
+          AppTheme.divider,
           Expanded(
             child: ListView.builder(
               physics: const BouncingScrollPhysics(),
@@ -124,10 +129,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
               },
             ),
           ),
-          Divider(
-            height: 1,
-            color: AppTheme.grey.withOpacity(0.6),
-          ),
+          AppTheme.divider,
           Column(
             children: <Widget>[
               ListTile(

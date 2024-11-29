@@ -24,6 +24,7 @@ class AppTheme {
   static const double radius15 = 15;
   static const double radius30 = 30;
   static const double radius50 = 50;
+  static const double radius80 = 80;
 
   //padding
   static const EdgeInsets padding8 = EdgeInsets.all(8.0);
@@ -132,6 +133,14 @@ class AppTheme {
       color: color,
     );
   }
+  static const profileFont = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 15,
+  );
+  static const listTileFont = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 10,
+  );
 
   static const String fontNameSecondary = 'OpenSans';
   static const String fontName = 'Raleway';
