@@ -71,4 +71,7 @@ class AppString {
 
   //diary
   static const appointmentTitle = 'Appointment/Task';
+  static const newAppointment = 'New Appointments';
+  static const appointmentDetails = 'Appointment Details';
+  static const editAppointment = 'Edit Appointments';
 }

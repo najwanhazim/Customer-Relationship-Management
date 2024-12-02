@@ -57,25 +57,14 @@ class _ViewLeadsState extends State<ViewLeads> {
                   children: [
                     backButton(context),
                     pageTitle(AppString.leadDetail),
-                    TextButton(
-                      onPressed: () {
-                        bottomSheet(
-                            context,
-                            EditLeads(
-                              allContacts: widget.allContact,
-                              contactForms: widget.contactForms,
-                              leadForms: widget.leadForms,
-                              leadLabel: widget.leadLabel,
-                            ));
-                      },
-                      child: Text(
-                        AppString.editText,
-                        style: TextStyle(
-                          color: AppTheme.redMaroon,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
+                    editButton(
+                        context,
+                        EditLeads(
+                          allContacts: widget.allContact,
+                          contactForms: widget.contactForms,
+                          leadForms: widget.leadForms,
+                          leadLabel: widget.leadLabel,
+                        )),
                   ],
                 ),
               ),
@@ -139,11 +128,14 @@ class _ViewLeadsState extends State<ViewLeads> {
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18,
-                                          color: widget.lead.status == 'Prospect'
+                                          color: widget.lead.status ==
+                                                  'Prospect'
                                               ? Colors.green
-                                              : widget.lead.status == 'Opportunity'
+                                              : widget.lead.status ==
+                                                      'Opportunity'
                                                   ? Colors.blue
-                                                  : widget.lead.status == 'Sales Won'
+                                                  : widget.lead.status ==
+                                                          'Sales Won'
                                                       ? Colors.purple
                                                       : widget.lead.status ==
                                                               'Sales Lost'
@@ -175,29 +167,7 @@ class _ViewLeadsState extends State<ViewLeads> {
                                   SizedBox(
                                     height:
                                         100, // Set a fixed height to accommodate the horizontal ListView
-                                    child: ListView.builder(
-                                      scrollDirection: Axis
-                                          .horizontal, // Enable horizontal scrolling
-                                      itemCount: 10,
-                                      itemBuilder: (context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0),
-                                          child: Column(
-                                            children: [
-                                              CircleAvatar(
-                                                radius: AppTheme.radius30,
-                                                backgroundColor: Colors.blue,
-                                              ),
-                                              const SizedBox(
-                                                  height:
-                                                      5), // Space between avatar and text
-                                              Text('Aiman'),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    ),
+                                    child: attendeesGenerator(),
                                   ),
                                 ],
                               ),

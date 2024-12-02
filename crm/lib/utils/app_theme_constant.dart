@@ -133,14 +133,18 @@ class AppTheme {
       color: color,
     );
   }
+
   static const profileFont = TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: 15,
   );
   static const listTileFont = TextStyle(
     fontWeight: FontWeight.bold,
-    fontSize: 10,
+    fontSize: 16,
   );
+  static const subListTileFont = TextStyle(fontSize: 14, color: Colors.grey);
+  static const titleContainer = TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold);
+  static const subTitleContainer = TextStyle(color: Colors.grey, fontSize: 15);
 
   static const String fontNameSecondary = 'OpenSans';
   static const String fontName = 'Raleway';

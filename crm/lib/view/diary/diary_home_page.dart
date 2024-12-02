@@ -1,6 +1,10 @@
 import 'package:crm/utils/app_string_constant.dart';
+import 'package:crm/view/diary/add_appointment.dart';
+import 'package:crm/view/diary/task_page.dart';
+import 'package:crm/view/diary/view_appointment.dart';
 import 'package:crm/view/meeting_notes/pick_date.dart';
 import 'package:flutter/material.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../utils/app_theme_constant.dart';
@@ -18,6 +22,33 @@ class _DiaryHomePageState extends State<DiaryHomePage> {
   CalendarFormat calendarFormat = CalendarFormat.month;
   DateTime focusedDay = DateTime.now();
   DateTime? selectedDate;
+
+  final List<String> allContact = [
+    'Ammar',
+    'Azri',
+    'Naiem',
+    'Din',
+    'Najwan',
+  ];
+
+  final List<FormGroup> contactForms = [
+    FormGroup({
+      'firstName': FormControl<String>(),
+      'lastName': FormControl<String>(),
+      'company': FormControl<String>(),
+      'position': FormControl<String>(),
+    }),
+    FormGroup({
+      'phoneNumber': FormControl<String>(),
+      'email': FormControl<String>(),
+    }),
+    FormGroup({
+      'salutation': FormControl<String>(),
+      'contactType': FormControl<String>(),
+      'source': FormControl<String>(),
+      'remarks': FormControl<String>(),
+    }),
+  ];
 
   void onDaySelected(DateTime _selectedDate, DateTime _focusedDay) {
     setState(() {
@@ -40,9 +71,37 @@ class _DiaryHomePageState extends State<DiaryHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            secondAppBar(context, () {
-              addTeam(context);
-            }),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                homeButton(context),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.folder),
+                      color: Colors.grey,
+                      iconSize: 20,
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                TaskPage(), // Correctly return the `Task` widget
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.menu),
+                      color: Colors.grey,
+                      iconSize: 20,
+                    ),
+                  ],
+                ),
+              ],
+            ),
             const Padding(
               padding: AppTheme.padding3,
               child: Text(
@@ -52,42 +111,44 @@ class _DiaryHomePageState extends State<DiaryHomePage> {
             ),
             searchBar(search),
             Container(
-                decoration: AppTheme.container,
-                padding: AppTheme.padding8,
-                margin: AppTheme.padding10,
-                child: TableCalendar(
-                  firstDay: DateTime.utc(2024, 11, 1),
-                  lastDay: DateTime.utc(2030, 11, 24),
-                  focusedDay: focusedDay,
-                  selectedDayPredicate: (day) => isSameDay(selectedDate, day),
-                  calendarFormat: calendarFormat,
-                  startingDayOfWeek: StartingDayOfWeek.monday,
-                  onDaySelected: onDaySelected,
-                  calendarStyle: CalendarStyle(
-                    outsideDaysVisible: false,
-                    defaultTextStyle: const TextStyle(fontSize: 12),
-                    weekendTextStyle:
-                        const TextStyle(fontSize: 12, color: Colors.red),
-                    selectedDecoration: const BoxDecoration(
-                      color: Colors.blue,
-                      shape: BoxShape.circle,
-                    ),
-                    todayDecoration: BoxDecoration(
-                      color: AppTheme.redMaroon,
-                      shape: BoxShape.circle,
-                    ),
+              decoration: AppTheme.container,
+              padding: AppTheme.padding8,
+              margin: AppTheme.padding10,
+              child: TableCalendar(
+                firstDay: DateTime.utc(2024, 11, 1),
+                lastDay: DateTime.utc(2030, 11, 24),
+                focusedDay: focusedDay,
+                selectedDayPredicate: (day) => isSameDay(selectedDate, day),
+                calendarFormat: calendarFormat,
+                startingDayOfWeek: StartingDayOfWeek.monday,
+                onDaySelected: onDaySelected,
+                rowHeight: 40,
+                calendarStyle: CalendarStyle(
+                  outsideDaysVisible: false,
+                  defaultTextStyle: const TextStyle(fontSize: 12),
+                  weekendTextStyle:
+                      const TextStyle(fontSize: 12, color: Colors.red),
+                  selectedDecoration: const BoxDecoration(
+                    color: Colors.blue,
+                    shape: BoxShape.circle,
                   ),
-                  onFormatChanged: (format) {
-                    if (calendarFormat != format) {
-                      setState(() {
-                        calendarFormat = format;
-                      });
-                    }
-                  },
-                  onPageChanged: (focusedDay) {
-                    focusedDay = focusedDay;
-                  },
-                )),
+                  todayDecoration: BoxDecoration(
+                    color: AppTheme.redMaroon,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                onFormatChanged: (format) {
+                  if (calendarFormat != format) {
+                    setState(() {
+                      calendarFormat = format;
+                    });
+                  }
+                },
+                onPageChanged: (focusedDay) {
+                  focusedDay = focusedDay;
+                },
+              ),
+            ),
             Expanded(
               child: Container(
                 decoration: AppTheme.container,
@@ -95,15 +156,25 @@ class _DiaryHomePageState extends State<DiaryHomePage> {
                 margin: AppTheme.padding10,
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          AppString.appointmentTitle,
-                          style: AppTheme.profileFont,
-                        ),
-                        addButton(() {})
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            AppString.appointmentTitle,
+                            style: AppTheme.profileFont,
+                          ),
+                          addButton(() {
+                            bottomSheet(
+                                context,
+                                AddAppointment(
+                                  forms: contactForms,
+                                  allContacts: allContact,
+                                ));
+                          })
+                        ],
+                      ),
                     ),
                     Expanded(child: appointmentGenerator())
                   ],
@@ -147,6 +218,27 @@ class _DiaryHomePageState extends State<DiaryHomePage> {
               'appointment 1',
               style: AppTheme.listTileFont,
             ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text(
+                  'time',
+                  style: AppTheme.subListTileFont,
+                ),
+                Text(
+                  'location',
+                  style: AppTheme.subListTileFont,
+                )
+              ],
+            ),
+            onTap: () {
+              bottomSheet(
+                  context,
+                  ViewAppointment(
+                    forms: contactForms,
+                    allContacts: allContact,
+                  ));
+            },
           );
         });
   }

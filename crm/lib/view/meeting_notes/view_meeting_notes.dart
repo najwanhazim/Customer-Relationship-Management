@@ -54,26 +54,15 @@ class _ViewMeetingNotesState extends State<ViewMeetingNotes> {
                   children: [
                     backButton(context),
                     pageTitle(AppString.meetingDetail),
-                    TextButton(
-                      onPressed: () {
-                        bottomSheet(
-                            context,
-                            EditMeetingNotes(
-                              allContacts: widget.allContacts,
-                              allTeam: widget.allTeam,
-                              contactForms: widget.contactForms,
-                              leadForms: widget.leadForms,
-                              leadLabel: widget.leadLabel,
-                            ));
-                      },
-                      child: Text(
-                        AppString.editText,
-                        style: TextStyle(
-                          color: AppTheme.redMaroon,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
+                    editButton(
+                        context,
+                        EditMeetingNotes(
+                          allContacts: widget.allContacts,
+                          allTeam: widget.allTeam,
+                          contactForms: widget.contactForms,
+                          leadForms: widget.leadForms,
+                          leadLabel: widget.leadLabel,
+                        ))
                   ],
                 ),
               ),

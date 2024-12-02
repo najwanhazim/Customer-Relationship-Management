@@ -11,7 +11,11 @@ import '../meeting_notes/add_meeting_notes.dart';
 
 class ViewContact extends StatefulWidget {
   const ViewContact(
-      {Key? key, required this.contact, required this.contactForms, required this.leadForms, required this.leadLabel})
+      {Key? key,
+      required this.contact,
+      required this.contactForms,
+      required this.leadForms,
+      required this.leadLabel})
       : super(key: key);
 
   final Contact contact;
@@ -61,23 +65,10 @@ class _ViewContactState extends State<ViewContact> {
                   backButton(context),
                   pageTitle(
                       '${widget.contact.salutation} ${widget.contact.firstName} ${widget.contact.lastName}'),
-                  TextButton(
-                    onPressed: () {
-                      bottomSheet(
-                        context,
-                        EditContact(
-                            contact: widget.contact,
-                            forms: widget.contactForms),
-                      );
-                    },
-                    child: Text(
-                      AppString.editText,
-                      style: TextStyle(
-                        color: AppTheme.redMaroon,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
+                  editButton(
+                      context,
+                      EditContact(
+                          contact: widget.contact, forms: widget.contactForms))
                 ],
               ),
             ),
@@ -147,7 +138,12 @@ class _ViewContactState extends State<ViewContact> {
                       Container(
                         decoration: BoxDecoration(color: Colors.white),
                         child: meetingHistory(
-                            context, allContact, allTeam, widget.contactForms, widget.leadForms, widget.leadLabel),
+                            context,
+                            allContact,
+                            allTeam,
+                            widget.contactForms,
+                            widget.leadForms,
+                            widget.leadLabel),
                       ),
                       // Follow Up Header
                       followUpHeader(() => bottomSheet(

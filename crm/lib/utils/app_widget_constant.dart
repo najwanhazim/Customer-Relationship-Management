@@ -72,6 +72,37 @@ Widget backButton(BuildContext context) {
   );
 }
 
+Widget editButton(BuildContext context, Widget widget) {
+  return TextButton(
+    onPressed: () {
+      bottomSheet(context, widget);
+    },
+    child: Text(
+      AppString.editText,
+      style: TextStyle(
+        color: AppTheme.redMaroon,
+        fontSize: 18,
+      ),
+    ),
+  );
+}
+
+Widget homeButton(BuildContext context) {
+  return TextButton(
+    onPressed: () {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/navigation',
+        (Route<dynamic> route) => false, // Remove all previous routes
+      );
+    },
+    child: Text(
+      'Home',
+      style: TextStyle(color: AppTheme.redMaroon, fontSize: 18),
+    ),
+  );
+}
+
 //----------------------------------------page title----------------------------------------
 Widget pageTitle(String title) {
   return Text(
@@ -137,7 +168,7 @@ Widget secondAppBar(BuildContext context, VoidCallback function) {
         },
         icon: Icon(Icons.add),
         color: AppTheme.redMaroon,
-        iconSize: 35,
+        iconSize: 30,
       ),
     ],
   );
@@ -285,7 +316,9 @@ Widget inputField(String title,
         textAlignVertical: longInput ? TextAlignVertical.top : null,
         decoration: InputDecoration(
           labelText: hintText ? null : title,
+          labelStyle: TextStyle(color: Colors.black),
           hintText: hintText ? title : null,
+          hintStyle: TextStyle(color: Colors.black),
           filled: true,
           fillColor: AppTheme.white,
           alignLabelWithHint: true,
@@ -394,6 +427,49 @@ Widget displayInField(
             isShow ? addButton(buttonFunction) : const SizedBox.shrink(),
           ],
         ),
+      ),
+    ),
+  );
+}
+
+Widget pickDateTime(BuildContext context, String? label,
+    {Widget? timePicker, Widget? datePicker}) {
+  return Padding(
+    padding: AppTheme.paddingTop,
+    child: Container(
+      width: MediaQuery.of(context).size.width,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(10),
+          bottom: Radius.circular(10),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15, 15, 0, 15),
+            child: Text(
+              label ?? '',
+              style: const TextStyle(color: Colors.black),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(right: 8),
+                child: timePicker,
+              ),
+              Padding(
+                padding: EdgeInsets.only(right: 8),
+                child: datePicker,
+              ),
+            ],
+          )
+        ],
       ),
     ),
   );
@@ -629,6 +705,28 @@ Future viewContact(BuildContext context, Contact contact, List<FormGroup> forms,
           leadLabel: leadLabel,
         );
       });
+}
+
+Widget attendeesGenerator() {
+  return ListView.builder(
+    scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+    itemCount: 10,
+    itemBuilder: (context, index) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Column(
+          children: [
+            CircleAvatar(
+              radius: AppTheme.radius30,
+              backgroundColor: Colors.blue,
+            ),
+            const SizedBox(height: 5), // Space between avatar and text
+            Text('Aiman'),
+          ],
+        ),
+      );
+    },
+  );
 }
 
 //----------------------------------------leads----------------------------------------

@@ -26,7 +26,6 @@ class MyApp extends StatelessWidget {
         '/home' : (context) => DashboardIndividual(),
         '/navigation' : (context) => NavigationHomeScreen()
       },
-      
     );
   }
 }
