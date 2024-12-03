@@ -82,6 +82,10 @@ class _EditLeadsState extends State<EditLeads> {
                               items: widget.allContacts,
                             ),
                             singleDropdown(context, widget.leadLabel[8]),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: deleteButton(context),
+                            )
                           ],
                         ),
                       ),

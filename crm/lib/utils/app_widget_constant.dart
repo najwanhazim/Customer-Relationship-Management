@@ -107,6 +107,44 @@ Widget homeButton(BuildContext context) {
   );
 }
 
+Widget deleteButton(BuildContext context) {
+  return Expanded(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        GestureDetector(
+          onTap: () {
+            showAppDialog(
+                      context,
+                      alertDialog(context, deleteContent, "Delete",
+                          "Are you sure you want to delete?"));
+          },
+          child: Container(
+            padding: AppTheme.padding10,
+            decoration: const BoxDecoration(
+              color: Colors.red,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(10),
+                bottom: Radius.circular(10),
+              ),
+            ),
+            child: const Center(
+              child: Text(
+                'Delete',
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+void deleteContent() {}
+
 //----------------------------------------page title----------------------------------------
 Widget pageTitle(String title) {
   return Text(
@@ -579,6 +617,43 @@ Widget singleDropdown(BuildContext context, String labelText,
 }
 
 //----------------------------------------meeting----------------------------------------
+// Widget meetingHistory(
+//     BuildContext context,
+//     List<String> allContacts,
+//     List<String> allTeam,
+//     List<FormGroup> contactForms,
+//     FormGroup leadForms,
+//     List<String> leadLabel) {
+//   List<Map<String, String>> data = [
+//     {'date': '15th October 2024', 'detail': 'Some details about the meeting.'},
+//     {'date': '16th October 2024', 'detail': 'Another meeting detail.'},
+//   ];
+
+//   return SizedBox(
+//     height: 150,
+//     child: ListView.builder(
+//         itemCount: data.length,
+//         itemBuilder: (context, index) {
+//           return ListTile(
+//             title: Text(data[index]['date']!),
+//             subtitle: Text(data[index]['detail']!),
+//             onTap: () {
+//               bottomSheet(
+//                   context,
+//                   ViewMeetingNotes(
+//                     meetingData: data[index],
+//                     allContacts: allContacts,
+//                     allTeam: allTeam,
+//                     contactForms: contactForms,
+//                     leadForms: leadForms,
+//                     leadLabel: leadLabel,
+//                   ));
+//             },
+//           );
+//         }),
+//   );
+// }
+
 Widget meetingHistory(
     BuildContext context,
     List<String> allContacts,
@@ -589,30 +664,36 @@ Widget meetingHistory(
   List<Map<String, String>> data = [
     {'date': '15th October 2024', 'detail': 'Some details about the meeting.'},
     {'date': '16th October 2024', 'detail': 'Another meeting detail.'},
+    {'date': '16th October 2024', 'detail': 'Another meeting detail.'},
+  ];
+
+  final outerListChildren = <SliverList>[
+    SliverList(
+      delegate:
+          SliverChildBuilderDelegate(childCount: data.length, (context, index) {
+        return ListTile(
+          title: Text(data[index]['date']!),
+          subtitle: Text(data[index]['detail']!),
+          onTap: () {
+            bottomSheet(
+                context,
+                ViewMeetingNotes(
+                  meetingData: data[index],
+                  allContacts: allContacts,
+                  allTeam: allTeam,
+                  contactForms: contactForms,
+                  leadForms: leadForms,
+                  leadLabel: leadLabel,
+                ));
+          },
+        );
+      }),
+    )
   ];
 
   return SizedBox(
-    height: 150,
-    child: ListView.builder(
-        itemCount: data.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(data[index]['date']!),
-            subtitle: Text(data[index]['detail']!),
-            onTap: () {
-              bottomSheet(
-                  context,
-                  ViewMeetingNotes(
-                    meetingData: data[index],
-                    allContacts: allContacts,
-                    allTeam: allTeam,
-                    contactForms: contactForms,
-                    leadForms: leadForms,
-                    leadLabel: leadLabel,
-                  ));
-            },
-          );
-        }),
+    height: 200,
+    child: CustomScrollView(slivers: outerListChildren),
   );
 }
 
@@ -633,6 +714,60 @@ Widget meetingHeader(VoidCallback function) {
 }
 
 //----------------------------------------follow up action----------------------------------------
+// Widget followUpAction(
+//     BuildContext context,
+//     List<String> allContacts,
+//     List<String> allTeam,
+//     List<FormGroup> contactForms,
+//     FormGroup leadForms,
+//     List<String> leadLabel,
+//     {bool shrinkWrap = false}) {
+//   List<Map<String, String>> data = [
+//     {'detail': 'phone call by azri', 'status': 'Pending'},
+//     {'detail': 'phone call by azri', 'status': 'Pending'},
+//     {'detail': 'phone call by azri', 'status': 'Pending'},
+//     {'detail': 'phone call by azri', 'status': 'Done'},
+//     {'detail': 'phone call by azri', 'status': 'Pending'},
+//     {'detail': 'phone call by azri', 'status': 'pending'},
+//   ];
+
+//   return ListView.builder(
+//       // physics: NeverScrollableScrollPhysics(),
+//       shrinkWrap: shrinkWrap,
+//       // primary: false,
+//       itemCount: data.length,
+//       itemBuilder: (context, index) {
+//         return Container(
+//           margin: AppTheme.padding3,
+//           decoration: const BoxDecoration(
+//             color: Colors.white,
+//             borderRadius: BorderRadius.all(
+//               Radius.circular(10),
+//             ),
+//           ),
+//           child: ListTile(
+//             title: Text(data[index]['detail']!),
+//             trailing: Text(data[index]['status']!,
+//                 style: TextStyle(
+//                     color: data[index]['status']! == 'pending' ||
+//                             data[index]['status']! == 'Pending'
+//                         ? Colors.red
+//                         : Colors.green)),
+//             onTap: () {
+//               bottomSheet(
+//                   context,
+//                   ViewAction(
+//                       allTeam: allTeam,
+//                       allContact: allContacts,
+//                       contactForms: contactForms,
+//                       leadForms: leadForms,
+//                       leadLabel: leadLabel));
+//             },
+//           ),
+//         );
+//       });
+// }
+
 Widget followUpAction(
     BuildContext context,
     List<String> allContacts,
@@ -650,12 +785,10 @@ Widget followUpAction(
     {'detail': 'phone call by azri', 'status': 'pending'},
   ];
 
-  return ListView.builder(
-      // physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: shrinkWrap,
-      // primary: false,
-      itemCount: data.length,
-      itemBuilder: (context, index) {
+  final outerListChildren = <SliverList>[
+    SliverList(
+      delegate:
+          SliverChildBuilderDelegate(childCount: data.length, (context, index) {
         return Container(
           margin: AppTheme.padding3,
           decoration: const BoxDecoration(
@@ -684,7 +817,13 @@ Widget followUpAction(
             },
           ),
         );
-      });
+      }),
+    )
+  ];
+
+  return CustomScrollView(
+    slivers: outerListChildren,
+  );
 }
 
 Widget followUpHeader(VoidCallback function) {

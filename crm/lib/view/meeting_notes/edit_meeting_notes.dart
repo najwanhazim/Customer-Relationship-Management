@@ -104,15 +104,21 @@ class _EditMeetingNotesState extends State<EditMeetingNotes> {
                                   leadForms: widget.leadForms,
                                   leadLabel: widget.leadLabel,
                                 ))),
-                            Container(
-                                child: followUpAction(
-                                    context,
-                                    shrinkWrap: true,
-                                    widget.allContacts,
-                                    widget.allTeam,
-                                    widget.contactForms,
-                                    widget.leadForms,
-                                    widget.leadLabel)),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height - 700,
+                              child: followUpAction(
+                                  context,
+                                  shrinkWrap: true,
+                                  widget.allContacts,
+                                  widget.allTeam,
+                                  widget.contactForms,
+                                  widget.leadForms,
+                                  widget.leadLabel),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: deleteButton(context),
+                            )
                           ],
                         ),
                       ),

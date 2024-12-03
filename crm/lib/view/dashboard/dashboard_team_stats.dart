@@ -1,3 +1,4 @@
+import 'package:crm/view/dashboard/dashboard_activity.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils/app_theme_constant.dart';
@@ -32,22 +33,37 @@ class _DashboardStatsState extends State<DashboardStats> {
     return Scaffold(
         backgroundColor: AppTheme.grey,
         appBar: appBarPage(context),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: AppTheme.padding8,
-              child: Text(
-                'Hi Naiem,',
-                style: TextStyle(
-                    fontFamily: 'roboto',
-                    fontSize: 35,
-                    fontWeight: FontWeight.bold),
-              ),
+        body: NotificationListener<ScrollNotification>(
+          onNotification: (ScrollNotification notification) {
+            if(notification is ScrollUpdateNotification) {
+              if(notification.scrollDelta! > 0) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardActivity()));
+              }
+              if(notification.scrollDelta! < 0){
+                Navigator.pop(context);
+              }
+            }
+            return true;
+          },
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: AppTheme.padding8,
+                  child: Text(
+                    'Hi Naiem,',
+                    style: TextStyle(
+                        fontFamily: 'roboto',
+                        fontSize: 35,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                pieChart(context, dataMap, 'Leads', colorList),
+                pieChart(context, dataMap, 'Meetings', colorList),
+              ],
             ),
-            pieChart(context, dataMap, 'Leads', colorList),
-            pieChart(context, dataMap, 'Meetings', colorList),
-          ],
+          ),
         ),
         floatingActionButton: speedDial());
   }

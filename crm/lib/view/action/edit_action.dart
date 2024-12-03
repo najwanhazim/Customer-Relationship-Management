@@ -77,7 +77,8 @@ class _EditActionState extends State<EditAction> {
                                 widget.allContact,
                                 widget.leadLabel,
                                 widget.leadForms)),
-                        inputField('Remarks', longInput: true)
+                        inputField('Remarks', longInput: true),
+                        deleteButton(context)
                       ],
                     ),
                   ),

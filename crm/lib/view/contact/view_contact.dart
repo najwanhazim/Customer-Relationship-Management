@@ -54,7 +54,7 @@ class _ViewContactState extends State<ViewContact> {
           ),
         ),
         child: SizedBox(
-          height: 850,
+          height: 750,
           child: Column(
             children: [
               Container(
@@ -78,98 +78,106 @@ class _ViewContactState extends State<ViewContact> {
               Expanded(
                 child: Scaffold(
                   backgroundColor: Colors.transparent,
-                  body: Container(
-                    margin: AppTheme.padding10,
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                  body: SingleChildScrollView(
+                    child: Container(
+                      margin: AppTheme.padding10,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height,
+                        ),
+                        child: Column(
                           children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 15),
-                              decoration: const BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(30),
-                                  bottom: Radius.circular(30),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 5, horizontal: 15),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.blue,
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(30),
+                                      bottom: Radius.circular(30),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    '${widget.contact.contactType}',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
-                              ),
-                              child: Text(
-                                '${widget.contact.contactType}',
-                                style: TextStyle(color: Colors.white),
-                              ),
+                              ],
+                            ),
+                            // Profile Section
+                            CircleAvatar(
+                              radius: AppTheme.radius50,
+                              backgroundColor: Colors.blue,
+                            ),
+                            AppTheme.box20,
+                            displayInField(
+                              context,
+                              widget.contact.position,
+                            ),
+                            displayInField(
+                              context,
+                              widget.contact.phone,
+                            ),
+                            displayInField(
+                              context,
+                              widget.contact.email,
+                            ),
+                            displayInField(
+                              context,
+                              widget.contact.notes,
+                            ),
+                            AppTheme.box10,
+                            // Meeting Header Section
+                            meetingHeader(() {
+                              bottomSheet(
+                                  context,
+                                  AddMeetingNotes(
+                                    forms: widget.contactForms,
+                                    allContacts: allContact,
+                                    allTeam: allTeam,
+                                    leadForms: widget.leadForms,
+                                    leadLabel: widget.leadLabel,
+                                  ));
+                            }),
+                            // Meeting History Section
+                            Container(
+                              decoration: BoxDecoration(color: Colors.white),
+                              child: meetingHistory(
+                                  context,
+                                  allContact,
+                                  allTeam,
+                                  widget.contactForms,
+                                  widget.leadForms,
+                                  widget.leadLabel),
+                            ),
+                            // Follow Up Header
+                            followUpHeader(() => bottomSheet(
+                                  context,
+                                  AddFollowingAction(
+                                    allContact: allContact,
+                                    allTeam: allTeam,
+                                    contactForms: widget.contactForms,
+                                    leadForms: widget.leadForms,
+                                    leadLabel: widget.leadLabel,
+                                  ),
+                                )),
+                            // Follow Up Action Section
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height - 700,
+                              child: followUpAction(
+                                  context,
+                                  allContact,
+                                  allTeam,
+                                  widget.contactForms,
+                                  widget.leadForms,
+                                  widget.leadLabel),
                             ),
                           ],
                         ),
-                        // Profile Section
-                        CircleAvatar(
-                          radius: AppTheme.radius50,
-                          backgroundColor: Colors.blue,
-                        ),
-                        AppTheme.box20,
-                        displayInField(
-                          context,
-                          widget.contact.position,
-                        ),
-                        displayInField(
-                          context,
-                          widget.contact.phone,
-                        ),
-                        displayInField(
-                          context,
-                          widget.contact.email,
-                        ),
-                        displayInField(
-                          context,
-                          widget.contact.notes,
-                        ),
-                        AppTheme.box10,
-                        // Meeting Header Section
-                        meetingHeader(() {
-                          bottomSheet(
-                              context,
-                              AddMeetingNotes(
-                                forms: widget.contactForms,
-                                allContacts: allContact,
-                                allTeam: allTeam,
-                                leadForms: widget.leadForms,
-                                leadLabel: widget.leadLabel,
-                              ));
-                        }),
-                        // Meeting History Section
-                        Container(
-                          decoration: BoxDecoration(color: Colors.white),
-                          child: meetingHistory(
-                              context,
-                              allContact,
-                              allTeam,
-                              widget.contactForms,
-                              widget.leadForms,
-                              widget.leadLabel),
-                        ),
-                        // Follow Up Header
-                        followUpHeader(() => bottomSheet(
-                              context,
-                              AddFollowingAction(
-                                allContact: allContact,
-                                allTeam: allTeam,
-                                contactForms: widget.contactForms,
-                                leadForms: widget.leadForms,
-                                leadLabel: widget.leadLabel,
-                              ),
-                            )),
-                        // Follow Up Action Section
-                        Expanded(
-                          child: followUpAction(
-                              context,
-                              allContact,
-                              allTeam,
-                              widget.contactForms,
-                              widget.leadForms,
-                              widget.leadLabel),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),

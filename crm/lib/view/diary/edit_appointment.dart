@@ -78,7 +78,11 @@ class _EditAppointmentState extends State<EditAppointment> {
                                 buttonFunction: () =>
                                     addContact(context, widget.forms),
                                 items: widget.allContacts),
-                            inputField('Notes', longInput: true, hintText: true)
+                            inputField('Notes', longInput: true, hintText: true),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: deleteButton(context),
+                            )
                           ],
                         ),
                       ),

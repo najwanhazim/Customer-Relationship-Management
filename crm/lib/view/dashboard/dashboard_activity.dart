@@ -75,36 +75,48 @@ class _DashboardActivityState extends State<DashboardActivity> {
     return Scaffold(
       backgroundColor: AppTheme.grey,
       appBar: appBarPage(context),
-      body: Column(
-        children: [
-          const Padding(
-            padding: AppTheme.padding8,
-            child: Text(
-              'Hi Naiem,',
-              style: TextStyle(
-                  fontFamily: 'roboto',
-                  fontSize: 35,
-                  fontWeight: FontWeight.bold),
-            ),
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (ScrollNotification notification) {
+          if (notification is ScrollUpdateNotification) {
+            if (notification.scrollDelta! < 0) { //scroll upward
+              Navigator.pop(context);
+            }
+          }
+          return true;
+        },
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const Padding(
+                padding: AppTheme.padding8,
+                child: Text(
+                  'Hi Naiem,',
+                  style: TextStyle(
+                      fontFamily: 'roboto',
+                      fontSize: 35,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              AppTheme.box10,
+              tab(),
+              AppTheme.box30,
+              Expanded(
+                child: AnimatedSwitcher(
+                  duration: AppTheme.duration500,
+                  transitionBuilder: (child, animation) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    );
+                  },
+                  child: selectedTab == 1
+                      ? listMeeting(key: UniqueKey(), data: data1)
+                      : listMeeting(key: UniqueKey(), data: data2),
+                ),
+              )
+            ],
           ),
-          AppTheme.box10,
-          tab(),
-          AppTheme.box30,
-          Expanded(
-            child: AnimatedSwitcher(
-              duration: AppTheme.duration500,
-              transitionBuilder: (child, animation) {
-                return FadeTransition(
-                  opacity: animation,
-                  child: child,
-                );
-              },
-              child: selectedTab == 1
-                  ? listMeeting(key: UniqueKey(), data: data1)
-                  : listMeeting(key: UniqueKey(), data: data2),
-            ),
-          )
-        ],
+        ),
       ),
       floatingActionButton: speedDial(),
     );

@@ -71,151 +71,159 @@ class _ViewLeadsState extends State<ViewLeads> {
               Expanded(
                 child: Scaffold(
                   backgroundColor: Colors.transparent,
-                  body: Container(
-                    margin: AppTheme.padding10,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Container(
-                          decoration: AppTheme.container,
-                          child: Padding(
-                            padding: AppTheme.padding8,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  flex: 3,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      pageTitle(widget.lead.title),
-                                      Text(
-                                        widget.lead.portfolio,
-                                        style: TextStyle(
-                                            color: Colors.grey, fontSize: 15),
-                                        overflow: TextOverflow.ellipsis,
+                  body: SingleChildScrollView(
+                    child: Container(
+                      margin: AppTheme.padding10,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Container(
+                              decoration: AppTheme.container,
+                              child: Padding(
+                                padding: AppTheme.padding8,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          pageTitle(widget.lead.title),
+                                          Text(
+                                            widget.lead.portfolio,
+                                            style: TextStyle(
+                                                color: Colors.grey, fontSize: 15),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          Text(
+                                            widget.lead.scope,
+                                            style: TextStyle(
+                                                color: Colors.grey, fontSize: 15),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          Text(
+                                            '${widget.lead.client} - ${widget.lead.end_user}',
+                                            style: TextStyle(
+                                                color: Colors.grey, fontSize: 15),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          Text(
+                                            widget.lead.location,
+                                            style: TextStyle(
+                                                color: Colors.grey, fontSize: 15),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        widget.lead.scope,
-                                        style: TextStyle(
-                                            color: Colors.grey, fontSize: 15),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Text(
-                                        '${widget.lead.client} - ${widget.lead.end_user}',
-                                        style: TextStyle(
-                                            color: Colors.grey, fontSize: 15),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Text(
-                                        widget.lead.location,
-                                        style: TextStyle(
-                                            color: Colors.grey, fontSize: 15),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        widget.lead.status,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18,
-                                          color: widget.lead.status ==
-                                                  'Prospect'
-                                              ? Colors.green
-                                              : widget.lead.status ==
-                                                      'Opportunity'
-                                                  ? Colors.blue
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            widget.lead.status,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                              color: widget.lead.status ==
+                                                      'Prospect'
+                                                  ? Colors.green
                                                   : widget.lead.status ==
-                                                          'Sales Won'
-                                                      ? Colors.purple
+                                                          'Opportunity'
+                                                      ? Colors.blue
                                                       : widget.lead.status ==
-                                                              'Sales Lost'
-                                                          ? Colors.red
-                                                          : Colors.black,
-                                        ),
+                                                              'Sales Won'
+                                                          ? Colors.purple
+                                                          : widget.lead.status ==
+                                                                  'Sales Lost'
+                                                              ? Colors.red
+                                                              : Colors.black,
+                                            ),
+                                          ),
+                                          AppTheme.box70,
+                                          pageTitle(
+                                              'RM ${widget.lead.value.toStringAsFixed(2)}'),
+                                        ],
                                       ),
-                                      AppTheme.box70,
-                                      pageTitle(
-                                          'RM ${widget.lead.value.toStringAsFixed(2)}'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: AppTheme.paddingTop,
+                              child: Container(
+                                decoration: AppTheme.container,
+                                child: Padding(
+                                  padding: AppTheme.padding8,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      pageTitle(AppString.contactText),
+                                      AppTheme.box10,
+                                      SizedBox(
+                                        height:
+                                            100, // Set a fixed height to accommodate the horizontal ListView
+                                        child: attendeesGenerator(),
+                                      ),
                                     ],
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
-                        Padding(
-                          padding: AppTheme.paddingTop,
-                          child: Container(
-                            decoration: AppTheme.container,
-                            child: Padding(
-                              padding: AppTheme.padding8,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  pageTitle(AppString.contactText),
-                                  AppTheme.box10,
-                                  SizedBox(
-                                    height:
-                                        100, // Set a fixed height to accommodate the horizontal ListView
-                                    child: attendeesGenerator(),
+                            meetingHeader(() {
+                              bottomSheet(
+                                  context,
+                                  AddMeetingNotes(
+                                    forms: widget.contactForms,
+                                    allContacts: widget.allContact,
+                                    allTeam: widget.allTeam,
+                                    leadForms: widget.leadForms,
+                                    leadLabel: widget.leadLabel,
+                                  ));
+                            }),
+                            // Meeting History Section
+                            Container(
+                              decoration: BoxDecoration(color: Colors.pink[50]),
+                              child: meetingHistory(
+                                  context,
+                                  widget.allContact,
+                                  widget.allTeam,
+                                  widget.contactForms,
+                                  widget.leadForms,
+                                  widget.leadLabel),
+                            ),
+                            // Follow Up Header
+                            followUpHeader(() => bottomSheet(
+                                  context,
+                                  AddFollowingAction(
+                                    allContact: widget.allContact,
+                                    allTeam: widget.allTeam,
+                                    contactForms: widget.contactForms,
+                                    leadForms: widget.leadForms,
+                                    leadLabel: widget.leadLabel,
                                   ),
-                                ],
-                              ),
+                                )),
+                            // Follow Up Action Section
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height - 600,
+                              child: followUpAction(context, widget.allContact,
+                                widget.allTeam,
+                                widget.contactForms,
+                                widget.leadForms,
+                                widget.leadLabel),
                             ),
-                          ),
+                          ],
                         ),
-                        meetingHeader(() {
-                          bottomSheet(
-                              context,
-                              AddMeetingNotes(
-                                forms: widget.contactForms,
-                                allContacts: widget.allContact,
-                                allTeam: widget.allTeam,
-                                leadForms: widget.leadForms,
-                                leadLabel: widget.leadLabel,
-                              ));
-                        }),
-                        // Meeting History Section
-                        Container(
-                          decoration: BoxDecoration(color: Colors.pink[50]),
-                          child: meetingHistory(
-                              context,
-                              widget.allContact,
-                              widget.allTeam,
-                              widget.contactForms,
-                              widget.leadForms,
-                              widget.leadLabel),
-                        ),
-                        // Follow Up Header
-                        followUpHeader(() => bottomSheet(
-                              context,
-                              AddFollowingAction(
-                                allContact: widget.allContact,
-                                allTeam: widget.allTeam,
-                                contactForms: widget.contactForms,
-                                leadForms: widget.leadForms,
-                                leadLabel: widget.leadLabel,
-                              ),
-                            )),
-                        // Follow Up Action Section
-                        Expanded(
-                          child: followUpAction(context, widget.allContact,
-                            widget.allTeam,
-                            widget.contactForms,
-                            widget.leadForms,
-                            widget.leadLabel),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),

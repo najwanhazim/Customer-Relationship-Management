@@ -93,6 +93,10 @@ class _EditContactState extends State<EditContact> {
                               reactiveForm(context, widget.forms[0], label1, hintText: true),
                               reactiveForm(context, widget.forms[1], label2, hintText: true),
                               reactiveForm(context, widget.forms[2], label3, hintText: true),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: deleteButton(context),
+                              )
                             ],
                           ),
                         ),
