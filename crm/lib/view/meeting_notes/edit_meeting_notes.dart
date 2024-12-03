@@ -54,7 +54,7 @@ class _EditMeetingNotesState extends State<EditMeetingNotes> {
                   children: [
                     cancelButton(context),
                     pageTitle(AppString.editMeeting),
-                    saveButton(),
+                    saveButton(context),
                   ],
                 ),
               ),
@@ -105,8 +105,14 @@ class _EditMeetingNotesState extends State<EditMeetingNotes> {
                                   leadLabel: widget.leadLabel,
                                 ))),
                             Container(
-                                child:
-                                    followUpAction(context, shrinkWrap: true)),
+                                child: followUpAction(
+                                    context,
+                                    shrinkWrap: true,
+                                    widget.allContacts,
+                                    widget.allTeam,
+                                    widget.contactForms,
+                                    widget.leadForms,
+                                    widget.leadLabel)),
                           ],
                         ),
                       ),

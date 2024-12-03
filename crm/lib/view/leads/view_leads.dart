@@ -209,7 +209,11 @@ class _ViewLeadsState extends State<ViewLeads> {
                             )),
                         // Follow Up Action Section
                         Expanded(
-                          child: followUpAction(context),
+                          child: followUpAction(context, widget.allContact,
+                            widget.allTeam,
+                            widget.contactForms,
+                            widget.leadForms,
+                            widget.leadLabel),
                         ),
                       ],
                     ),

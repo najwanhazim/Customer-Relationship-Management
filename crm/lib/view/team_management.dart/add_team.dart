@@ -42,7 +42,7 @@ class _AddTeamState extends State<AddTeam> {
                       children: [
                         cancelButton(context),
                         pageTitle(AppString.newMember),
-                        saveButton(),
+                        saveButton(context),
                       ],
                     ),
                     searchBar(search)

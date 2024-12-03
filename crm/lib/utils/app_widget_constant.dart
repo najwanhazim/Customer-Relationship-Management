@@ -1,8 +1,10 @@
 import 'package:animations/animations.dart';
 import 'package:crm/utils/app_string_constant.dart';
 import 'package:crm/utils/app_theme_constant.dart';
+import 'package:crm/view/action/view_action.dart';
 import 'package:crm/view/leads/add_leads.dart';
 import 'package:crm/view/meeting_notes/view_meeting_notes.dart';
+import 'package:crm/view/profile/edit_profile.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
@@ -38,9 +40,11 @@ Widget cancelButton(BuildContext context) {
   );
 }
 
-Widget saveButton() {
+Widget saveButton(BuildContext context) {
   return TextButton(
-    onPressed: () {},
+    onPressed: () {
+      Navigator.pop(context);
+    },
     child: Text(
       AppString.saveText,
       style: TextStyle(
@@ -132,10 +136,15 @@ AppBar appBarPage(BuildContext context) {
           Icons.notifications,
         ),
       ),
-      CircleAvatar(
-        radius: AppTheme.radius15,
-        backgroundImage: NetworkImage(
-            'https://static.vecteezy.com/system/resources/previews/003/715/527/non_2x/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-vector.jpg'),
+      GestureDetector(
+        onTap: () {
+          bottomSheet(context, EditProfile());
+        },
+        child: CircleAvatar(
+          radius: AppTheme.radius15,
+          backgroundImage: NetworkImage(
+              'https://static.vecteezy.com/system/resources/previews/003/715/527/non_2x/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-vector.jpg'),
+        ),
       ),
     ],
   );
@@ -307,18 +316,22 @@ SpeedDialChild speedDialChild(IconData icon, String label) {
 
 //----------------------------------------Input----------------------------------------
 Widget inputField(String title,
-    {bool longInput = false, bool hintText = false}) {
+    {bool longInput = false, bool hintText = false, bool numberInput = false}) {
   return Padding(
-    padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
+    padding: const EdgeInsets.only(top: 8.0),
     child: TextField(
         maxLines: longInput ? null : 1,
-        keyboardType: longInput ? TextInputType.multiline : null,
+        keyboardType: longInput
+            ? TextInputType.multiline
+            : numberInput
+                ? TextInputType.number
+                : null,
         textAlignVertical: longInput ? TextAlignVertical.top : null,
         decoration: InputDecoration(
           labelText: hintText ? null : title,
           labelStyle: TextStyle(color: Colors.black),
           hintText: hintText ? title : null,
-          hintStyle: TextStyle(color: Colors.black),
+          hintStyle: TextStyle(color: Colors.grey),
           filled: true,
           fillColor: AppTheme.white,
           alignLabelWithHint: true,
@@ -620,7 +633,14 @@ Widget meetingHeader(VoidCallback function) {
 }
 
 //----------------------------------------follow up action----------------------------------------
-Widget followUpAction(BuildContext context, {bool shrinkWrap = false}) {
+Widget followUpAction(
+    BuildContext context,
+    List<String> allContacts,
+    List<String> allTeam,
+    List<FormGroup> contactForms,
+    FormGroup leadForms,
+    List<String> leadLabel,
+    {bool shrinkWrap = false}) {
   List<Map<String, String>> data = [
     {'detail': 'phone call by azri', 'status': 'Pending'},
     {'detail': 'phone call by azri', 'status': 'Pending'},
@@ -652,6 +672,16 @@ Widget followUpAction(BuildContext context, {bool shrinkWrap = false}) {
                             data[index]['status']! == 'Pending'
                         ? Colors.red
                         : Colors.green)),
+            onTap: () {
+              bottomSheet(
+                  context,
+                  ViewAction(
+                      allTeam: allTeam,
+                      allContact: allContacts,
+                      contactForms: contactForms,
+                      leadForms: leadForms,
+                      leadLabel: leadLabel));
+            },
           ),
         );
       });

@@ -44,7 +44,7 @@ class _EditAppointmentState extends State<EditAppointment> {
                   children: [
                     cancelButton(context),
                     pageTitle(AppString.editAppointment),
-                    saveButton(),
+                    saveButton(context),
                   ],
                 ),
               ),

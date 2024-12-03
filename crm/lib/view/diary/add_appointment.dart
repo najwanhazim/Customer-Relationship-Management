@@ -45,7 +45,7 @@ class _AddAppointmentState extends State<AddAppointment> {
                   children: [
                     cancelButton(context),
                     pageTitle(AppString.newAppointment),
-                    saveButton(),
+                    saveButton(context),
                   ],
                 ),
               ),

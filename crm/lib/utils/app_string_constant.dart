@@ -74,4 +74,12 @@ class AppString {
   static const newAppointment = 'New Appointments';
   static const appointmentDetails = 'Appointment Details';
   static const editAppointment = 'Edit Appointments';
+
+  //profile
+  static const editProfile = 'Edit Profile';
+  static const updatePassword = 'Update Password';
+
+  //action
+  static const actionDetails = 'Action Details';
+   static const editAction = 'Edit Action';
 }

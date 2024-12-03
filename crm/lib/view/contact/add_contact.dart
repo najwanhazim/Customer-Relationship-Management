@@ -54,7 +54,7 @@ class _AddContactState extends State<AddContact> {
                   children: [
                     cancelButton(context),
                     pageTitle(AppString.newContact),
-                    saveButton(),
+                    saveButton(context),
                   ],
                 ),
               ),

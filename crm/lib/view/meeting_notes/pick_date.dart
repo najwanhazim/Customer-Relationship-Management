@@ -64,7 +64,7 @@ class _PickDateState extends State<PickDate> {
                       Align(
                         alignment: Alignment
                             .centerRight, // Align the saveButton to the right
-                        child: saveButton(),
+                        child: saveButton(context),
                       ),
                     ],
                   )),

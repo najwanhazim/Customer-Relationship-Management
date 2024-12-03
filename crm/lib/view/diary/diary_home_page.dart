@@ -1,5 +1,6 @@
 import 'package:crm/utils/app_string_constant.dart';
 import 'package:crm/view/diary/add_appointment.dart';
+import 'package:crm/view/diary/list_meeting_notes.dart';
 import 'package:crm/view/diary/task_page.dart';
 import 'package:crm/view/diary/view_appointment.dart';
 import 'package:crm/view/meeting_notes/pick_date.dart';
@@ -79,7 +80,15 @@ class _DiaryHomePageState extends State<DiaryHomePage> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ListMeetingNotes(), // Correctly return the `Task` widget
+                          ),
+                        );
+                      },
                       icon: Icon(Icons.folder),
                       color: Colors.grey,
                       iconSize: 20,

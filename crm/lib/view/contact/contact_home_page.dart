@@ -352,7 +352,13 @@ class _ContactHomePageState extends State<ContactHomePage> {
           children: [
             ListTile(
               onTap: () {
-                viewContact(context, contact, contactForms, leadForms, leadLabel);
+                bottomSheet(
+                    context,
+                    ViewContact(
+                        contact: contact,
+                        contactForms: contactForms,
+                        leadForms: leadForms,
+                        leadLabel: leadLabel));
               },
               leading: CircleAvatar(
                 radius: AppTheme.radius30,
@@ -389,8 +395,4 @@ class _ContactHomePageState extends State<ContactHomePage> {
   //     },
   //   );
   // }
-
-  
-
-  
 }

@@ -6,7 +6,7 @@ import '../../utils/app_theme_constant.dart';
 import '../../utils/app_widget_constant.dart';
 
 class AddFollowingAction extends StatefulWidget {
-  const AddFollowingAction({Key? key, required this.allTeam, required this.allContact, required this.contactForms, required this.leadForms, required this.leadLabel});
+  const AddFollowingAction({Key? key, required this.allTeam, required this.allContact, required this.contactForms, required this.leadForms, required this.leadLabel}) : super(key: key);
 
   final List<String> allTeam;
   final List<String> allContact;
@@ -53,7 +53,7 @@ class _AddFollowingActionState extends State<AddFollowingAction> {
                   children: [
                     cancelButton(context),
                     pageTitle(AppString.action),
-                    saveButton(),
+                    saveButton(context),
                   ],
                 ),
               ),

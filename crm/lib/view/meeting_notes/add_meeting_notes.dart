@@ -91,7 +91,7 @@ class _AddMeetingNotesState extends State<AddMeetingNotes> {
                   children: [
                     cancelButton(context),
                     pageTitle(AppString.newMeeting),
-                    saveButton(),
+                    saveButton(context),
                   ],
                 ),
               ),
@@ -142,7 +142,11 @@ class _AddMeetingNotesState extends State<AddMeetingNotes> {
                                 ))),
                             Container(
                                 child:
-                                    followUpAction(context, shrinkWrap: true)),
+                                    followUpAction(context, shrinkWrap: true, widget.allContacts,
+                            widget.allTeam,
+                            widget.forms,
+                            widget.leadForms,
+                            widget.leadLabel)),
                           ],
                         ),
                       ),

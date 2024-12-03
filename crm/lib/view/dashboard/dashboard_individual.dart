@@ -1,3 +1,6 @@
+import 'dart:core';
+import 'dart:ffi';
+
 import 'package:crm/utils/app_widget_constant.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +15,31 @@ class DashboardIndividual extends StatefulWidget {
 
 class _DashboardIndividualState extends State<DashboardIndividual> {
   String search = '';
+  double valueSales = 0;
+  double valueLeads = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    valueLeads = calculateProgress(isLead: true);
+    valueSales = calculateProgress(isLead: false);
+  }
+
+  double calculateProgress({required bool isLead}) {
+    if (isLead) {
+      double value1 = 80;
+      double value2 = 1000;
+
+      return value1 / value2;
+
+    } else {
+      double value1 = 650000;
+      double value2 = 1000000;
+
+      return value1 / value2;
+
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +73,7 @@ class _DashboardIndividualState extends State<DashboardIndividual> {
               color: AppTheme.white,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
                     '80',
                     style: TextStyle(fontSize: 35),
@@ -58,8 +86,9 @@ class _DashboardIndividualState extends State<DashboardIndividual> {
                     height: 20,
                   ),
                   LinearProgressIndicator(
-                    backgroundColor: Colors.grey,
+                    backgroundColor: Colors.grey.withOpacity(0.4),
                     color: Colors.green,
+                    value: valueLeads,
                   ),
                 ],
               ),
@@ -72,7 +101,7 @@ class _DashboardIndividualState extends State<DashboardIndividual> {
               color: Colors.white,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
                     'RM 650,000.00',
                     style: TextStyle(fontSize: 35),
@@ -83,8 +112,9 @@ class _DashboardIndividualState extends State<DashboardIndividual> {
                   ),
                   AppTheme.box20,
                   LinearProgressIndicator(
-                    backgroundColor: Colors.grey,
+                    backgroundColor: Colors.grey.withOpacity(0.4),
                     color: Colors.green,
+                    value: valueSales,
                   ),
                 ],
               ),
