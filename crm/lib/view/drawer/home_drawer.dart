@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../function/repository/user_repository.dart';
 import '../../utils/app_string_constant.dart';
 import '../../utils/app_theme_constant.dart';
 import '../../utils/app_widget_constant.dart';
+import '../login/login.dart';
 
 class HomeDrawer extends StatefulWidget {
   const HomeDrawer({Key? key, required this.screenIndex, required this.iconAnimationController, required this.callBackIndex}) : super(key:key);
@@ -165,14 +167,14 @@ class _HomeDrawerState extends State<HomeDrawer> {
   }
 
   void signOut() {
-    // try {
-    //   UserRepository.logout(context);
-    //   showToastSuccess(context, successSignOut);
-    //   Navigator.pushAndRemoveUntil(context,
-    //       pageTransitionFadeThrough(const LoginScreen()), (route) => false);
-    // } on Exception catch (e) {
-    //   showToastError(context, e.toString());
-    // }
+    try {
+      UserRepository.logout(context);
+      showToastSuccess(context, "You have successfully signed out");
+      Navigator.pushAndRemoveUntil(context,
+          pageTransitionFadeThrough(const Login()), (route) => false);
+    } on Exception catch (e) {
+      showToastError(context, e.toString());
+    }
   }
 
   Widget drawerListGenerator(DrawerList listData) {

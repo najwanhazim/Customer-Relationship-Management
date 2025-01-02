@@ -8,7 +8,16 @@ import '../../utils/app_theme_constant.dart';
 import '../../utils/app_widget_constant.dart';
 
 class PickDate extends StatefulWidget {
-  const PickDate({super.key});
+  PickDate(
+      {Key? key,
+      required this.locationController,
+      this.startTime,
+      this.endTime})
+      : super(key: key);
+
+  final TextEditingController locationController;
+  DateTime? startTime;
+  DateTime? endTime;
 
   @override
   State<PickDate> createState() => _PickDateState();
@@ -28,6 +37,7 @@ class _PickDateState extends State<PickDate> {
 
   @override
   void dispose() {
+    widget.locationController.dispose();
     super.dispose();
   }
 
@@ -37,8 +47,17 @@ class _PickDateState extends State<PickDate> {
         selectedDate = _selectedDate;
         focusedDay = _focusedDay;
       });
+      print("Selected date: $selectedDate");
     }
   }
+
+  // void onDaySelected(DateTime _selectedDate, DateTime _focusedDay) {
+  //   setState(() {
+  //     selectedDate = _selectedDate; // Update selectedDate
+  //     focusedDay = _focusedDay; // Update focusedDay
+  //   });
+  //   print("Selected date: $_selectedDate");
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +65,7 @@ class _PickDateState extends State<PickDate> {
       child: Container(
         decoration: AppTheme.bottomSheet,
         child: SizedBox(
-          height: AppTheme.usableHeight(context),
+          height: AppTheme.sheetHeight,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -62,9 +81,22 @@ class _PickDateState extends State<PickDate> {
                         child: pageTitle(AppString.date),
                       ),
                       Align(
-                        alignment: Alignment
-                            .centerRight, // Align the saveButton to the right
-                        child: saveButton(context),
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.pop(context, {
+                              'startTime': widget.startTime,
+                              'endTime': widget.endTime,
+                            });
+                          },
+                          child: Text(
+                            AppString.saveText,
+                            style: TextStyle(
+                              color: AppTheme.redMaroon,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   )),
@@ -107,7 +139,7 @@ class _PickDateState extends State<PickDate> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(AppString.startText),
-                                timePicker(),
+                                timePicker(true),
                               ],
                             ),
                           ),
@@ -118,15 +150,15 @@ class _PickDateState extends State<PickDate> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(AppString.endText),
-                                timePicker(),
+                                timePicker(false),
                               ],
                             ),
                           ),
                           AppTheme.divider,
                           Padding(
-                            padding: AppTheme.paddingTepi,
-                            child: inputField(AppString.locationText)
-                          ),
+                              padding: AppTheme.paddingTepi,
+                              child: inputField(AppString.locationText,
+                                  controller: widget.locationController)),
                         ],
                       ),
                     ),
@@ -140,13 +172,47 @@ class _PickDateState extends State<PickDate> {
     );
   }
 
-  Widget timePicker() {
+  Widget timePicker(bool isStartTime) {
+    // Determine which time to use based on whether it's start time or end time
+    DateTime? selectedTime = isStartTime ? widget.startTime : widget.endTime;
+
+    // Initialize the date with the selected time or current date and time
+    DateTime initialDateTime = selectedTime ?? DateTime.now();
+
     return TimePickerSpinnerPopUp(
       mode: CupertinoDatePickerMode.time,
-      initTime: DateTime.now().toLocal(),
+      // Initialize with selected start or end time and its respective date
+      initTime: DateTime(
+        initialDateTime.year,
+        initialDateTime.month,
+        initialDateTime.day,
+        initialDateTime.hour,
+        initialDateTime.minute,
+      ).toLocal(),
       use24hFormat: false,
       timeFormat: 'h:mm a',
-      onChange: (dateTime) {},
+      onChange: (dateTime) {
+        setState(() {
+          print("${isStartTime ? 'Start' : 'End'}: $dateTime");
+
+          // Combine the selected date with the newly chosen time
+          DateTime updatedDateTime = DateTime(
+            initialDateTime.year, // Use the current or selected year
+            initialDateTime.month, // Use the current or selected month
+            initialDateTime.day, // Use the current or selected day
+            dateTime.hour, // Update hour
+            dateTime.minute, // Update minute
+          );
+
+          if (isStartTime) {
+            widget.startTime =
+                updatedDateTime; // Update start time with selected date and time
+          } else {
+            widget.endTime =
+                updatedDateTime; // Update end time with selected date and time
+          }
+        });
+      },
     );
   }
 }

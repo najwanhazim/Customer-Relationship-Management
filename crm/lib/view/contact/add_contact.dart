@@ -1,7 +1,11 @@
+import 'package:crm/function/repository/contact_repository.dart';
 import 'package:crm/utils/app_string_constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
+import '../../db/contact.dart';
+import '../../function/bloc/contact_bloc.dart';
 import '../../utils/app_theme_constant.dart';
 import '../../utils/app_widget_constant.dart';
 
@@ -15,20 +19,12 @@ class AddContact extends StatefulWidget {
 }
 
 class _AddContactState extends State<AddContact> {
+  final ContactRepository contactRepository = ContactRepository();
+  BuildContext? _blocContext;
 
-  final List<String> label1 = [
-    'First Name',
-    'Last Name',
-    'Company',
-    'Position'
-  ];
+  final List<String> label1 = ['Full Name', 'Position'];
   final List<String> label2 = ['Phone Number', 'Email'];
-  final List<String> label3 = [
-    'Salutation',
-    'Contact Type',
-    'Source',
-    'Remarks'
-  ];
+  final List<String> label3 = ['Salutation', 'Contact Type', 'Source'];
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +50,23 @@ class _AddContactState extends State<AddContact> {
                   children: [
                     cancelButton(context),
                     pageTitle(AppString.newContact),
-                    saveButton(context),
+                    BlocProvider(
+                      create: (context) => ContactBloc(contactRepository),
+                      child: BlocConsumer<ContactBloc, ContactState>(
+                        listener: (listenerContext, state) {
+                          if (state is ContactError) {
+                            print("success add");
+                            showToastError(context, state.message);
+                          } else if (state is ContactLoaded) {
+                            showToastSuccess(context, state.message);
+                          }
+                        },
+                        builder: (blocContext, state) {
+                          _blocContext = blocContext;
+                          return saveButton(context, sendFunction: onSave);
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -83,11 +95,52 @@ class _AddContactState extends State<AddContact> {
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<void> onSave() async {
+    if (widget.forms.every((form) => form.valid)) {
+      final contact = createContactFromForms(widget.forms);
+      await sendContact(contact);
+    } else {
+      print('Form is not valid!');
+    }
+  }
+
+  Contact createContactFromForms(List<FormGroup> contactForms) {
+    // Extract values from each form group
+    final fullName = contactForms[0].control('fullname').value as String? ?? '';
+    final position = contactForms[0].control('position').value as String? ?? '';
+    final phoneNo =
+        contactForms[1].control('phoneNumber').value as String? ?? '';
+    final email = contactForms[1].control('email').value as String? ?? '';
+    final salutation =
+        contactForms[2].control('salutation').value as String? ?? '';
+    final contactType =
+        contactForms[2].control('contact_type').value as String? ?? '';
+    final source = contactForms[2].control('source').value as String? ?? '';
+
+    // Create the ContactIn instance
+    return Contact(
+      fullname: fullName,
+      position: position,
+      phone_no: phoneNo,
+      email: email,
+      salutation: salutation,
+      contact_type: contactType,
+      source: source,
+    );
+  }
+
+  Future<void> sendContact(Contact contactIn) async {
+    if (_blocContext == null) return;
+    FocusManager.instance.primaryFocus?.unfocus();
+    final contactBloc = BlocProvider.of<ContactBloc>(_blocContext!);
+    contactBloc.add(CreateContact(buildContext: context, contactIn: contactIn));
   }
 }

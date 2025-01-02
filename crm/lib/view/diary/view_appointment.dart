@@ -1,22 +1,74 @@
+import 'package:crm/db/appointment.dart';
+import 'package:crm/db/contact.dart';
+import 'package:crm/function/repository/contact_repository.dart';
+import 'package:crm/function/repository/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
+import '../../db/user.dart';
 import '../../utils/app_string_constant.dart';
 import '../../utils/app_theme_constant.dart';
 import '../../utils/app_widget_constant.dart';
 import 'edit_appointment.dart';
 
 class ViewAppointment extends StatefulWidget {
-  const ViewAppointment({Key? key, required this.forms, required this.allContacts}) : super(key: key);
+  const ViewAppointment(
+      {Key? key,
+      required this.forms,
+      required this.allContacts,
+      required this.appointment})
+      : super(key: key);
 
   final List<FormGroup> forms;
-  final List<String> allContacts;
+  final List<Contact> allContacts;
+  final Appointment appointment;
 
   @override
   State<ViewAppointment> createState() => _ViewAppointmentState();
 }
 
 class _ViewAppointmentState extends State<ViewAppointment> {
+  ContactRepository contactRepository = ContactRepository();
+  List<Contact> contactList = [];
+  UserRepository userRepository = UserRepository();
+  User? user;
+
+  @override
+  void initState() {
+    super.initState();
+    getContact();
+    getUser();
+  }
+
+  Future<void> getContact() async {
+    try {
+      if (widget.appointment.id != null) {
+        contactList = await contactRepository
+            .getContactByAppointmentId(widget.appointment.id!);
+      } else {
+        return;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> getUser() async {
+    try {
+      if (widget.appointment.created_by != null) {
+        user = await userRepository.getUserById(widget.appointment.created_by!);
+      } else {
+        return;
+      }
+    } catch (e) {
+      print(e);
+    } finally{
+      setState(() {
+        
+      });
+    } 
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -41,7 +93,12 @@ class _ViewAppointmentState extends State<ViewAppointment> {
                   children: [
                     cancelButton(context),
                     pageTitle(AppString.appointmentDetails),
-                    editButton(context, EditAppointment(forms: widget.forms, allContacts: widget.allContacts,)),
+                    editButton(
+                        context,
+                        EditAppointment(
+                          forms: widget.forms,
+                          allContacts: widget.allContacts,
+                        )),
                   ],
                 ),
               ),
@@ -64,17 +121,18 @@ class _ViewAppointmentState extends State<ViewAppointment> {
                               padding: AppTheme.padding8,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: const [
+                                children: [
                                   Text(
-                                    'Title',
+                                    widget.appointment.title,
                                     style: AppTheme.titleContainer,
                                   ),
                                   Text(
-                                    'sub',
+                                    formatDateTime(
+                                        widget.appointment.start_time),
                                     style: AppTheme.subTitleContainer,
                                   ),
                                   Text(
-                                    'dajksdnkadnjadnsajdnajdnakdasjdasjkdnadjasdnadnakdjadadaskdnjasdnkadkadnkads',
+                                    widget.appointment.location,
                                     style: AppTheme.subTitleContainer,
                                   )
                                 ],
@@ -98,7 +156,8 @@ class _ViewAppointmentState extends State<ViewAppointment> {
                                           fontWeight: FontWeight.bold)),
                                   AppTheme.box10,
                                   SizedBox(
-                                      height: 100, child: attendeesGenerator()),
+                                      height: 100,
+                                      child: attendeesGenerator(contactList)),
                                 ],
                               ),
                             ),
@@ -112,14 +171,22 @@ class _ViewAppointmentState extends State<ViewAppointment> {
                               padding: AppTheme.padding8,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: const [
-                                  Text('Notes',
+                                children: [
+                                  const Text('Notes',
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold)),
                                   AppTheme.box10,
-                                  Text('bdkajwbdkabfkjbfsjbfsndfbsdnmfbsdnmfbsdnfbsdnmfbsdmnfbsnmbdfnmsbfnmsbfnmsdbfsnmfbsnmfbsnmf' , style: AppTheme.subTitleContainer,)
+                                  widget.appointment.notes != null
+                                      ? Text(
+                                          widget.appointment.notes,
+                                          style: AppTheme.subTitleContainer,
+                                        )
+                                      : const Text(
+                                          "No Notes",
+                                          style: AppTheme.subTitleContainer,
+                                        )
                                 ],
                               ),
                             ),
@@ -135,11 +202,12 @@ class _ViewAppointmentState extends State<ViewAppointment> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Created By',
+                                  const Text('Created By',
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold)),
+                                  AppTheme.box10,
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -150,7 +218,7 @@ class _ViewAppointmentState extends State<ViewAppointment> {
                                       const SizedBox(
                                           height:
                                               5), // Space between avatar and text
-                                      Text('Aiman'),
+                                      Text(user?.login_id ?? 'Unknown User'),
                                     ],
                                   )
                                 ],

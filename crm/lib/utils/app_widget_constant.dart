@@ -1,4 +1,6 @@
 import 'package:animations/animations.dart';
+import 'package:crm/db/meeting.dart';
+import 'package:crm/db/task_action_with_user.dart';
 import 'package:crm/utils/app_string_constant.dart';
 import 'package:crm/utils/app_theme_constant.dart';
 import 'package:crm/view/action/view_action.dart';
@@ -9,12 +11,18 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:simple_speed_dial/simple_speed_dial.dart';
 
+import '../db/appointment.dart';
 import '../db/contact.dart';
+import '../db/task_action.dart';
+import '../db/user.dart';
+import '../function/repository/meeting_repository.dart';
 import '../view/contact/add_contact.dart';
 import '../view/contact/view_contact.dart';
 import '../view/dashboard/dashboard_individual.dart';
@@ -40,11 +48,15 @@ Widget cancelButton(BuildContext context) {
   );
 }
 
-Widget saveButton(BuildContext context) {
+Widget saveButton(BuildContext context,
+    {Future<void> Function()? sendFunction}) {
   return TextButton(
-    onPressed: () {
-      Navigator.pop(context);
-    },
+    onPressed: sendFunction != null
+        ? () async {
+            await sendFunction();
+            Navigator.pop(context);
+          }
+        : null, // Disable button if sendFunction is null
     child: Text(
       AppString.saveText,
       style: TextStyle(
@@ -115,9 +127,9 @@ Widget deleteButton(BuildContext context) {
         GestureDetector(
           onTap: () {
             showAppDialog(
-                      context,
-                      alertDialog(context, deleteContent, "Delete",
-                          "Are you sure you want to delete?"));
+                context,
+                alertDialog(context, deleteContent, "Delete",
+                    "Are you sure you want to delete?"));
           },
           child: Container(
             padding: AppTheme.padding10,
@@ -143,7 +155,94 @@ Widget deleteButton(BuildContext context) {
   );
 }
 
+Widget buttonSubmitSuccess(
+    RoundedLoadingButtonController roundedLoadingButtonController,
+    String buttonText,
+    void Function() onPressed) {
+  return buttonSubmit(
+      roundedLoadingButtonController, buttonText, onPressed, Colors.green,
+      animateOnTap: false);
+}
+
+Widget buttonSubmitPrimaryNoAnimate(
+    RoundedLoadingButtonController roundedLoadingButtonController,
+    String buttonText,
+    void Function() onPressed) {
+  return buttonSubmit(
+      roundedLoadingButtonController, buttonText, onPressed, Colors.blue,
+      animateOnTap: false);
+}
+
+Widget buttonSubmitSecondaryNoAnimate(
+    RoundedLoadingButtonController roundedLoadingButtonController,
+    String buttonText,
+    void Function() onPressed) {
+  return buttonSubmit(
+      roundedLoadingButtonController, buttonText, onPressed, Colors.orange,
+      animateOnTap: false);
+}
+
+Widget buttonSubmit(
+    RoundedLoadingButtonController roundedLoadingButtonController,
+    String buttonText,
+    void Function() onPressed,
+    Color buttonColor,
+    {bool animateOnTap = true,
+    String? iconString}) {
+  return RoundedLoadingButton(
+    controller: roundedLoadingButtonController,
+    color: buttonColor,
+    successColor: Colors.green,
+    duration: const Duration(seconds: 0),
+    // resetDuration: const Duration(seconds: 3),
+    // resetAfterDuration: true,
+    animateOnTap: animateOnTap,
+    onPressed: onPressed,
+    child: iconString != null
+        ? RichText(
+            text: TextSpan(children: [
+              WidgetSpan(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: AppTheme.double16),
+                    child: SvgPicture.asset(iconString,
+                        width: AppTheme.sizeIconNav, color: AppTheme.white),
+                  ),
+                  alignment: PlaceholderAlignment.middle),
+              TextSpan(text: buttonText, style: AppTheme.coloredButtonText)
+            ]),
+          )
+        : Text(buttonText, style: AppTheme.coloredButtonText),
+  );
+}
+
 void deleteContent() {}
+
+// Widget buttonSubmitPrimary(RoundedLoadingButtonController roundedLoadingButtonController, String buttonText, void Function() onPressed) {
+//   return buttonSubmit(roundedLoadingButtonController, buttonText, onPressed, Colors.blue);
+// }
+
+// Widget buttonSubmit(RoundedLoadingButtonController roundedLoadingButtonController, String buttonText, void Function() onPressed, Color buttonColor,
+//   {bool animateOnTap = true, String? iconString }) {
+
+//   return RoundedLoadingButton(
+//     controller: roundedLoadingButtonController,
+//     color: buttonColor,
+//     successColor: Colors.green,
+//     duration: const Duration(seconds: 0),
+//     // resetDuration: const Duration(seconds: 3),
+//     // resetAfterDuration: true,
+//     animateOnTap: animateOnTap,
+//     onPressed: onPressed,
+//     child: iconString != null ?
+//       RichText(text: TextSpan(children: [
+//         WidgetSpan(child: Padding(
+//           padding: const EdgeInsets.only(right: AppConstant.paddingDouble),
+//           child: SvgPicture.asset(iconString, width:AppConstant.sizeIconNav, color: AppTheme.white),
+//         ), alignment: PlaceholderAlignment.middle),
+//         TextSpan(text:buttonText, style: AppTheme.coloredButtonText)]),
+//       ) : Text(buttonText, style: AppTheme.coloredButtonText),
+//   );
+// }
 
 //----------------------------------------page title----------------------------------------
 Widget pageTitle(String title) {
@@ -188,6 +287,17 @@ AppBar appBarPage(BuildContext context) {
   );
 }
 
+AppBar permissionAppBar(String title) {
+  return AppBar(
+    elevation: 0.0,
+    backgroundColor: AppTheme.redMaroon,
+    title: Text(
+      title,
+      style: AppTheme.titleFont,
+    ),
+  );
+}
+
 Widget secondAppBar(BuildContext context, VoidCallback function) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -221,31 +331,76 @@ Widget secondAppBar(BuildContext context, VoidCallback function) {
   );
 }
 
-//----------------------------------------dashboard----------------------------------------
-Widget dashboard() {
+// ---------------------------------------- date format ----------------------------------------
+
+String formatDateTime(String dateTime) {
+  final date = DateTime.parse(dateTime);
+  return DateFormat('dd MMM yyyy - hh:mm a').format(date);
+}
+
+//---------------------------------------- dashboard ----------------------------------------
+Widget dashboard(List<Appointment> appointmentList, List<TaskAction> taskList) {
+  int todayCount = getAppointmentCountForDay(DateTime.now(), appointmentList);
+  int tomorrowCount = getAppointmentCountForDay(
+      DateTime.now().add(const Duration(days: 1)), appointmentList);
+  int weekCount = getAppointmentCountForWeek(appointmentList);
+  int pendingTaskCount = getPendingTaskCount(taskList);
+
   return Padding(
     padding: AppTheme.padding8,
     child: Column(
       children: [
         Row(
           children: [
-            dashboardContent(
-                AppTheme.purple, '5', AppString.dashboard1, Icons.groups),
-            dashboardContent(
-                AppTheme.pink, '3', AppString.dashboard2, Icons.report),
+            dashboardContent(AppTheme.purple, '$todayCount',
+                AppString.dashboard1, Icons.groups),
+            dashboardContent(AppTheme.pink, '$pendingTaskCount',
+                AppString.dashboard2, Icons.report),
           ],
         ),
         Row(
           children: [
-            dashboardContent(
-                AppTheme.amber, '15', AppString.dashboard3, Icons.schedule),
-            dashboardContent(
-                AppTheme.green, '10', AppString.dashboard4, Icons.fast_forward),
+            dashboardContent(AppTheme.amber, '$tomorrowCount',
+                AppString.dashboard3, Icons.schedule),
+            dashboardContent(AppTheme.green, '$weekCount', AppString.dashboard4,
+                Icons.fast_forward),
           ],
         ),
       ],
     ),
   );
+}
+
+int getAppointmentCountForDay(
+    DateTime date, List<Appointment> appointmentList) {
+  return appointmentList.where((appointment) {
+    DateTime appointmentDate =
+        DateTime.parse(appointment.start_time); // Adjust based on your model
+    return appointmentDate.year == date.year &&
+        appointmentDate.month == date.month &&
+        appointmentDate.day == date.day;
+  }).length;
+}
+
+int getAppointmentCountForWeek(List<Appointment> appointmentList) {
+  DateTime today = DateTime.now();
+  DateTime weekStart = today.subtract(
+      Duration(days: today.weekday - 1)); // Start of the week (Monday)
+  DateTime weekEnd =
+      weekStart.add(const Duration(days: 6)); // End of the week (Sunday)
+
+  return appointmentList.where((appointment) {
+    DateTime appointmentDate =
+        DateTime.parse(appointment.start_time); // Adjust based on your model
+    return appointmentDate.isAfter(weekStart) &&
+        appointmentDate.isBefore(weekEnd.add(const Duration(days: 1)));
+  }).length;
+}
+
+int getPendingTaskCount(List<TaskAction> taskList) {
+  return taskList.where((task) {
+    return task.status == 'pending' || task.status == 'Pending';
+  }).length; // Adjust 'status' field if different
 }
 
 Widget dashboardContent(Color? color, String num, String title, IconData icon) {
@@ -353,17 +508,72 @@ SpeedDialChild speedDialChild(IconData icon, String label) {
 }
 
 //----------------------------------------Input----------------------------------------
+// Widget inputField(String title,
+//     {bool longInput = false,
+//     bool hintText = false,
+//     bool numberInput = false,
+//     bool passInput = false}) {
+//   return Padding(
+//     padding: const EdgeInsets.only(top: 8.0),
+//     child: TextField(
+//         maxLines: longInput ? null : 1,
+//         keyboardType: longInput
+//             ? TextInputType.multiline
+//             : numberInput
+//                 ? TextInputType.number
+//                 : passInput
+//                     ? TextInputType.visiblePassword
+//                     : null,
+//         obscureText: passInput,
+//         textAlignVertical: longInput ? TextAlignVertical.top : null,
+//         decoration: InputDecoration(
+//           labelText: hintText ? null : title,
+//           labelStyle: TextStyle(color: Colors.black),
+//           hintText: hintText ? title : null,
+//           hintStyle: TextStyle(color: Colors.grey),
+//           filled: true,
+//           fillColor: AppTheme.white,
+//           alignLabelWithHint: true,
+//           contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+//           border: const OutlineInputBorder(
+//             borderRadius: BorderRadius.vertical(
+//               top: Radius.circular(10),
+//               bottom: Radius.circular(10),
+//             ),
+//           ),
+//           enabledBorder: const OutlineInputBorder(
+//             borderRadius: BorderRadius.vertical(
+//               top: Radius.circular(10),
+//               bottom: Radius.circular(10),
+//             ),
+//             borderSide: BorderSide.none,
+//           ),
+//         ),
+//         onChanged: (value) {
+//           // print('Name entered: $value');
+//         }),
+//   );
+// }
+
 Widget inputField(String title,
-    {bool longInput = false, bool hintText = false, bool numberInput = false}) {
+    {TextEditingController? controller,
+    bool longInput = false,
+    bool hintText = false,
+    bool numberInput = false,
+    bool passInput = false}) {
   return Padding(
     padding: const EdgeInsets.only(top: 8.0),
     child: TextField(
+        controller: controller,
         maxLines: longInput ? null : 1,
         keyboardType: longInput
             ? TextInputType.multiline
             : numberInput
                 ? TextInputType.number
-                : null,
+                : passInput
+                    ? TextInputType.visiblePassword
+                    : null,
+        obscureText: passInput,
         textAlignVertical: longInput ? TextAlignVertical.top : null,
         decoration: InputDecoration(
           labelText: hintText ? null : title,
@@ -414,12 +624,12 @@ Widget reactiveForm(BuildContext context, FormGroup _form, List<dynamic> label,
 }
 
 Widget reactiveTextField(
-    BuildContext context, String data, String label, bool hintText) {
+    BuildContext context, String controlName, String label, bool hintText) {
   return Padding(
     padding: AppTheme.paddingTop,
     child: ReactiveTextField<dynamic>(
-      key: Key(data),
-      formControlName: data,
+      key: Key(controlName),
+      formControlName: controlName,
       decoration: InputDecoration(
         labelText: hintText ? null : label,
         hintText: hintText ? label : null,
@@ -529,7 +739,10 @@ Widget pickDateTime(BuildContext context, String? label,
 Widget multipleDropdown(BuildContext context, String labelText,
     {bool isShow = false,
     VoidCallback? buttonFunction,
-    required List<String> items}) {
+    required List<Object> items,
+    required TextEditingController controller,
+    required String Function(Object) getDisplayValue,
+    required String Function(Object) getStoredValue}) {
   return Padding(
     padding: AppTheme.paddingTop,
     child: Container(
@@ -552,7 +765,39 @@ Widget multipleDropdown(BuildContext context, String labelText,
               showSearchBox: true,
               dropdownButtonProps:
                   const IconButtonProps(icon: SizedBox.shrink()),
-              items: items,
+              items: items.map(getDisplayValue).toList(),
+              selectedItems: controller.text.isNotEmpty
+                  ? controller.text
+                      .split(',')
+                      .map((storedValue) {
+                        final item = items.cast<Object?>().firstWhere(
+                              (item) =>
+                                  item != null &&
+                                  getStoredValue(item) == storedValue,
+                              orElse: () => null, // Explicitly return `null`
+                            );
+                        return item != null ? getDisplayValue(item) : null;
+                      })
+                      .whereType<String>() // Filter out null values
+                      .toList()
+                  : [],
+              onChanged: (List<String> selected) {
+                final selectedStoredValues = selected
+                    .map((displayValue) {
+                      final item = items.cast<Object?>().firstWhere(
+                            (item) =>
+                                item != null &&
+                                getDisplayValue(item) == displayValue,
+                            orElse: () => null, // Explicitly return `null`
+                          );
+                      return item != null ? getStoredValue(item) : null;
+                    })
+                    .whereType<String>() // Filter out null values
+                    .toList();
+                controller.text =
+                    selectedStoredValues.join(','); // Update controller
+                print("selected item: ${controller.text}");
+              },
               dropdownSearchDecoration: InputDecoration(
                 labelText: labelText,
                 labelStyle: const TextStyle(color: Colors.black, fontSize: 15),
@@ -570,7 +815,12 @@ Widget multipleDropdown(BuildContext context, String labelText,
 }
 
 Widget singleDropdown(BuildContext context, String labelText,
-    {bool isShow = false, VoidCallback? buttonFunction}) {
+    {bool isShow = false,
+    VoidCallback? buttonFunction,
+    required List<Object> items,
+    required TextEditingController controller,
+    required String Function(Object) getDisplayValue,
+    required String Function(Object) getStoredValue}) {
   return Padding(
     padding: AppTheme.paddingTop,
     child: Container(
@@ -591,15 +841,78 @@ Widget singleDropdown(BuildContext context, String labelText,
               mode: Mode.MENU,
               showSelectedItems: true,
               showSearchBox: true,
-              dropdownButtonProps:
-                  const IconButtonProps(icon: SizedBox.shrink()),
-              items: const [
-                'Ammar',
-                'Azri',
-                'Naiem',
-                'Din',
-                'Najwan',
-              ],
+              items: items.map(getDisplayValue).toList(),
+              selectedItem: controller.text.isNotEmpty
+                  ? items
+                      .cast<Object?>()
+                      .map((item) => item != null &&
+                              getStoredValue(item) == controller.text
+                          ? getDisplayValue(item)
+                          : null)
+                      .firstWhere((value) => value != null, orElse: () => null)
+                  : null,
+              onChanged: (String? selected) {
+                if (selected != null) {
+                  final selectedItem = items.cast<Object?>().firstWhere(
+                        (item) =>
+                            item != null && getDisplayValue(item) == selected,
+                        orElse: () => null, // Explicitly return `null`
+                      );
+                  if (selectedItem != null) {
+                    controller.text = getStoredValue(selectedItem);
+                    print("Selected item: ${controller.text}");
+                  }
+                }
+              },
+              dropdownSearchDecoration: InputDecoration(
+                labelText: labelText,
+                labelStyle: const TextStyle(color: Colors.black, fontSize: 15),
+                border: InputBorder.none,
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+              ),
+            ),
+          ),
+          isShow ? addButton(buttonFunction) : const SizedBox.shrink(),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget singleDropdownWihtoutObject(BuildContext context, String labelText,
+    {bool isShow = false,
+    VoidCallback? buttonFunction,
+    required List<String> items,
+    required TextEditingController controller}) {
+  return Padding(
+    padding: AppTheme.paddingTop,
+    child: Container(
+      width: MediaQuery.of(context).size.width,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(10),
+          bottom: Radius.circular(10),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: DropdownSearch<String>(
+              mode: Mode.MENU,
+              showSelectedItems: true,
+              items: items,
+              selectedItem: controller.text.isNotEmpty ? controller.text : null,
+              onChanged: (String? value) {
+                // Update the controller when the user selects a value
+                if (value != null) {
+                  controller.text = value;
+                  print("selected status: ${controller.text}");
+                }
+              },
               dropdownSearchDecoration: InputDecoration(
                 labelText: labelText,
                 labelStyle: const TextStyle(color: Colors.black, fontSize: 15),
@@ -656,33 +969,30 @@ Widget singleDropdown(BuildContext context, String labelText,
 
 Widget meetingHistory(
     BuildContext context,
-    List<String> allContacts,
-    List<String> allTeam,
+    List<MeetingNote> meetingList,
+    List<Contact> allContacts,
+    List<User> allUser,
     List<FormGroup> contactForms,
-    FormGroup leadForms,
+    // FormGroup leadForms,
     List<String> leadLabel) {
-  List<Map<String, String>> data = [
-    {'date': '15th October 2024', 'detail': 'Some details about the meeting.'},
-    {'date': '16th October 2024', 'detail': 'Another meeting detail.'},
-    {'date': '16th October 2024', 'detail': 'Another meeting detail.'},
-  ];
+  final double itemHeight = 80.0;
 
   final outerListChildren = <SliverList>[
     SliverList(
-      delegate:
-          SliverChildBuilderDelegate(childCount: data.length, (context, index) {
+      delegate: SliverChildBuilderDelegate(childCount: meetingList.length,
+          (context, index) {
         return ListTile(
-          title: Text(data[index]['date']!),
-          subtitle: Text(data[index]['detail']!),
-          onTap: () {
+          title: Text(meetingList[index].title),
+          subtitle: Text(formatDateTime(meetingList[index].start_time)),
+          onTap: () async {
             bottomSheet(
                 context,
                 ViewMeetingNotes(
-                  meetingData: data[index],
+                  meetingData: meetingList[index],
                   allContacts: allContacts,
-                  allTeam: allTeam,
+                  allUser: allUser,
                   contactForms: contactForms,
-                  leadForms: leadForms,
+                  // leadForms: leadForms,
                   leadLabel: leadLabel,
                 ));
           },
@@ -691,10 +1001,19 @@ Widget meetingHistory(
     )
   ];
 
-  return SizedBox(
-    height: 200,
-    child: CustomScrollView(slivers: outerListChildren),
-  );
+  if (meetingList == [] || meetingList.isEmpty) {
+    return const SizedBox(
+      height: 200,
+      child: Center(
+        child: Text("No Meeting Notes"),
+      ),
+    );
+  } else {
+    return SizedBox(
+      height: meetingList.length < 3 ? meetingList.length * itemHeight : 200,
+      child: CustomScrollView(slivers: outerListChildren),
+    );
+  }
 }
 
 Widget meetingHeader(VoidCallback function) {
@@ -770,25 +1089,29 @@ Widget meetingHeader(VoidCallback function) {
 
 Widget followUpAction(
     BuildContext context,
-    List<String> allContacts,
-    List<String> allTeam,
+    // String contactName,
+    List<TaskActionWithUser> taskList,
+    List<Contact> allContacts,
+    List<User> allUser,
     List<FormGroup> contactForms,
-    FormGroup leadForms,
+    // FormGroup leadForms,
     List<String> leadLabel,
     {bool shrinkWrap = false}) {
-  List<Map<String, String>> data = [
-    {'detail': 'phone call by azri', 'status': 'Pending'},
-    {'detail': 'phone call by azri', 'status': 'Pending'},
-    {'detail': 'phone call by azri', 'status': 'Pending'},
-    {'detail': 'phone call by azri', 'status': 'Done'},
-    {'detail': 'phone call by azri', 'status': 'Pending'},
-    {'detail': 'phone call by azri', 'status': 'pending'},
-  ];
+  String getFirstAndLastName(String fullName) {
+    List<String> nameParts = fullName.trim().split(" ");
+
+    // Ensure there are at least two parts in the name
+    if (nameParts.length >= 2) {
+      return "${nameParts.first} ${nameParts.last}";
+    }
+
+    return fullName;
+  }
 
   final outerListChildren = <SliverList>[
     SliverList(
-      delegate:
-          SliverChildBuilderDelegate(childCount: data.length, (context, index) {
+      delegate: SliverChildBuilderDelegate(childCount: taskList.length,
+          (context, index) {
         return Container(
           margin: AppTheme.padding3,
           decoration: const BoxDecoration(
@@ -798,21 +1121,24 @@ Widget followUpAction(
             ),
           ),
           child: ListTile(
-            title: Text(data[index]['detail']!),
-            trailing: Text(data[index]['status']!,
+            title: Text(
+                "${taskList[index].action} by ${getFirstAndLastName(taskList[index].assigned_to)}"),
+            trailing: Text(taskList[index].status,
                 style: TextStyle(
-                    color: data[index]['status']! == 'pending' ||
-                            data[index]['status']! == 'Pending'
+                    color: taskList[index].status == 'pending' ||
+                            taskList[index].status == 'Pending'
                         ? Colors.red
                         : Colors.green)),
             onTap: () {
               bottomSheet(
                   context,
                   ViewAction(
-                      allTeam: allTeam,
+                      taskData: taskList[index],
+                      // contactName: contactName,
+                      allUser: allUser,
                       allContact: allContacts,
                       contactForms: contactForms,
-                      leadForms: leadForms,
+                      // leadForms: leadForms,
                       leadLabel: leadLabel));
             },
           ),
@@ -821,9 +1147,18 @@ Widget followUpAction(
     )
   ];
 
-  return CustomScrollView(
-    slivers: outerListChildren,
-  );
+  if (taskList == [] || taskList.isEmpty) {
+    return const SizedBox(
+      height: 100,
+      child: Center(
+        child: Text("No follow up action"),
+      ),
+    );
+  } else {
+    return CustomScrollView(
+      slivers: outerListChildren,
+    );
+  }
 }
 
 Widget followUpHeader(VoidCallback function) {
@@ -858,7 +1193,7 @@ Future addContact(BuildContext context, List<FormGroup> forms) {
 }
 
 Future viewContact(BuildContext context, Contact contact, List<FormGroup> forms,
-    FormGroup leadForms, List<String> leadLabel) {
+    List<String> leadLabel) {
   return showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -870,37 +1205,64 @@ Future viewContact(BuildContext context, Contact contact, List<FormGroup> forms,
         return ViewContact(
           contact: contact,
           contactForms: forms,
-          leadForms: leadForms,
+          // leadForms: leadForms,
           leadLabel: leadLabel,
         );
       });
 }
 
-Widget attendeesGenerator() {
-  return ListView.builder(
-    scrollDirection: Axis.horizontal, // Enable horizontal scrolling
-    itemCount: 10,
-    itemBuilder: (context, index) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Column(
-          children: [
-            CircleAvatar(
-              radius: AppTheme.radius30,
-              backgroundColor: Colors.blue,
-            ),
-            const SizedBox(height: 5), // Space between avatar and text
-            Text('Aiman'),
-          ],
-        ),
-      );
-    },
-  );
+Widget attendeesGenerator(List<Contact> contacts) {
+  if (contacts == [] || contacts.isEmpty) {
+    return const Center(
+      child: Text("No contact or user"),
+    );
+  } else {
+    return ListView.builder(
+      scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+      itemCount: contacts.length,
+      itemBuilder: (context, index) {
+        final contact = contacts[index];
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Column(
+            children: [
+              CircleAvatar(
+                radius: AppTheme.radius30,
+                backgroundColor: Colors.blue,
+              ),
+              const SizedBox(height: 5), // Space between avatar and text
+              Text(
+                extractMiddleName(contact.fullname),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+String extractMiddleName(String fullname) {
+  // Split the fullname by spaces
+  final parts = fullname.trim().split(' ');
+
+  // If there is only one part, return it (first name)
+  if (parts.length == 1) {
+    return parts[0];
+  }
+
+  // If there are only two parts, no middle name exists, return the first name
+  if (parts.length == 2) {
+    return parts[0];
+  }
+
+  // Return the middle parts joined (handles multiple middle names)
+  return parts.sublist(1, parts.length - 1).join(' ');
 }
 
 //----------------------------------------leads----------------------------------------
 Future addLeads(BuildContext context, List<FormGroup> forms,
-    List<String> contacts, List<String> leadLabel, FormGroup leadForms) {
+    List<Contact> contacts, List<User> users, List<String> leadLabel) {
   return showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -912,14 +1274,15 @@ Future addLeads(BuildContext context, List<FormGroup> forms,
         return AddLeads(
           contactForms: forms,
           allContacts: contacts,
-          leadForms: leadForms,
+          allUsers: users,
+          // leadForms: leadForms,
           leadLabel: leadLabel,
         );
       });
 }
 
 Future editLeads(BuildContext context, List<FormGroup> forms,
-    List<String> contacts, List<String> leadLabel, FormGroup leadForms) {
+    List<Contact> contacts, List<String> leadLabel) {
   return showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -931,15 +1294,14 @@ Future editLeads(BuildContext context, List<FormGroup> forms,
         return EditLeads(
           contactForms: forms,
           allContacts: contacts,
-          leadForms: leadForms,
+          // leadForms: leadForms,
           leadLabel: leadLabel,
         );
       });
 }
 
 //----------------------------------------team management----------------------------------------
-Future addTeam(BuildContext context) async {
-  print('opening add team');
+Future addTeam(BuildContext context, List<User> userList) async {
   try {
     return showModalBottomSheet(
         context: context,
@@ -949,7 +1311,7 @@ Future addTeam(BuildContext context) async {
         backgroundColor: AppTheme.grey,
         isScrollControlled: true,
         builder: (context) {
-          return AddTeam();
+          return AddTeam(userList: userList);
         });
   } catch (e) {
     print("Error showing modal: $e");
@@ -1038,7 +1400,7 @@ Widget dialogTitleIcon(String title, String iconString, Color iconColor) {
   return Row(
     children: [
       Padding(
-        padding: const EdgeInsets.only(right: AppTheme.paddingGridDouble),
+        padding: const EdgeInsets.only(right: AppTheme.double12),
         child: SvgPicture.asset(iconString,
             width: AppTheme.sizeIconInline, color: iconColor),
       ),
@@ -1076,6 +1438,50 @@ void showToastError(BuildContext context, String text) {
         overflow: TextOverflow.visible,
         textAlign: TextAlign.center,
         style: AppTheme.toastTextMisc),
+  );
+}
+
+void showToastSuccess(BuildContext context, String text) {
+  // showToast(context, text, Colors.greenAccent, AppTheme.toastTextSuccess);
+  context.showSuccessBar(
+    icon: const Icon(FlashBarIcons.pass),
+    content: Text(text,
+        overflow: TextOverflow.visible,
+        textAlign: TextAlign.center,
+        style: AppTheme.toastTextMisc),
+  );
+}
+
+//----------------------------------------transition----------------------------------------
+class CustomPageRouteBuilder extends PageRouteBuilder {
+  Widget targetScreen;
+  RoutePageBuilder routePageBuilder;
+  RouteTransitionsBuilder routeTransitionsBuilder;
+
+  CustomPageRouteBuilder({
+    required this.targetScreen,
+    required this.routePageBuilder,
+    required this.routeTransitionsBuilder,
+    bool fullscreenDialog = false,
+  }) : super(
+            pageBuilder: routePageBuilder,
+            transitionsBuilder: routeTransitionsBuilder,
+            fullscreenDialog: fullscreenDialog);
+}
+
+CustomPageRouteBuilder pageTransitionFadeThrough(Widget targetScreen,
+    {bool fullScreenDialog = false}) {
+  return CustomPageRouteBuilder(
+    targetScreen: targetScreen,
+    fullscreenDialog: fullScreenDialog,
+    routePageBuilder: (context, primaryAnimation, secondaryAnimation) =>
+        targetScreen,
+    routeTransitionsBuilder:
+        (context, primaryAnimation, secondaryAnimation, child) =>
+            FadeThroughTransition(
+                animation: primaryAnimation,
+                secondaryAnimation: secondaryAnimation,
+                child: child),
   );
 }
 

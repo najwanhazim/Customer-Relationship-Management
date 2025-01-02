@@ -1,5 +1,6 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:bottom_sheet/bottom_sheet.dart';
+import 'package:crm/function/repository/contact_repository.dart';
 import 'package:crm/utils/app_theme_constant.dart';
 import 'package:crm/utils/app_widget_constant.dart';
 import 'package:crm/view/contact/add_contact.dart';
@@ -13,127 +14,19 @@ import 'package:reactive_forms/reactive_forms.dart';
 import '../../db/contact.dart';
 
 class ContactHomePage extends StatefulWidget {
-  const ContactHomePage({super.key});
+  const ContactHomePage({Key? key, required this.userId}) : super(key: key);
+
+  final String userId;
 
   @override
   State<ContactHomePage> createState() => _ContactHomePageState();
 }
 
 class _ContactHomePageState extends State<ContactHomePage> {
-  final List<Map<String, String>> existing = [
-    {
-      'firstName': 'Muhammad',
-      'lastName': 'Naqiudding',
-      'company': 'ExSynergy',
-      'position': 'Product Manager',
-      'phone': '+60192683653',
-      'email': 'naiem@exsynergy.com',
-      'salutation': 'Mr.',
-      'contactType': 'Existing Client',
-      'source': 'Email Campaign',
-      'notes': 'Active and regular contact.',
-    },
-    {
-      'firstName': 'Ahmad',
-      'lastName': 'Yusof',
-      'company': 'TechDesigns',
-      'position': 'UI/UX Designer',
-      'phone': '+60192345678',
-      'email': 'ahmad.yusof@techdesigns.com',
-      'salutation': 'Mr.',
-      'contactType': 'Existing Client',
-      'source': 'Referral',
-      'notes': 'Provides insightful feedback.',
-    },
-  ];
-
-  final List<Map<String, String>> potential = [
-    {
-      'firstName': 'Farah',
-      'lastName': 'Hassan',
-      'company': 'BrightCorp',
-      'position': 'Marketing Manager',
-      'phone': '+60124567890',
-      'email': 'farah.hassan@brightcorp.com',
-      'salutation': 'Ms.',
-      'contactType': 'Potential Client',
-      'source': 'Trade Show',
-      'notes': 'Interested in digital marketing.',
-    },
-    {
-      'firstName': 'Ali',
-      'lastName': 'Rahim',
-      'company': 'VisionTech',
-      'position': 'CTO',
-      'phone': '+60123456789',
-      'email': 'ali.rahim@visiontech.com',
-      'salutation': 'Mr.',
-      'contactType': 'Potential Client',
-      'source': 'Website Inquiry',
-      'notes': 'Discussing a potential partnership.',
-    },
-  ];
-
-  final List<Map<String, String>> partner = [
-    {
-      'firstName': 'Sarah',
-      'lastName': 'Othman',
-      'company': 'EcoPartners',
-      'position': 'CEO',
-      'phone': '+60133445566',
-      'email': 'sarah.othman@ecopartners.com',
-      'salutation': 'Ms.',
-      'contactType': 'Partner',
-      'source': 'Industry Event',
-      'notes': 'Collaborating on sustainability projects.',
-    },
-    {
-      'firstName': 'Amir',
-      'lastName': 'Hamzah',
-      'company': 'FinTech Solutions',
-      'position': 'COO',
-      'phone': '+60199887766',
-      'email': 'amir.hamzah@fintechsolutions.com',
-      'salutation': 'Mr.',
-      'contactType': 'Partner',
-      'source': 'Business Meeting',
-      'notes': 'Supports financial integrations.',
-    },
-  ];
-
-  final List<Map<String, String>> supplier = [
-    {
-      'firstName': 'Nadia',
-      'lastName': 'Yunus',
-      'company': 'SupplyCo',
-      'position': 'Logistics Manager',
-      'phone': '+60188776655',
-      'email': 'nadia.yunus@supplyco.com',
-      'salutation': 'Ms.',
-      'contactType': 'Supplier',
-      'source': 'Vendor Directory',
-      'notes': 'Manages inventory supply chains.',
-    },
-    {
-      'firstName': 'Zain',
-      'lastName': 'Ahmad',
-      'company': 'BuildCore',
-      'position': 'Procurement Lead',
-      'phone': '+60177665544',
-      'email': 'zain.ahmad@buildcore.com',
-      'salutation': 'Mr.',
-      'contactType': 'Supplier',
-      'source': 'Industry Referral',
-      'notes': 'Provides raw materials.',
-    },
-  ];
-
-  //-----------------------fill in field--------------
+  //----------------------- fill in field --------------
   final List<FormGroup> contactForms = [
     FormGroup({
-      'firstName': FormControl<String>(),
-      'lastName': FormControl<String>(),
-      'company': FormControl<String>(),
+      'fullname': FormControl<String>(),
       'position': FormControl<String>(),
     }),
     FormGroup({
@@ -142,13 +35,12 @@ class _ContactHomePageState extends State<ContactHomePage> {
     }),
     FormGroup({
       'salutation': FormControl<String>(),
-      'contactType': FormControl<String>(),
+      'contact_type': FormControl<String>(),
       'source': FormControl<String>(),
-      'remarks': FormControl<String>(),
     }),
   ];
 
-  //--------------input lead---------------------
+  //-------------- input lead ---------------------
   final List<String> leadLabel = [
     'Portfolio',
     'Leads Title',
@@ -173,59 +65,79 @@ class _ContactHomePageState extends State<ContactHomePage> {
     'leadStatus': FormControl<String>(),
   });
 
+  /// ------------------------------------------ state ------------------------------------------
+
   String search = '';
   int selectedTab = 1;
 
+  ContactRepository contactRepository = ContactRepository();
   List<Contact> allContacts = [];
+  List<Contact> selectedContact = [];
 
   @override
   void initState() {
     super.initState();
+    getContact();
     updateContactList(); // Initialize contacts based on `selectedTab`.
   }
 
+  Future<void> getContact() async {
+    try {
+      allContacts = await contactRepository.getContactByUserId();
+    } catch (e) {
+      print(e);
+    } finally {
+      setState(() {});
+    }
+  }
+
   void updateContactList() {
-    List<Map<String, String>> selectedData;
+    List<Contact> filteredContacts = [];
 
     switch (selectedTab) {
       case 1:
-        selectedData = existing;
+        filteredContacts = allContacts
+            .where((contact) =>
+                (contact.contact_type == "Existing Contact" ||
+                    contact.contact_type == "existing contact" ||
+                    contact.contact_type == "Existing" ||
+                    contact.contact_type == "existing") &&
+                contact.fullname.toLowerCase().contains(search.toLowerCase()))
+            .toList();
         break;
       case 2:
-        selectedData = potential;
+        filteredContacts = allContacts
+            .where((contact) =>
+                (contact.contact_type == "Potential Client" ||
+                    contact.contact_type == "potential client" ||
+                    contact.contact_type == "Potential" ||
+                    contact.contact_type == "potential") &&
+                contact.fullname.toLowerCase().contains(search.toLowerCase()))
+            .toList();
         break;
       case 3:
-        selectedData = partner;
+        filteredContacts = allContacts
+            .where((contact) =>
+                (contact.contact_type == "Partner" ||
+                    contact.contact_type == "partner") &&
+                contact.fullname.toLowerCase().contains(search.toLowerCase()))
+            .toList();
         break;
       case 4:
-        selectedData = supplier;
+        filteredContacts = allContacts
+            .where((contact) =>
+                (contact.contact_type == "Supplier" ||
+                    contact.contact_type == "supplier") &&
+                contact.fullname.toLowerCase().contains(search.toLowerCase()))
+            .toList();
         break;
       default:
-        selectedData = [];
+        filteredContacts = [];
     }
 
     setState(() {
-      allContacts = _mapToContacts(selectedData);
+      selectedContact = filteredContacts;
     });
-  }
-
-  List<Contact> _mapToContacts(List<Map<String, String>> data) {
-    return data.map((item) {
-      String name = item['firstName']!;
-      return Contact(
-        firstName: item['firstName']!,
-        lastName: item['lastName']!,
-        company: item['company']!,
-        position: item['position']!,
-        phone: item['phone']!,
-        email: item['email']!,
-        salutation: item['salutation']!,
-        contactType: item['contactType']!,
-        source: item['source'],
-        notes: item['notes'],
-        tag: name.isNotEmpty ? name[0].toUpperCase() : '#',
-      );
-    }).toList();
   }
 
   @override
@@ -265,6 +177,7 @@ class _ContactHomePageState extends State<ContactHomePage> {
             setState(() {
               search = value;
             });
+            handleSearch();
           },
           decoration: InputDecoration(
               labelText: 'Search',
@@ -275,6 +188,53 @@ class _ContactHomePageState extends State<ContactHomePage> {
         ),
       ),
     );
+  }
+
+  void handleSearch() {
+    if (search.isEmpty) {
+      // If search is empty, just update the contact list for the current tab
+      updateContactList();
+      return;
+    }
+
+    // Search for the contact across allContacts
+    Contact? foundContact = allContacts.firstWhere(
+      (contact) =>
+          contact.fullname.toLowerCase().contains(search.toLowerCase()),
+      orElse: () => Contact.empty(), // Return null if no contact is found
+    );
+
+    if (foundContact != null) {
+      // Determine the tab based on contact_type
+      int tabToSwitch;
+      switch (foundContact.contact_type.toLowerCase()) {
+        case "existing contact":
+        case "existing":
+          tabToSwitch = 1;
+          break;
+        case "potential client":
+        case "potential":
+          tabToSwitch = 2;
+          break;
+        case "partner":
+          tabToSwitch = 3;
+          break;
+        case "supplier":
+          tabToSwitch = 4;
+          break;
+        default:
+          tabToSwitch =
+              selectedTab; // Stay on the current tab if not categorized
+      }
+
+      // Update the selectedTab and selectedContact
+      setState(() {
+        selectedTab = tabToSwitch;
+      });
+
+      // Update contacts in the selected tab
+      updateContactList();
+    }
   }
 
   Widget tab() {
@@ -337,16 +297,16 @@ class _ContactHomePageState extends State<ContactHomePage> {
   }
 
   Widget alphabetScroll(BuildContext context) {
-    SuspensionUtil.sortListBySuspensionTag(allContacts);
+    SuspensionUtil.sortListBySuspensionTag(selectedContact);
 
     return AzListView(
-      data: allContacts,
+      data: selectedContact,
       indexBarOptions:
           IndexBarOptions(textStyle: TextStyle(color: AppTheme.redMaroon)),
-      itemCount: allContacts.length,
+      itemCount: selectedContact.length,
       itemBuilder: (context, index) {
-        final contact = allContacts[index];
-        String name = '${contact.firstName} ${contact.lastName}';
+        final contact = selectedContact[index];
+        String name = '${contact.fullname}';
 
         return Column(
           children: [
@@ -357,28 +317,28 @@ class _ContactHomePageState extends State<ContactHomePage> {
                     ViewContact(
                         contact: contact,
                         contactForms: contactForms,
-                        leadForms: leadForms,
+                        // leadForms: leadForms,
                         leadLabel: leadLabel));
               },
               leading: CircleAvatar(
                 radius: AppTheme.radius30,
                 backgroundColor: Colors.blue,
                 child: Text(
-                  contact.firstName.isNotEmpty
-                      ? contact.firstName[0].toUpperCase()
+                  contact.fullname.isNotEmpty
+                      ? contact.fullname[0].toUpperCase()
                       : '',
                   style: const TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold),
                 ),
               ),
               title: Text(name),
-              subtitle: Text(contact.position),
+              subtitle: Text(contact.position ?? ""),
             ),
-            if (index != allContacts.length - 1) const Divider(),
+            if (index != selectedContact.length - 1) const Divider(),
           ],
         );
       },
-      indexBarData: SuspensionUtil.getTagIndexList(allContacts),
+      indexBarData: SuspensionUtil.getTagIndexList(selectedContact),
     );
   }
 

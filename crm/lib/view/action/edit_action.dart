@@ -1,17 +1,26 @@
+import 'package:crm/db/contact.dart';
 import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
+import '../../db/user.dart';
 import '../../utils/app_string_constant.dart';
 import '../../utils/app_theme_constant.dart';
 import '../../utils/app_widget_constant.dart';
 
 class EditAction extends StatefulWidget {
-  const EditAction({Key? key, required this.allTeam, required this.allContact, required this.contactForms, required this.leadForms, required this.leadLabel}) : super(key: key);
+  const EditAction(
+      {Key? key,
+      required this.allUser,
+      required this.allContact,
+      required this.contactForms,
+      // required this.leadForms,
+      required this.leadLabel})
+      : super(key: key);
 
-  final List<String> allTeam;
-  final List<String> allContact;
+  final List<User> allUser;
+  final List<Contact> allContact;
   final List<FormGroup> contactForms;
-  final FormGroup leadForms;
+  // final FormGroup leadForms;
   final List<String> leadLabel;
 
   @override
@@ -43,7 +52,7 @@ class _EditActionState extends State<EditAction> {
                   children: [
                     cancelButton(context),
                     pageTitle(AppString.editAction),
-                    saveButton(context)
+                    // saveButton(context)
                   ],
                 ),
               ),
@@ -59,24 +68,24 @@ class _EditActionState extends State<EditAction> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         inputField('Phone Call'),
-                        multipleDropdown(context, 'Team',
-                            items: widget.allTeam),
-                        multipleDropdown(
-                          context,
-                          'Contact',
-                          items: widget.allContact,
-                          isShow: true,
-                          buttonFunction: () =>
-                              addContact(context, widget.contactForms),
-                        ),
-                        singleDropdown(context, 'Leads',
-                            isShow: true,
-                            buttonFunction: () => addLeads(
-                                context,
-                                widget.contactForms,
-                                widget.allContact,
-                                widget.leadLabel,
-                                widget.leadForms)),
+                        // multipleDropdown(context, 'Team',
+                        //     items: widget.allTeam),
+                        // multipleDropdown(
+                        //   context,
+                        //   'Contact',
+                        //   items: widget.allContact,
+                        //   isShow: true,
+                        //   buttonFunction: () =>
+                        //       addContact(context, widget.contactForms),
+                        // ),
+                        // singleDropdown(context, 'Leads',
+                        //     isShow: true,
+                        //     buttonFunction: () => addLeads(
+                        //         context,
+                        //         widget.contactForms,
+                        //         widget.allContact,
+                        //         widget.leadLabel,
+                        //         widget.leadForms)),
                         inputField('Remarks', longInput: true),
                         deleteButton(context)
                       ],

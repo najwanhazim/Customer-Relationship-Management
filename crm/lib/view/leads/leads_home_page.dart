@@ -1,4 +1,5 @@
 import 'package:azlistview/azlistview.dart';
+import 'package:crm/function/repository/leads_reposiotry.dart';
 import 'package:crm/view/leads/view_leads.dart';
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:flutter/material.dart';
@@ -6,112 +7,22 @@ import 'package:reactive_forms/reactive_forms.dart';
 
 import '../../db/contact.dart';
 import '../../db/leads.dart';
+import '../../db/user.dart';
+import '../../function/repository/contact_repository.dart';
+import '../../function/repository/user_repository.dart';
 import '../../utils/app_theme_constant.dart';
 import '../../utils/app_widget_constant.dart';
-import '../dashboard/dashboard_individual.dart';
 
 class LeadsHomePage extends StatefulWidget {
-  const LeadsHomePage({super.key});
+  const LeadsHomePage({Key? key, required this.userId}) : super(key: key);
+
+  final String userId;
 
   @override
   State<LeadsHomePage> createState() => _LeadsHomePageState();
 }
 
 class _LeadsHomePageState extends State<LeadsHomePage> {
-  //--------------------leads--------------------------------
-  final List<Map<String, dynamic>> prospect = [
-    {
-      'id': 'L001',
-      'portfolio': 'Commercial Projects',
-      'title': 'High-Rise Office Construction',
-      'scope': 'Structural Engineering',
-      'client': 'UrbanConstruct Inc.',
-      'end_user': 'Corporate Tenants',
-      'location': 'Kuala Lumpur',
-      'status': 'Prospect',
-      'contact_id': 'C001',
-      'value': 5000000.00,
-      'created_by': 'John Smith',
-    },
-    {
-      'id': 'L001',
-      'portfolio': 'Commercial Projects',
-      'title': 'High-Rise Office Construction',
-      'scope': 'Structural Engineering',
-      'client': 'UrbanConstruct Inc.',
-      'end_user': 'Corporate Tenants',
-      'location': 'Kuala Lumpur',
-      'status': 'Prospect',
-      'contact_id': 'C001',
-      'value': 5000000.00,
-      'created_by': 'John Smith',
-    },
-  ];
-
-  final List<Map<String, dynamic>> opportunity = [
-    {
-      'id': 'L002',
-      'portfolio': 'Residential Projects',
-      'title': 'Luxury Condo Development',
-      'scope': 'Architectural Design',
-      'client': 'DreamHomes Ltd.',
-      'end_user': 'Individual Buyers',
-      'location': 'Penang',
-      'status': 'Opportunity',
-      'contact_id': 'C002',
-      'value': 3500000.00,
-      'created_by': 'Alice Tan',
-    },
-  ];
-
-  final List<Map<String, dynamic>> won = [
-    {
-      'id': 'L003',
-      'portfolio': 'Industrial Projects',
-      'title': 'Warehouse Expansion',
-      'scope': 'Mechanical Engineering',
-      'client': 'LogiTech Corp.',
-      'end_user': 'Retail Chains',
-      'location': 'Johor Bahru',
-      'status': 'Sales Won',
-      'contact_id': 'C003',
-      'value': 1200000.00,
-      'created_by': 'Ravi Kumar',
-    },
-  ];
-
-  final List<Map<String, dynamic>> lost = [
-    {
-      'id': 'L004',
-      'portfolio': 'Government Projects',
-      'title': 'Public School Renovation',
-      'scope': 'Electrical Systems',
-      'client': 'Ministry of Education',
-      'end_user': 'School Students',
-      'location': 'Putrajaya',
-      'status': 'Sales Lost',
-      'contact_id': 'C004',
-      'value': 800000.00,
-      'created_by': 'Maria Lee',
-    },
-  ];
-
-  final List<Map<String, dynamic>> disqualified = [
-    {
-      'id': 'L005',
-      'portfolio': 'Retail Projects',
-      'title': 'Shopping Mall Revamp',
-      'scope': 'Interior Design',
-      'client': 'MallCorp',
-      'end_user': 'Shoppers',
-      'location': 'Selangor',
-      'status': 'Disqualified',
-      'contact_id': 'C005',
-      'value': 1500000.00,
-      'created_by': 'David Lim',
-    },
-  ];
-
   //--------------input lead---------------------
   final List<String> leadLabel = [
     'Portfolio',
@@ -121,6 +32,7 @@ class _LeadsHomePageState extends State<LeadsHomePage> {
     'Client',
     'End User',
     'Location(Region)',
+    'Person In Charge',
     'Contact',
     'Lead Status'
   ];
@@ -136,23 +48,6 @@ class _LeadsHomePageState extends State<LeadsHomePage> {
     'contact': FormControl<String>(),
     'leadStatus': FormControl<String>(),
   });
-
-  //-------------------------name--------------------------
-  final List<String> allContact = [
-    'Ammar',
-    'Azri',
-    'Naiem',
-    'Din',
-    'Najwan',
-  ];
-
-  final List<String> allTeam = [
-    'Wan',
-    'Raimy',
-    'Sai',
-    'Syahmi',
-    'Amir',
-  ];
 
   //-----------------------fill in field--------------
   final List<FormGroup> contactForms = [
@@ -177,60 +72,106 @@ class _LeadsHomePageState extends State<LeadsHomePage> {
   String search = '';
   int selectedTab = 1;
 
+  ContactRepository contactRepository = ContactRepository();
+  LeadsRepository leadsRepository = LeadsRepository();
+  UserRepository userRepository = UserRepository();
+  List<User> userList = [];
   List<Leads> allLeads = [];
+  List<Contact> contactList = [];
+  List<Leads> selectedLeads = [];
 
   @override
   void initState() {
     super.initState();
-    updateLeadsList(); // Initialize contacts based on `selectedTab`.
+    getLeads();
+    updateLeadsList();
+    getAllContact();
+    getAllUser();
+  }
+
+  Future<void> getLeads() async {
+    try {
+      allLeads = await leadsRepository.getLeadsByUserId();
+      print("allLeads: $allLeads");
+    } catch (e) {
+      print(e);
+    } finally {
+      setState(() {});
+    }
+  }
+
+  Future<void> getAllContact() async{
+    try{
+      contactList = await contactRepository.getContactByUserId();
+      print("all contact: ${contactList}");
+    } catch(e) {
+      print(e);
+    }
+  }
+
+  Future<void> getAllUser() async{
+    try{
+      userList = await userRepository.getAllUser();
+      print("all user: ${userList}");
+    } catch(e) {
+      print(e);
+    }
   }
 
   void updateLeadsList() {
-    List<Map<String, dynamic>> selectedData;
+    List<Leads> filteredLeads = [];
 
     switch (selectedTab) {
       case 1:
-        selectedData = prospect;
+        filteredLeads = allLeads
+            .where((leads) =>
+                (leads.status == "Prospect" || leads.status == "prospect") &&
+                leads.title.toLowerCase().contains(search.toLowerCase()))
+            .toList();
         break;
       case 2:
-        selectedData = opportunity;
+        filteredLeads = allLeads
+            .where((leads) =>
+                (leads.status == "Opportunity" ||
+                    leads.status == "opportunity") &&
+                leads.title.toLowerCase().contains(search.toLowerCase()))
+            .toList();
         break;
       case 3:
-        selectedData = won;
+        filteredLeads = allLeads
+            .where((leads) =>
+                (leads.status == "Sales Won" ||
+                    leads.status == "Sales won" ||
+                    leads.status == "sales Won" ||
+                    leads.status == "sales won") &&
+                leads.title.toLowerCase().contains(search.toLowerCase()))
+            .toList();
         break;
       case 4:
-        selectedData = lost;
+        filteredLeads = allLeads
+            .where((leads) =>
+                (leads.status == "Sales Lost" ||
+                    leads.status == "Sales lost" ||
+                    leads.status == "sales Lost" ||
+                    leads.status == "sales lost") &&
+                leads.title.toLowerCase().contains(search.toLowerCase()))
+            .toList();
         break;
       case 5:
-        selectedData = disqualified;
+        filteredLeads = allLeads
+            .where((leads) =>
+                (leads.status == "Disqualified" ||
+                    leads.status == "disqualified") &&
+                leads.title.toLowerCase().contains(search.toLowerCase()))
+            .toList();
         break;
       default:
-        selectedData = [];
+        filteredLeads = [];
     }
 
     setState(() {
-      allLeads = _mapToLeads(selectedData);
+      selectedLeads = filteredLeads;
     });
-  }
-
-  List<Leads> _mapToLeads(List<Map<String, dynamic>> data) {
-    return data.map((item) {
-      String title = item['title']!;
-      return Leads(
-        id: item['id'],
-        portfolio: item['portfolio'],
-        title: item['title'],
-        scope: item['scope'],
-        client: item['client'],
-        end_user: item['end_user'],
-        location: item['location'],
-        status: item['status'],
-        contact_id: item['contact_id'],
-        value: item['value'],
-        created_by: item['created_by'],
-        tag: title.isNotEmpty ? title[0].toUpperCase() : '#',
-      );
-    }).toList();
   }
 
   @override
@@ -246,7 +187,7 @@ class _LeadsHomePageState extends State<LeadsHomePage> {
             secondAppBar(
                 context,
                 () => addLeads(
-                    context, contactForms, allContact, leadLabel, leadForms)),
+                    context, contactForms, contactList, userList, leadLabel)),
             const Padding(
               padding: AppTheme.padding3,
               child: Text(
@@ -377,12 +318,12 @@ class _LeadsHomePageState extends State<LeadsHomePage> {
     SuspensionUtil.sortListBySuspensionTag(allLeads);
 
     return AzListView(
-      data: allLeads,
+      data: selectedLeads,
       indexBarOptions:
           IndexBarOptions(textStyle: TextStyle(color: AppTheme.redMaroon)),
-      itemCount: allLeads.length,
+      itemCount: selectedLeads.length,
       itemBuilder: (context, index) {
-        final lead = allLeads[index];
+        final lead = selectedLeads[index];
 
         return Column(
           children: [
@@ -391,11 +332,12 @@ class _LeadsHomePageState extends State<LeadsHomePage> {
                 bottomSheet(
                     context,
                     ViewLeads(
+                      allLeads: allLeads,
                       lead: lead,
-                      allContact: allContact,
-                      allTeam: allTeam,
+                      allContacts: contactList,
+                      allUsers: userList,
                       contactForms: contactForms,
-                      leadForms: leadForms,
+                      // leadForms: leadForms,
                       leadLabel: leadLabel,
                     ));
               },
@@ -436,11 +378,11 @@ class _LeadsHomePageState extends State<LeadsHomePage> {
                 ],
               ),
             ),
-            if (index != allLeads.length - 1) const Divider(),
+            if (index != selectedLeads.length - 1) const Divider(),
           ],
         );
       },
-      indexBarData: SuspensionUtil.getTagIndexList(allLeads),
+      indexBarData: SuspensionUtil.getTagIndexList(selectedLeads),
     );
   }
 }

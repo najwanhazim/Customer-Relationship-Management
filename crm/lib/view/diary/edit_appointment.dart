@@ -1,3 +1,4 @@
+import 'package:crm/db/contact.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -11,7 +12,7 @@ class EditAppointment extends StatefulWidget {
   const EditAppointment({Key? key, required this.forms, required this.allContacts}) : super(key: key);
 
   final List<FormGroup> forms;
-  final List<String> allContacts;
+  final List<Contact> allContacts;
 
   @override
   State<EditAppointment> createState() => _EditAppointmentState();
@@ -63,21 +64,21 @@ class _EditAppointmentState extends State<EditAppointment> {
                           children: [
                             inputField('Title', hintText: true),
                             inputField('Location', hintText: true),
-                            singleDropdown(context, 'Medium'),
+                            // singleDropdown(context, 'Medium'),
                             AppTheme.box10,
                             pickDateTime(context, 'Start', timePicker: timePicker(), datePicker: datePicker()),
                             pickDateTime(context, 'End', timePicker: timePicker(), datePicker: datePicker()),
                             AppTheme.box10,
-                            multipleDropdown(context, 'Team',
-                                isShow: true,
-                                buttonFunction: () =>
-                                    addContact(context, widget.forms),
-                                items: widget.allContacts),
-                            multipleDropdown(context, 'Contact',
-                                isShow: true,
-                                buttonFunction: () =>
-                                    addContact(context, widget.forms),
-                                items: widget.allContacts),
+                            // multipleDropdown(context, 'Team',
+                            //     isShow: true,
+                            //     buttonFunction: () =>
+                            //         addContact(context, widget.forms),
+                            //     items: widget.allContacts),
+                            // multipleDropdown(context, 'Contact',
+                            //     isShow: true,
+                            //     buttonFunction: () =>
+                            //         addContact(context, widget.forms),
+                            //     items: widget.allContacts),
                             inputField('Notes', longInput: true, hintText: true),
                             Padding(
                               padding: const EdgeInsets.all(8.0),

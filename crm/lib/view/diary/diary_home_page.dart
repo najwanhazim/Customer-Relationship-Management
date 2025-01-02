@@ -1,3 +1,5 @@
+import 'package:crm/db/appointment.dart';
+import 'package:crm/function/repository/appointment_repository.dart';
 import 'package:crm/utils/app_string_constant.dart';
 import 'package:crm/view/diary/add_appointment.dart';
 import 'package:crm/view/diary/list_meeting_notes.dart';
@@ -8,11 +10,17 @@ import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../db/contact.dart';
+import '../../db/user.dart';
+import '../../function/repository/contact_repository.dart';
+import '../../function/repository/user_repository.dart';
 import '../../utils/app_theme_constant.dart';
 import '../../utils/app_widget_constant.dart';
 
 class DiaryHomePage extends StatefulWidget {
-  const DiaryHomePage({super.key});
+  const DiaryHomePage({Key? key, required this.userId}) : super(key: key);
+
+  final String userId;
 
   @override
   State<DiaryHomePage> createState() => _DiaryHomePageState();
@@ -24,13 +32,13 @@ class _DiaryHomePageState extends State<DiaryHomePage> {
   DateTime focusedDay = DateTime.now();
   DateTime? selectedDate;
 
-  final List<String> allContact = [
-    'Ammar',
-    'Azri',
-    'Naiem',
-    'Din',
-    'Najwan',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    getAllUser();
+    gettAllContact();
+    getAppointment();
+  }
 
   final List<FormGroup> contactForms = [
     FormGroup({
@@ -51,15 +59,92 @@ class _DiaryHomePageState extends State<DiaryHomePage> {
     }),
   ];
 
+  UserRepository userRepository = UserRepository();
+  ContactRepository contactRepository = ContactRepository();
+  AppointmentRepository appointmentRepository = AppointmentRepository();
+
+  List<User> userList = [];
+  List<Contact> contactList = [];
+  List<Appointment> appointmentList = [];
+  List<Appointment> filteredAppointments = [];
+  Map<DateTime, List<Appointment>> appointmentsByDate = {};
+
+  Future<void> getAllUser() async {
+    try {
+      userList = await userRepository.getAllUser();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> gettAllContact() async {
+    try {
+      contactList = await contactRepository.getContactByUserId();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> getAppointment() async {
+    try {
+      appointmentList = await appointmentRepository.getAppointment();
+      groupAppointmentsByDate();
+    } catch (e) {
+      print(e);
+    } finally {
+      setState(() {
+        // filterAppointmentsByDate(selectedDate);
+      });
+    }
+  }
+
+  void groupAppointmentsByDate() {
+    appointmentsByDate = {};
+
+    for (var appointment in appointmentList) {
+      final appointmentDate = DateTime.parse(appointment.start_time);
+
+      // Use only the date part
+      final dateOnly = DateTime(
+          appointmentDate.year, appointmentDate.month, appointmentDate.day);
+
+      if (!appointmentsByDate.containsKey(dateOnly)) {
+        appointmentsByDate[dateOnly] = [];
+      }
+      appointmentsByDate[dateOnly]!.add(appointment);
+    }
+  }
+
+  List<Appointment> getAppointmentsForDate(DateTime date) {
+    final dateOnly = DateTime(date.year, date.month, date.day);
+    return appointmentsByDate[dateOnly] ?? [];
+  }
+
   void onDaySelected(DateTime _selectedDate, DateTime _focusedDay) {
     setState(() {
       if (isSameDay(selectedDate, _selectedDate)) {
         selectedDate = null;
+        filteredAppointments = [];
       } else {
         selectedDate = _selectedDate;
+        filteredAppointments = getAppointmentsForDate(selectedDate!);
       }
       focusedDay = _focusedDay;
     });
+  }
+
+  void filterAppointmentsByDate(DateTime? date) {
+    if (date == null) {
+      filteredAppointments = [];
+      return;
+    }
+    filteredAppointments = appointmentList.where((appointment) {
+      return isSameDay(
+        DateTime.parse(
+            appointment.start_time), // Convert start_time to DateTime
+        date,
+      );
+    }).toList();
   }
 
   @override
@@ -85,7 +170,7 @@ class _DiaryHomePageState extends State<DiaryHomePage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                ListMeetingNotes(), // Correctly return the `Task` widget
+                                ListMeetingNotes(), // Correctly return the Task widget
                           ),
                         );
                       },
@@ -99,7 +184,7 @@ class _DiaryHomePageState extends State<DiaryHomePage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                TaskPage(), // Correctly return the `Task` widget
+                                TaskPage(), // Correctly return the Task widget
                           ),
                         );
                       },
@@ -132,6 +217,9 @@ class _DiaryHomePageState extends State<DiaryHomePage> {
                 startingDayOfWeek: StartingDayOfWeek.monday,
                 onDaySelected: onDaySelected,
                 rowHeight: 40,
+                eventLoader: (day) {
+                  return getAppointmentsForDate(day);
+                },
                 calendarStyle: CalendarStyle(
                   outsideDaysVisible: false,
                   defaultTextStyle: const TextStyle(fontSize: 12),
@@ -179,7 +267,8 @@ class _DiaryHomePageState extends State<DiaryHomePage> {
                                 context,
                                 AddAppointment(
                                   forms: contactForms,
-                                  allContacts: allContact,
+                                  allUsers: userList,
+                                  allContacts: contactList,
                                 ));
                           })
                         ],
@@ -219,25 +308,35 @@ class _DiaryHomePageState extends State<DiaryHomePage> {
   }
 
   Widget appointmentGenerator() {
-    return ListView.builder(
-        itemCount: 10,
+    if (filteredAppointments == null || filteredAppointments.isEmpty) {
+      return const Center(
+        child: Text(
+          "No appointments on this date",
+          style: TextStyle(fontSize: 16, color: Colors.grey),
+        ),
+      );
+    } else {
+      return ListView.builder(
+        itemCount: filteredAppointments.length,
         itemBuilder: (context, index) {
+          final appointment = filteredAppointments[index];
+
           return ListTile(
             title: Text(
-              'appointment 1',
+              appointment.title,
               style: AppTheme.listTileFont,
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
-                  'time',
+                  formatDateTime(appointment.start_time),
                   style: AppTheme.subListTileFont,
                 ),
                 Text(
-                  'location',
+                  appointment.location,
                   style: AppTheme.subListTileFont,
-                )
+                ),
               ],
             ),
             onTap: () {
@@ -245,10 +344,13 @@ class _DiaryHomePageState extends State<DiaryHomePage> {
                   context,
                   ViewAppointment(
                     forms: contactForms,
-                    allContacts: allContact,
+                    allContacts: contactList,
+                    appointment: appointment,
                   ));
             },
           );
-        });
+        },
+      );
+    }
   }
 }

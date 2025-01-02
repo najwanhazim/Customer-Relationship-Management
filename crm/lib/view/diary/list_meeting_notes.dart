@@ -1,6 +1,7 @@
+import 'package:crm/db/meeting.dart';
 import 'package:flutter/material.dart';
 
-import '../../db/task.dart';
+import '../../function/repository/meeting_repository.dart';
 import '../../utils/app_theme_constant.dart';
 import '../../utils/app_widget_constant.dart';
 
@@ -13,28 +14,26 @@ class ListMeetingNotes extends StatefulWidget {
 
 class _ListMeetingNotesState extends State<ListMeetingNotes> {
   String search = '';
+  MeetingRepository meetingRepository = MeetingRepository();
+  List<MeetingNote> meetingList = [];
 
-  List<Map<String, String>> today = [
-    {'name': 'Naiem', 'noti': 'upload'},
-    {'name': 'Azri', 'noti': 'upload'},
-    {'name': 'Fern', 'noti': 'follow-up'}
-  ];
+  @override
+  void initState() {
+    super.initState();
+    getMeeting();
+  }
 
-  List<Map<String, String>> yesterday = [
-    {'name': 'Naiem', 'noti': 'register'},
-    {'name': 'Azri', 'noti': 'upload meeting'}
-  ];
-
-  List<Task> _mapToTask(List<Map<String, String>> data) {
-    return data.map((item) {
-      return Task(
-          id: item['id']!,
-          action: item['action']!,
-          remarks: item['remarks'],
-          status: item['status']!,
-          lead_id: item['leadId'],
-          contact_id: item['contactId']!);
-    }).toList();
+  Future<void> getMeeting() async {
+    try {
+      meetingList = await meetingRepository.getMeetingByUser();
+      print("meeting: ${meetingList[0].start_time}");
+    } catch (e) {
+      showToastError(context, e.toString());
+    } finally {
+      setState(() {
+        
+      });
+    }
   }
 
   @override
@@ -75,7 +74,7 @@ class _ListMeetingNotesState extends State<ListMeetingNotes> {
               ),
             ),
             AppTheme.divider,
-            generateMeetingNotes(data: today),
+            generateMeetingNotes(day: 'today'),
             AppTheme.box30,
             const Padding(
               padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
@@ -85,7 +84,7 @@ class _ListMeetingNotesState extends State<ListMeetingNotes> {
               ),
             ),
             AppTheme.divider,
-            generateMeetingNotes(data: yesterday),
+            generateMeetingNotes(day: 'yesterday'),
           ],
         ),
       ),
@@ -114,27 +113,61 @@ class _ListMeetingNotesState extends State<ListMeetingNotes> {
     );
   }
 
-  Widget generateMeetingNotes({required List<Map<String, String>> data}) {
+  bool isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
+  }
+
+  Widget generateMeetingNotes({required String day}) {
+    List<MeetingNote> filteredMeetings = meetingList.where((meeting) {
+      DateTime meetingDate = DateTime.parse(meeting.start_time).toLocal();
+      DateTime now = DateTime.now();
+
+      if (day == 'today') {
+        return isSameDate(meetingDate, now);
+      } else if (day == 'tomorrow') {
+        return isSameDate(meetingDate, now.add(const Duration(days: 1)));
+      }
+      return false;
+    }).toList();
+
+    if (filteredMeetings.isEmpty) {
+      return const Center(
+        child: Text(
+          "No meetings found.",
+          style: TextStyle(fontSize: 16, color: Colors.grey),
+        ),
+      );
+    }
+
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: data.length,
+      itemCount: filteredMeetings.length,
       itemBuilder: (context, index) {
+        final meeting = filteredMeetings[index];
+
         return ListTile(
-          leading: const CircleAvatar(
-            radius: AppTheme.radius15,
-            backgroundColor: Colors.blue,
+          title: Text(
+            "${meeting.title}",
+            style: AppTheme.listTileFont,
           ),
-          title: Text(data[index]['name']!, style: AppTheme.listTileFont,),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(data[index]['noti']!),
-              Text(data[index]['noti']!),
+              Text("${formatDateTime(meeting.start_time)} - ${formatDateTime(meeting.end_time)}"),
+              Text(meeting.location),
             ],
           ),
         );
       },
     );
+  }
+
+  bool isSameDate(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
   }
 }

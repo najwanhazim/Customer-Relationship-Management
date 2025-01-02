@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
+import '../../db/user.dart';
+import '../../function/bloc/login_bloc.dart';
+import '../../function/repository/user_repository.dart';
 import '../../utils/app_string_constant.dart';
 import '../../utils/app_theme_constant.dart';
 import '../../utils/app_widget_constant.dart';
@@ -27,6 +31,9 @@ class _SignUpState extends State<SignUp> {
     'Username',
     'Email Address'
   ];
+
+  BuildContext? _blocContext;
+  UserRepository userRepository = UserRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -79,42 +86,58 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                     reactiveForm(context, _form, label),
-                    Padding(
-                      padding: AppTheme.padding10,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          FilledButton(
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => LoginNotification(
-                                    title: AppString.newSignUpTitle,
-                                    subtitle: AppString.newPassSubtitle,
+                    BlocProvider(
+                      create: (context) => LoginBloc(userRepository),
+                      child: BlocConsumer<LoginBloc, LoginState>(
+                        listener: (listenerContext, state) {
+                          if (state is LoginError) {
+                            showToastError(context, state.message);
+                          } else if (state is LoginLoaded) {
+                            showToastSuccess(context, state.message);
+                          }
+                        },
+                        builder: (blocContext, state) {
+                          _blocContext = blocContext;
+                          return Padding(
+                            padding: AppTheme.padding10,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                FilledButton(
+                                  onPressed: () async {
+                                    await onSave();
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => LoginNotification(
+                                          title: AppString.newSignUpTitle,
+                                          subtitle: AppString.newPassSubtitle,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all(Colors.black),
+                                    shape: MaterialStateProperty.all(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: const [
+                                      Text('Sign Up'),
+                                      SizedBox(width: 8),
+                                      Icon(Icons.arrow_forward),
+                                    ],
                                   ),
                                 ),
-                              );
-                            },
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.black),
-                              shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: const [
-                                Text('Sign Up'),
-                                SizedBox(width: 8),
-                                Icon(Icons.arrow_forward),
                               ],
                             ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
                     ),
                   ],
@@ -125,5 +148,33 @@ class _SignUpState extends State<SignUp> {
         ],
       ),
     );
+  }
+
+  Future<void> onSave() async {
+    if (_form.valid) {
+      final user = createUserFromForms(_form);
+      await sendUser(user);
+    } else {
+      showToastError(context, 'Form is not valid!');
+    }
+  }
+
+  User createUserFromForms(FormGroup userForms) {
+    final firstName = userForms.control('firstName').value as String? ?? '';
+    final lastName = userForms.control('lastName').value as String? ?? '';
+    final fullName = '$firstName $lastName'.trim();
+    final email = userForms.control('email').value as String? ?? '';
+    final username = userForms.control('username').value as String? ?? '';
+
+    print("$fullName, $email, $username");
+
+    return User(email: email, full_name: fullName, login_id: username);
+  }
+
+  Future<void> sendUser(User userIn) async {
+    if (_blocContext == null) return;
+    FocusManager.instance.primaryFocus?.unfocus();
+    final contactBloc = BlocProvider.of<LoginBloc>(_blocContext!);
+    contactBloc.add(CreateSignUp(buildContext: context, user: userIn));
   }
 }

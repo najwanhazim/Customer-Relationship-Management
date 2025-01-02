@@ -19,6 +19,8 @@ class AppTheme {
   static const Color shimmerHighlight = Color(0xFFF3F3F2);
   static const Color nearlyBlack = Color(0xFF213333);
   static const Color darkText = Color(0xFF253840);
+  static const Color lightText = Color(0xFF4A6572);
+  static const Color nearlyWhite = Color(0xFFFEFEFE);
 
   //radius
   static const double radius15 = 15;
@@ -28,6 +30,7 @@ class AppTheme {
 
   //padding
   static const EdgeInsets padding8 = EdgeInsets.all(8.0);
+  static const EdgeInsets padding16 = EdgeInsets.all(16);
   static const EdgeInsets padding20 = EdgeInsets.all(20.0);
   static const EdgeInsets padding3 = EdgeInsets.all(3.0);
   static const EdgeInsets padding15 = EdgeInsets.all(15.0);
@@ -35,7 +38,8 @@ class AppTheme {
   static const EdgeInsets paddingTepi = EdgeInsets.fromLTRB(15, 0, 15, 0);
   static const EdgeInsets padding = EdgeInsets.fromLTRB(15, 10, 15, 10);
   static const EdgeInsets paddingTop = EdgeInsets.fromLTRB(0, 5, 0, 5);
-  static const double paddingGridDouble = 12;
+  static const double double12 = 12;
+  static const double double16 = 16;
   static const int paddingInt = 8;
   static const double paddingDouble = 8;
 
@@ -118,7 +122,7 @@ class AppTheme {
 
   static const double sheetHeight = 750;
 
-  //font
+  /// textStyle
   static const TextStyle titleFont =
       TextStyle(fontSize: 40, fontWeight: FontWeight.bold);
   static const TextStyle subtitleFont = TextStyle(fontSize: 20);
@@ -143,21 +147,23 @@ class AppTheme {
     fontSize: 16,
   );
   static const subListTileFont = TextStyle(fontSize: 14, color: Colors.grey);
-  static const titleContainer = TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold);
+  static const titleContainer =
+      TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold);
   static const subTitleContainer = TextStyle(color: Colors.grey, fontSize: 15);
+  static TextStyle bodyFontPrimary = body(fontBody, -0.05);
+  static TextStyle titlePrimary = title(fontName);
 
   static const String fontNameSecondary = 'OpenSans';
   static const String fontName = 'Raleway';
   static const double fontSubtitle = 14;
-
   static const double shimmerTitle = fontTitle + 3;
   static const double fontTitle = 18;
   static const double fontBody = 16;
-  static TextStyle titlePrimary = title(fontName);
 
   //size
   static const double sizeIconNav = 24;
   static const double sizeIconInline = 28;
+  static const double sizeIconButton = 32;
 
   //dialog
   static TextStyle dialogText =
@@ -198,4 +204,7 @@ class AppTheme {
       color: color,
     );
   }
+
+  static TextStyle coloredButtonText = body(fontBody, 0.27,
+      fontWeight: FontWeight.w700, fontFamily: fontNameSecondary, color: white);
 }
